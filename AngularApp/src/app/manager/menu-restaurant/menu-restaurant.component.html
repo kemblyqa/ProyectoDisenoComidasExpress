@@ -13,13 +13,17 @@
     <div class="card-body">
         <h5 class="card-title">Menu Pancho Restaurante</h5>
         <!-- menu list -->
-      <div class="form-group row">
-        <div class="col">
-          <label class="col col-form-label">Pinto con huevo y natilla</label>
-        </div>
-        <div class="col">
-          <button class="btn btn-primary" type="button">Ver/Editar</button>
-          <button class="btn btn-primary" type="button">Eliminar</button>
+      <div *ngFor="let platillo of platillos">
+          <div class="form-group row">
+            <img class="imageB" src="platillo.imagen"
+            name="profile" alt="Card image cap">
+          <div class="col">
+            <label class="col col-form-label">{{platillo.nombre}}</label>
+          </div>
+          <div class="col">
+            <button class="btn btn-primary" type="button">Ver/Editar</button>
+            <button class="btn btn-primary" type="button">Eliminar</button>
+          </div>
         </div>
       </div>
     </div>

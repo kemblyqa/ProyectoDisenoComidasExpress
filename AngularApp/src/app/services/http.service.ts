@@ -2,9 +2,8 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http'; 
 
 @Injectable()
-
 export class HttpService {
-	public apiUrl:string = "http://172.24.101.78:8080/";
+	public apiUrl:string = "http://localhost:5001/";
 	public results:Object[];
 
 	constructor(private http:HttpClient){}

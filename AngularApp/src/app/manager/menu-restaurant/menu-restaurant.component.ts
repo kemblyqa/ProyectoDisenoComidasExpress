@@ -1,3 +1,5 @@
+import { Platillo } from './../../models/manager.interface';
+import { ManagerService } from './../../services/manager/manager.service';
 import { ManagerModel } from '../../models/manager.model';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -10,9 +12,11 @@ import { Router } from '@angular/router';
 export class MenuRestaurantComponent{
   manage:ManagerModel
   navItems:Array<any>
-  constructor(private router:Router) { 
+  platillos:Array<Platillo>
+  constructor(private router:Router, private managerService: ManagerService) { 
     this.manage = new ManagerModel()
     this.navItems = this.manage.getNavItems()
+    this.platillos = this.manage.getPlatillos()
   }
   // goTo(){
   //   this.router.navigate(['/client'])

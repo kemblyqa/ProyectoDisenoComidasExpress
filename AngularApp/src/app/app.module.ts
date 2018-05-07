@@ -1,4 +1,7 @@
+import { HttpClientModule } from '@angular/common/http';
 import { HttpService } from './services/http.service';
+import { ManagerService } from './services/manager/manager.service';
+
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from "@angular/router";
@@ -8,7 +11,6 @@ import { AppComponent } from './app.component';
 import { MenuRestaurantComponent } from './manager/menu-restaurant/menu-restaurant.component';
 import { MenuClientComponent } from './client/menu-client/menu-client.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -17,9 +19,11 @@ import { MenuClientComponent } from './client/menu-client/menu-client.component'
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(ROUTES)
+    RouterModule.forRoot(ROUTES),
+    HttpClientModule
   ],
   providers: [
+    ManagerService,
     HttpService
   ],
   bootstrap: [AppComponent]
