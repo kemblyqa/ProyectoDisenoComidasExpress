@@ -1,5 +1,4 @@
 import * as functions from 'firebase-functions';
-import { Query } from '@google-cloud/firestore';
 
 const async = require('async')
 const admin = require('firebase-admin');
