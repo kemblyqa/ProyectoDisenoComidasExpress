@@ -18,7 +18,7 @@ export class MenuRestaurantComponent{
     this.manage = new ManagerModel()
     this.navItems = this.manage.getNavItems()
     this.platillos = this.manage.getPlatillos()
-    //this.managerService.getCategories()
+    this.managerService.getCategories()
   }
   // goTo(){
   //   this.router.navigate(['/client'])

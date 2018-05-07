@@ -17,10 +17,9 @@
       "**/node_modules/**"
     ],
     "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
+      {"source":"/api/categoria", "function":"categoria"},
+      {"source":"/api/GetPlatillosC", "function":"GetPlatillosC"},
+      {"source": "**","destination": "/index.html"}
     ]
   },
   "storage": {

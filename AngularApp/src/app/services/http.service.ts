@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class HttpService {
 	//url develop mode
-	public apiUrl:string = "http://localhost:5001/designexpresstec/us-central1/";
+	public apiUrl:string = "http://localhost:5000/api/";
 	public results:Object[];
 
 	constructor(private http:HttpClient){}

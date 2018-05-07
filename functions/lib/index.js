@@ -17,7 +17,7 @@ exports.categoria = functions.https.onRequest((request, response) => {
             snapshot.forEach((doc) => {
                 catIDs.push(doc.id);
             });
-            response.send({ status: true, data: catIDs });
+            response.status(200).send({ status: true, data: catIDs });
         })
             .catch((err) => {
             response.send({ status: false, data: 'Error obteniendo documentos' });

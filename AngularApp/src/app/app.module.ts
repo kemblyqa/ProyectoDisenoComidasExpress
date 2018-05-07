@@ -9,13 +9,11 @@ import { ROUTES } from './app.routing';
 
 import { AppComponent } from './app.component';
 import { MenuRestaurantComponent } from './manager/menu-restaurant/menu-restaurant.component';
-import { MenuClientComponent } from './client/menu-client/menu-client.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MenuRestaurantComponent,
-    MenuClientComponent
+    MenuRestaurantComponent
   ],
   imports: [
     BrowserModule,
