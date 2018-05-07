@@ -1,14 +1,13 @@
 import { Platillo, Category } from './manager.interface';
 export class ManagerModel {
     navItems:Array<any>
-    categories:Category
+    categories:Array<any>
     platillos:Platillo[]
     menu:Platillo[]
 
     constructor(){
-        this.categories = {
-            plates:["Hamburguesas", "Bebidas","Desayunos"]
-        }  
+        this.categories = ["Hamburguesas", "Bebidas","Desayunos"]
+        
         this.platillos = [
             {
                 Restaurante: "Panchito",
