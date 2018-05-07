@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class HttpService {
-	public apiUrl:string = "http://localhost:5001/";
+	//url develop mode
+	public apiUrl:string = "http://localhost:5001/designexpresstec/us-central1/";
 	public results:Object[];
 
 	constructor(private http:HttpClient){}

@@ -13,10 +13,12 @@ export class MenuRestaurantComponent{
   manage:ManagerModel
   navItems:Array<any>
   platillos:Array<Platillo>
+  
   constructor(private router:Router, private managerService: ManagerService) { 
     this.manage = new ManagerModel()
     this.navItems = this.manage.getNavItems()
     this.platillos = this.manage.getPlatillos()
+    //this.managerService.getCategories()
   }
   // goTo(){
   //   this.router.navigate(['/client'])
