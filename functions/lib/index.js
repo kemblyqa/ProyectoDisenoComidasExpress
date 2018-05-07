@@ -1,16 +1,65 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
+const async = require('async');
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-exports.helloWorld = functions.https.onRequest((request, response) => {
-    if (request.method == "POST") {
-        admin.firestore().collection('Restaurantes').add(request.body).then(writeResult => {
-            // write is complete here
+var db = admin.firestore();
+var usuarios = db.collection("Usuario");
+var categorias = db.collection("Categoria");
+var restaurantes = db.collection("Restaurante");
+var pedidos = db.collection("Pedido");
+exports.categoria = functions.https.onRequest((request, response) => {
+    if (request.method == "GET") {
+        categorias.get()
+            .then((snapshot) => {
+            var catIDs = [];
+            snapshot.forEach((doc) => {
+                catIDs.push(doc.id);
+            });
+            response.send({ status: true, data: catIDs });
+        })
+            .catch((err) => {
+            response.send({ status: false, data: 'Error obteniendo documentos' });
         });
     }
-    response.send({ msg: "Hello from Firebase!" });
+    else
+        response.send({ status: false, data: 'Solicitud desconocida' });
+});
+exports.GetPlatillosC = functions.https.onRequest((request, response) => {
+    if (request.method == "GET") {
+        categorias.doc(request.body.categoria).get()
+            .then((snapshot) => {
+            if (!snapshot.exists)
+                response.send({ status: false, data: 'Esta categoria no existe' });
+            var platList = [];
+            for (let x = 0; snapshot.data().platillos[x] != undefined; x++) {
+                snapshot.data().platillos[x].Restaurante.get()
+                    .then((Restaurante) => {
+                    var res;
+                    if (!Restaurante.exists)
+                        res = "Desconocido";
+                    else
+                        res = { nombre: Restaurante.data().nombre, id: Restaurante.id };
+                    platList.push({
+                        imagen: snapshot.data().platillos[x].imagen,
+                        descripcion: snapshot.data().platillos[x].descripcion,
+                        nombre: snapshot.data().platillos[x].nombre,
+                        Restaurante: res
+                    });
+                    if (snapshot.data().platillos[x + 1] == undefined)
+                        response.send({ status: true, data: platList });
+                })
+                    .catch((err) => {
+                    response.send({ status: false, data: 'Error obteniendo restaurante' });
+                });
+            }
+        })
+            .catch((err) => {
+            response.send({ status: false, data: 'Error obteniendo documentos' });
+        });
+    }
+    else
+        response.send({ status: false, data: 'Solicitud desconocida' });
 });
 //# sourceMappingURL=index.js.map
