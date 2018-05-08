@@ -11,12 +11,14 @@ import { RouterModule } from "@angular/router";
 import { ROUTES } from './app.routing';
 
 import { AppComponent } from './app.component';
-import { MenuRestaurantComponent } from './manager/menu-restaurant/menu-restaurant.component';
+import { MenuRestaurantComponent } from './main/menu-restaurant/menu-restaurant.component';
+import { MainPageComponent } from './main/main-page/main-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MenuRestaurantComponent
+    MenuRestaurantComponent,
+    MainPageComponent
   ],
   imports: [
     BrowserModule,
