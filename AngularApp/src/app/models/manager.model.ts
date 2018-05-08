@@ -8,55 +8,62 @@ export class ManagerModel {
 
     constructor(){
         this.categories = ["Hamburguesas", "Bebidas","Desayunos"]
-        
         this.platillos = [
             {
-                Restaurante: "Panchito",
+                restaurante: "Panchito",
                 descripcion: "delicioso",
                 imagen: "",
-                nombre: "Pinto con huevo y natilla"
+                nombre: "Pinto con huevo y natilla",
+                categoria: "Hamburguesa"
             },
             {
-                Restaurante: "Panchito",
+                restaurante: "Panchito",
                 descripcion: "grasa",
                 imagen: "",
-                nombre: "Magnifica"
+                nombre: "Magnifica",
+                categoria: "Hamburguesa"
             },
             {
-                Restaurante: "Panchito",
+                restaurante: "Panchito",
                 descripcion: "delicioso",
                 imagen: "",
-                nombre: "Pinto con huevo y natilla"
+                nombre: "Pinto con huevo y natilla",
+                categoria: "Hamburguesa"
             },
             {
-                Restaurante: "Panchito",
+                restaurante: "Panchito",
                 descripcion: "grasa",
                 imagen: "",
-                nombre: "Magnifica"
+                nombre: "Magnifica",
+                categoria: "Hamburguesa"
             },
             {
-                Restaurante: "Panchito",
+                restaurante: "Panchito",
                 descripcion: "delicioso",
                 imagen: "",
-                nombre: "Pinto con huevo y natilla"
+                nombre: "Pinto con huevo y natilla",
+                categoria: "Hamburguesa"
             },
             {
-                Restaurante: "Panchito",
+                restaurante: "Panchito",
                 descripcion: "grasa",
                 imagen: "",
-                nombre: "Magnifica"
+                nombre: "Magnifica",
+                categoria: "Hamburguesa"
             },
             {
-                Restaurante: "Panchito",
+                restaurante: "Panchito",
                 descripcion: "delicioso",
                 imagen: "",
-                nombre: "Pinto con huevo y natilla"
+                nombre: "Pinto con huevo y natilla",
+                categoria: "Hamburguesa"
             },
             {
-                Restaurante: "Panchito",
+                restaurante: "Panchito",
                 descripcion: "grasa",
                 imagen: "",
-                nombre: "Magnifica"
+                nombre: "Magnifica",
+                categoria: "Hamburguesa"
             }
         ]
         this.navItems = [
@@ -67,16 +74,18 @@ export class ManagerModel {
         ]
         this.menu= [
             {
-                Restaurante: "Panchito",
+                restaurante: "Panchito",
                 descripcion: "delicioso",
                 imagen: "",
-                nombre: "Pinto con huevo y natilla"
+                nombre: "Pinto con huevo y natilla",
+                categoria: "Hamburguesa"
             },
             {
-                Restaurante: "Panchito",
+                restaurante: "Panchito",
                 descripcion: "grasa",
                 imagen: "",
-                nombre: "Magnifica"
+                nombre: "Magnifica",
+                categoria: "Hamburguesa"
             }
         ]        
     }
