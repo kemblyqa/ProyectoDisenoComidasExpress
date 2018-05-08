@@ -18,15 +18,15 @@ export class HttpService {
 		.catch(this.handleError)
     }
     /*Gets the information from the endPoint requested*/
-	public getServiceParams(endPoint:string, params:any) : Promise<any>{
+	public getServiceParams(body:any,endPoint:string) : Promise<any>{
 		return this.http
-		.get(`${this.apiUrl}${endPoint}`,{params: {params}})
+		.get(`${this.apiUrl}${endPoint}`,{params:body})
 		.toPromise()
 		.then(this.extractData)
 		.catch(this.handleError)
 	}
 	/*Inserts information through an endPoint*/
-	public postService(body:any,endPoint:string) : Promise<any>{
+	public postService(body:any, endPoint:string) : Promise<any>{
 		return this.http
         .post(`${this.apiUrl}${endPoint}`,body)
         .toPromise()

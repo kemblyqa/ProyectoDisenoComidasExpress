@@ -5,6 +5,7 @@ import { Category, ManagerInterface } from './../../models/manager.interface';
 //manager and restaurant endpoints
 const ENDPOINT_GETCATEGORIES = "categoria"
 const ENDPOINT_GETPLATILLOS = "GetPlatillosC"
+const ENDPOINT_PLATILLOS_REST = "platillosRest"
 
 @Injectable()
 export class ManagerService {
@@ -30,10 +31,11 @@ export class ManagerService {
         )
     }
 
-    public getPlatillos(id: any){
-        this.service.getServiceParams(ENDPOINT_GETPLATILLOS,{id:id,pagina:1})
+    public getPlatillosRestaurant(id: any){
+        this.service.getServiceParams({keyRest:"keyAuto"},ENDPOINT_PLATILLOS_REST)
         .then(
             response => {
+                console.log(JSON.stringify(response))
                 this.status = response
             }
         )
