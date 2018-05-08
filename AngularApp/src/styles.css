@@ -1,11 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~bootstrap/dist/css/bootstrap.min.css';
+@import '~bootstrap/dist/css/bootstrap.css';
+@import url('https://fonts.googleapis.com/css?family=Pangolin');
 
-body {
+/* body {
     background: url("assets/icons/wallpaper_restaurant_3.jpg");
-}
+} */
 
-.imageB {
+.imageCircle {
     border-radius: 50%;
     width: 20%;
 }
