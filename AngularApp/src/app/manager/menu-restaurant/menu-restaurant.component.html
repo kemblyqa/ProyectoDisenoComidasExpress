@@ -9,11 +9,20 @@
       </div>
     </div>
   </nav>
-  <div class="card  centerDiv" style="width: 75%; margin-top: 6%">
+  
+  <div class="card centerDiv" style="width: 75%; margin-top: 6%">
     <div class="card-body">
         <h5 class="card-title">Menu Pancho Restaurante</h5>
-        <div class="">
-
+        <div class="form-group row">
+          <div class="col">
+            <label class="col col-form-label">Categoría: </label>
+          </div>
+          <div class="col">
+            <select id="selectedCategory" class="form-control">
+              <option *ngFor="let cat of categories"
+                [value]="cat">"{{cat}}"</option> 
+            </select>
+          </div>
         </div>
         <!-- menu list -->
       <!-- <div *ngFor="let platillo of platillos">
