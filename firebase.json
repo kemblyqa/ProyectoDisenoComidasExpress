@@ -18,8 +18,7 @@
     ],
     "rewrites": [
       {"source":"/api/categoria", "function":"categoria"},
-      {"source":"/api/GetPlatillosC", "function":"GetPlatillosC"},
-      {"source":"/api/platillosRest", "function":"platillosRest"},
+      {"source":"/api/filtroPlat", "function":"filtroPlat"},
       {"source": "**","destination": "/index.html"}
     ]
   },
