@@ -33,16 +33,15 @@ export const categoria = functions.https.onRequest((request, response) => {
 
 export const GetPlatillosC = functions.https.onRequest((request, response) => {
     if (request.method=="GET"){
-        platillos.where('categoria','==',request.body.categoria).get()
+        let categoria = request.query.categoria
+        platillos.where('categoria','==',categoria).get()
         .then((snapshot) => {
             var platList = [];
             snapshot.forEach(element => {
                 platList.push(element.data())
             });
-            console.log(platList)
             let platRich = []
             for (let x=0;platList[x]!=undefined;x++){
-                console.log(platList[x])
                 restaurantes.doc(platList[x].restaurante).get().then((Restaurante) => {
                     var res;
                     if(!Restaurante.exists)
@@ -72,7 +71,8 @@ export const GetPlatillosC = functions.https.onRequest((request, response) => {
 
 export const platillosRest = functions.https.onRequest((request, response) => {
     if (request.method=="GET"){
-        platillos.where('restaurante','==',request.body.keyRest).get()
+        let keyRest= request.query.keyRest
+        platillos.where('restaurante','==',keyRest).get()
         .then((snapshot) => {;
             if(snapshot.empty)
                 response.send({status:true,data:[]})
