@@ -6,18 +6,19 @@ const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 var db = admin.firestore();
 var usuarios = db.collection("Usuario");
-var categorias = db.collection("Categoria");
+var platillos = db.collection("Platillo");
 var restaurantes = db.collection("Restaurante");
 var pedidos = db.collection("Pedido");
 exports.categoria = functions.https.onRequest((request, response) => {
     if (request.method == "GET") {
-        categorias.get()
+        platillos.get()
             .then((snapshot) => {
-            var catIDs = [];
+            var categorias = [];
             snapshot.forEach((doc) => {
-                catIDs.push(doc.id);
+                console.log(doc.data().categoria);
+                categorias.push(doc.data().categoria);
             });
-            response.status(200).send({ status: true, data: catIDs });
+            response.status(200).send({ status: true, data: categorias });
         })
             .catch((err) => {
             response.send({ status: false, data: 'Error obteniendo documentos' });
@@ -28,32 +29,55 @@ exports.categoria = functions.https.onRequest((request, response) => {
 });
 exports.GetPlatillosC = functions.https.onRequest((request, response) => {
     if (request.method == "GET") {
-        categorias.doc(request.body.categoria).get()
+        platillos.where('categoria', '==', request.body.categoria).get()
             .then((snapshot) => {
-            if (!snapshot.exists)
-                response.send({ status: false, data: 'Esta categoria no existe' });
             var platList = [];
-            for (let x = 0; snapshot.data().platillos[x] != undefined; x++) {
-                snapshot.data().platillos[x].Restaurante.get()
-                    .then((Restaurante) => {
+            snapshot.forEach(element => {
+                platList.push(element.data());
+            });
+            console.log(platList);
+            let platRich = [];
+            for (let x = 0; platList[x] != undefined; x++) {
+                console.log(platList[x]);
+                restaurantes.doc(platList[x].restaurante).get().then((Restaurante) => {
                     var res;
                     if (!Restaurante.exists)
                         res = "Desconocido";
                     else
                         res = { nombre: Restaurante.data().nombre, id: Restaurante.id };
-                    platList.push({
-                        imagen: snapshot.data().platillos[x].imagen,
-                        descripcion: snapshot.data().platillos[x].descripcion,
-                        nombre: snapshot.data().platillos[x].nombre,
+                    platRich.push({
+                        imagen: platList[x].imagen,
+                        descripcion: platList[x].descripcion,
+                        nombre: platList[x].nombre,
                         Restaurante: res
                     });
-                    if (snapshot.data().platillos[x + 1] == undefined)
-                        response.send({ status: true, data: platList });
+                    if (platList[x + 1] == undefined)
+                        response.send({ status: true, data: platRich });
                 })
                     .catch((err) => {
                     response.send({ status: false, data: 'Error obteniendo restaurante' });
                 });
             }
+        })
+            .catch((err) => {
+            response.send({ status: false, data: 'Error obteniendo documentos' });
+        });
+    }
+    else
+        response.send({ status: false, data: 'Solicitud desconocida' });
+});
+exports.platillosRest = functions.https.onRequest((request, response) => {
+    if (request.method == "GET") {
+        platillos.where('restaurante', '==', request.body.keyRest).get()
+            .then((snapshot) => {
+            ;
+            if (snapshot.empty)
+                response.send({ status: true, data: [] });
+            var platList = [];
+            snapshot.forEach(doc => {
+                platList.push(doc.data());
+            });
+            response.send({ status: true, data: platList });
         })
             .catch((err) => {
             response.send({ status: false, data: 'Error obteniendo documentos' });

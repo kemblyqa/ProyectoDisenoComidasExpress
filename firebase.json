@@ -19,6 +19,7 @@
     "rewrites": [
       {"source":"/api/categoria", "function":"categoria"},
       {"source":"/api/GetPlatillosC", "function":"GetPlatillosC"},
+      {"source":"/api/platillosRest", "function":"platillosRest"},
       {"source": "**","destination": "/index.html"}
     ]
   },
