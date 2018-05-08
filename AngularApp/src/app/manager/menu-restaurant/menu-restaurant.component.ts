@@ -13,15 +13,18 @@ export class MenuRestaurantComponent{
   manage:ManagerModel
 
    //categories
+  columns:Array<any>
   categories:Array<string>
   catSelected:any
   navItems:Array<any>
-  platillos:Array<Platillo>
+  platillos:Array<any>
+  
   constructor(private router:Router, private managerService: ManagerService) { 
     this.manage = new ManagerModel()
     this.navItems = this.manage.getNavItems()
     this.platillos = this.manage.getPlatillos()
     this.categories = this.manage.getCategories()
+    this.columns = this.manage.getColumns()
     //this.managerService.getCategories()
   }
   // goTo(){

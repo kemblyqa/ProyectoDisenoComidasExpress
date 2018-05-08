@@ -1,42 +1,49 @@
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Restaurante Pancho</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <div *ngFor="let item of navItems" class="navbar-nav">
-          <a class="nav-item nav-link" href="#">{{item.item}}</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<a class="navbar-brand" href="#">Usuario: Kembly Quirós</a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navbarNav">
+  <div *ngFor="let item of navItems" class="navbar-nav">
+      <a class="nav-item nav-link" href="#">{{item.item}}</a>
+  </div>
+</div>
+</nav>
+<main role="main">
+  <section class="jumbotron text-center menu" style="margin: 0%">
+    <div class="container">
+      <h5 class="card-title font-subtitle">Menú de</h5>
+      <h6 class="card-title font-title">McDonalds</h6>
+      <label style="margin-top: 6%" class="col col-form-label font-normal-sub">Observar platillos por categoría</label>  
+        <div class="form-group row">
+          <div class="col-md-4 offset-md-4">
+            <select id="selectedCategory" [(ngModel)]="catSelected" class="form-control opacity">
+                <option *ngFor="let cat of categories"
+                  [value]="cat">{{cat}}</option> 
+              </select>
+            </div>
+        </div>
+    </div>
+  </section>
+  <div class="album py-5 bg-light">
+    <div class="container">
+      <div class="row">
+        <div *ngFor="let plat of platillos" class="col-md-4">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22508%22%20height%3D%22225%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20508%20225%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1633d77437f%20text%20%7B%20fill%3A%23eceeef%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A25pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1633d77437f%22%3E%3Crect%20width%3D%22508%22%20height%3D%22225%22%20fill%3D%22%2355595c%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22169.7578125%22%20y%3D%22123.6%22%3EThumbnail%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" data-holder-rendered="true">
+            <div class="card-body">
+              <h5 class="card-title">{{plat.nombre}}</h5>
+              <p class="card-text">{{plat.descripcion}}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-danger">Ver/Editar</button>
+                  <button type="button" class="btn btn-sm btn-danger">Eliminar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </nav>
-  
-  <div class="card centerDiv" style="width: 75%; margin-top: 6%">
-    <div class="card-body">
-        <h5 class="card-title">Menu Pancho Restaurante</h5>
-        <div class="form-group row">
-          <div class="col">
-            <label class="col col-form-label">Categoría: </label>
-          </div>
-          <div class="col">
-            <select id="selectedCategory" class="form-control">
-              <option *ngFor="let cat of categories"
-                [value]="cat">"{{cat}}"</option> 
-            </select>
-          </div>
-        </div>
-        <!-- menu list -->
-      <!-- <div *ngFor="let platillo of platillos">
-          <div class="form-group row">
-            <img class="imageB" src="platillo.imagen"
-            name="profile" alt="Card image cap">
-          <div class="col">
-            <label class="col col-form-label">{{platillo.nombre}}</label>
-          </div>
-          <div class="col">
-            <button class="btn btn-primary" type="button">Ver/Editar</button>
-            <button class="btn btn-primary" type="button">Eliminar</button>
-          </div>
-        </div>
-      </div> -->
-    </div>
   </div>
+</main>

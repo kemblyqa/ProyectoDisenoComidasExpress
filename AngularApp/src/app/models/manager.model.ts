@@ -4,11 +4,36 @@ export class ManagerModel {
     categories:Array<any>
     platillos:Platillo[]
     menu:Platillo[]
+    columnPlatillos:Array<any>
 
     constructor(){
         this.categories = ["Hamburguesas", "Bebidas","Desayunos"]
         
         this.platillos = [
+            {
+                Restaurante: "Panchito",
+                descripcion: "delicioso",
+                imagen: "",
+                nombre: "Pinto con huevo y natilla"
+            },
+            {
+                Restaurante: "Panchito",
+                descripcion: "grasa",
+                imagen: "",
+                nombre: "Magnifica"
+            },
+            {
+                Restaurante: "Panchito",
+                descripcion: "delicioso",
+                imagen: "",
+                nombre: "Pinto con huevo y natilla"
+            },
+            {
+                Restaurante: "Panchito",
+                descripcion: "grasa",
+                imagen: "",
+                nombre: "Magnifica"
+            },
             {
                 Restaurante: "Panchito",
                 descripcion: "delicioso",
@@ -60,9 +85,12 @@ export class ManagerModel {
     }
 
     getPlatillos(){
-        return this.menu
+        return this.platillos
     }
     getCategories(){
         return this.categories
+    }
+    getColumns(){
+        return this.columnPlatillos
     }
 }
