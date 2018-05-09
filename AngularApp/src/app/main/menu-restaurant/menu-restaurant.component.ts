@@ -11,22 +11,32 @@ import { Router } from '@angular/router';
   styleUrls: ['./menu-restaurant.component.css']
 })
 export class MenuRestaurantComponent{
-  manage:ManagerModel
-   //categories
-  categories:Array<string>
+  /* categories */
+  categories:Array<any>
   catSelected:any
-
+  /* platillos observable */
   platillos$:Observable<Platillo[]>
-  
-  constructor(private router:Router, private managerService: ManagerService) { 
-    this.manage = new ManagerModel()
-    this.categories = this.manage.getCategories()
-    this.managerService.getPlatillosRestaurant("")
+  constructor(private _router:Router, private _managerService:ManagerService) {
+    this.initCategories() 
+  }
+  /* inits categories to show platillos */
+  initCategories(){
+    this._managerService.getCategories()
+    .subscribe(
+      res => {
+        if(res.status){
+          this.categories = res.data
+        }
+      }
+    )
+  }
+  /* updates menu */
+  updateMenu(){
+    this._managerService.getPlatillosRestaurant(this.catSelected)
     .subscribe(
       res => {
         if(res.status){
           this.platillos$ = res.data
-          console.log(this.platillos$)
         }
       }
     )

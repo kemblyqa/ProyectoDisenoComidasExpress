@@ -6,7 +6,7 @@
       <label style="margin-top: 6%" class="col col-form-label font-normal-sub">Observar platillos por categoría</label>  
         <div class="form-group row">
           <div class="col-md-4 offset-md-4">
-            <select id="selectedCategory" [(ngModel)]="catSelected" class="form-control opacity">
+            <select id="selectedCategory" [(ngModel)]="catSelected" (change)="updateMenu()" class="form-control opacity">
                 <option *ngFor="let cat of categories"
                   [value]="cat">{{cat}}</option> 
               </select>
