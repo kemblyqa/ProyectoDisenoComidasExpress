@@ -8,11 +8,13 @@ export interface Category {
 }
 
 export interface Platillo{
-    restaurante: string
-    descripcion: string
     imagen: string
+    descripcion: string
     nombre: string
-    categoria: string
+    restaurante: {
+        nombre: string,
+        id: string
+    }
 }
 
 export interface Restaurante {

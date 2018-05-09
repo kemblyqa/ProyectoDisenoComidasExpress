@@ -1,6 +1,5 @@
 import { ManagerModel } from './models/manager.model';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpService } from './services/http.service';
 import { ManagerService } from './services/manager/manager.service';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -27,8 +26,7 @@ import { MainPageComponent } from './main/main-page/main-page.component';
     HttpClientModule
   ],
   providers: [
-    ManagerService,
-    HttpService
+    ManagerService  
   ],
   bootstrap: [AppComponent]
 })
