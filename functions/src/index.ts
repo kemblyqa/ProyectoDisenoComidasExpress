@@ -87,16 +87,21 @@ export const addPlatillo = functions.https.onRequest((request, response) => {
         let keyRest = request.body.keyRest
         let categoria = request.body.categoria
         let nombre = request.body.nombre
-        if (descripcion==undefined || imagen==undefined||keyRest==undefined||categoria==undefined||nombre==undefined)
+        if (descripcion==undefined || imagen==undefined||keyRest==undefined||categoria==undefined||nombre==undefined){
             response.send({status:false,data:"Falta un dato"})
+            return
+
+        }
         platillos.where('restaurante','==',keyRest).where('nombre','==',nombre).get().then(snapshot => {
             if(!snapshot.empty)
                 response.send({status:false,data:"Este platillo ya existe en este restaurante"})
-                restaurantes.doc(keyRest).get().then(snapshot2 =>{
-                    if(!snapshot2.exists)
-                        response.send({status:false,data:"El restaurante no existe"})
-                    platillos.add({restaurante:keyRest,imagen:imagen,categoria:categoria,descripcion:descripcion,nombre:nombre}).then(ref =>{
-                        response.send({status:true,data:ref.id})
+            else
+            restaurantes.doc(keyRest).get().then(snapshot2 =>{
+                if(!snapshot2.exists)
+                    response.send({status:false,data:"El restaurante no existe"})
+                else
+                platillos.add({restaurante:keyRest,imagen:imagen,categoria:categoria,descripcion:descripcion,nombre:nombre}).then(ref =>{
+                    response.send({status:true,data:ref.id})
                 })
             }).catch(err=>{response.send({status:false,data:"Error insertando platillo"})})
         }).catch(err=>{response.send({status:false,data:"Error insertando platillo"})})
