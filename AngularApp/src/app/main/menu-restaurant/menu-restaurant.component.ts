@@ -32,7 +32,7 @@ export class MenuRestaurantComponent{
   }
   /* updates menu */
   updateMenu(){
-    this._managerService.getPlatillosRestaurant(this.catSelected)
+    this._managerService.getPlatillosByCategory(this.catSelected)
     .subscribe(
       res => {
         if(res.status){
