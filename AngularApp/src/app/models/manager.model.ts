@@ -8,86 +8,86 @@ export class ManagerModel {
 
     constructor(){
         this.categories = ["Hamburguesas", "Bebidas","Desayunos"]
-        this.platillos = [
-            {
-                restaurante: "Panchito",
-                descripcion: "delicioso",
-                imagen: "",
-                nombre: "Pinto con huevo y natilla",
-                categoria: "Hamburguesa"
-            },
-            {
-                restaurante: "Panchito",
-                descripcion: "grasa",
-                imagen: "",
-                nombre: "Magnifica",
-                categoria: "Hamburguesa"
-            },
-            {
-                restaurante: "Panchito",
-                descripcion: "delicioso",
-                imagen: "",
-                nombre: "Pinto con huevo y natilla",
-                categoria: "Hamburguesa"
-            },
-            {
-                restaurante: "Panchito",
-                descripcion: "grasa",
-                imagen: "",
-                nombre: "Magnifica",
-                categoria: "Hamburguesa"
-            },
-            {
-                restaurante: "Panchito",
-                descripcion: "delicioso",
-                imagen: "",
-                nombre: "Pinto con huevo y natilla",
-                categoria: "Hamburguesa"
-            },
-            {
-                restaurante: "Panchito",
-                descripcion: "grasa",
-                imagen: "",
-                nombre: "Magnifica",
-                categoria: "Hamburguesa"
-            },
-            {
-                restaurante: "Panchito",
-                descripcion: "delicioso",
-                imagen: "",
-                nombre: "Pinto con huevo y natilla",
-                categoria: "Hamburguesa"
-            },
-            {
-                restaurante: "Panchito",
-                descripcion: "grasa",
-                imagen: "",
-                nombre: "Magnifica",
-                categoria: "Hamburguesa"
-            }
-        ]
+        // this.platillos = [
+        //     {
+        //         restaurante: "Panchito",
+        //         descripcion: "delicioso",
+        //         imagen: "",
+        //         nombre: "Pinto con huevo y natilla",
+        //         categoria: "Hamburguesa"
+        //     },
+        //     {
+        //         restaurante: "Panchito",
+        //         descripcion: "grasa",
+        //         imagen: "",
+        //         nombre: "Magnifica",
+        //         categoria: "Hamburguesa"
+        //     },
+        //     {
+        //         restaurante: "Panchito",
+        //         descripcion: "delicioso",
+        //         imagen: "",
+        //         nombre: "Pinto con huevo y natilla",
+        //         categoria: "Hamburguesa"
+        //     },
+        //     {
+        //         restaurante: "Panchito",
+        //         descripcion: "grasa",
+        //         imagen: "",
+        //         nombre: "Magnifica",
+        //         categoria: "Hamburguesa"
+        //     },
+        //     {
+        //         restaurante: "Panchito",
+        //         descripcion: "delicioso",
+        //         imagen: "",
+        //         nombre: "Pinto con huevo y natilla",
+        //         categoria: "Hamburguesa"
+        //     },
+        //     {
+        //         restaurante: "Panchito",
+        //         descripcion: "grasa",
+        //         imagen: "",
+        //         nombre: "Magnifica",
+        //         categoria: "Hamburguesa"
+        //     },
+        //     {
+        //         restaurante: "Panchito",
+        //         descripcion: "delicioso",
+        //         imagen: "",
+        //         nombre: "Pinto con huevo y natilla",
+        //         categoria: "Hamburguesa"
+        //     },
+        //     {
+        //         restaurante: "Panchito",
+        //         descripcion: "grasa",
+        //         imagen: "",
+        //         nombre: "Magnifica",
+        //         categoria: "Hamburguesa"
+        //     }
+        // ]
         this.navItems = [
             {
                 item: "Menu",
                 href: '/menu'
             }
         ]
-        this.menu= [
-            {
-                restaurante: "Panchito",
-                descripcion: "delicioso",
-                imagen: "",
-                nombre: "Pinto con huevo y natilla",
-                categoria: "Hamburguesa"
-            },
-            {
-                restaurante: "Panchito",
-                descripcion: "grasa",
-                imagen: "",
-                nombre: "Magnifica",
-                categoria: "Hamburguesa"
-            }
-        ]        
+        // this.menu= [
+        //     {
+        //         restaurante: "Panchito",
+        //         descripcion: "delicioso",
+        //         imagen: "",
+        //         nombre: "Pinto con huevo y natilla",
+        //         categoria: "Hamburguesa"
+        //     },
+        //     {
+        //         restaurante: "Panchito",
+        //         descripcion: "grasa",
+        //         imagen: "",
+        //         nombre: "Magnifica",
+        //         categoria: "Hamburguesa"
+        //     }
+        // ]        
     }
     getNavItems(){
         return this.navItems
