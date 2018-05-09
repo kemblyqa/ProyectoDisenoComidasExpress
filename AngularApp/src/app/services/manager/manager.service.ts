@@ -18,7 +18,7 @@ export class ManagerService {
         return this._service.get<ManagerInterface>(`${this.apiUrl}${ENDPOINT_GETCATEGORIES}`)
     }
 
-    public getPlatillosRestaurant(id: any) {
-        return this._service.get<ManagerInterface>(`${this.apiUrl}${ENDPOINT_PLATILLOS_REST}`, {params: {keyRes:"keyAuto"}})
+    public getPlatillosByCategory(cat: any) {
+        return this._service.get<ManagerInterface>(`${this.apiUrl}${ENDPOINT_PLATILLOS_REST}`, {params: {categoria:cat}})
     }
 }
