@@ -7,16 +7,13 @@ import { ManagerModel } from '../../models/manager.model';
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.css']
 })
-export class MainPageComponent implements OnInit {
+export class MainPageComponent {
   manage:ManagerModel
   navItems:Array<any>
 
   constructor(private router: Router) { 
     this.manage = new ManagerModel()
     this.navItems = this.manage.getNavItems()
-  }
-
-  ngOnInit() {
   }
 
   goTo(path:any){
