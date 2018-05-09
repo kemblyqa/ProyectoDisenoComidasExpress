@@ -36,7 +36,10 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
         let categoria = request.query.categoria
         let keyRest = request.query.keyRest
         let nombre = request.query.nombre
+        let pagina = request.query.pagina
         let query = platillos
+        if (pagina==undefined || pagina<1 || typeof(pagina)!='number')
+            pagina=0
         if(categoria!=undefined)
             query=query.where('categoria','==',categoria)
         if(keyRest!=undefined)
@@ -49,10 +52,10 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
             snapshot.forEach(element => {
                 platList.push(element.data())
             });
-            if (platList.length==0)
+            if (platList.length<=pagina)
                 response.send({status:true,data:[]})
             let platRich = []
-            for (let x=0;platList[x]!=undefined;x++){
+            for (let x=pagina*10;platList[x]!=undefined;x++){
                 restaurantes.doc(platList[x].restaurante).get().then((Restaurante) => {
                     var res;
                     if(!Restaurante.exists)
@@ -64,8 +67,10 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
                         descripcion:platList[x].descripcion,
                         nombre:platList[x].nombre,
                         Restaurante:res})
-                    if(platList[x+1]==undefined)
+                    if(platList[x+1]==undefined || x+1>=pagina*10){
                         response.send({status:true,data:platRich});
+                        return
+                    }
                 })
                 .catch((err) => {
                     response.send({status:false,data:'Error obteniendo restaurante'});
