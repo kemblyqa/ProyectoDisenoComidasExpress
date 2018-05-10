@@ -4,6 +4,8 @@ import { ManagerService } from './../../services/manager/manager.service';
 import { ManagerModel } from '../../models/manager.model';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+declare var jquery:any;
+declare var $ :any;
 
 @Component({
   selector: 'app-menu-restaurant',
@@ -16,6 +18,7 @@ export class MenuRestaurantComponent{
   catSelected:any
   /* platillos observable */
   platillos$:Observable<Platillo[]>
+  plate$:Observable<Platillo>
   constructor(private _router:Router, private _managerService:ManagerService) {
     this.initCategories() 
   }
@@ -40,5 +43,11 @@ export class MenuRestaurantComponent{
         }
       }
     )
+  }
+  /* modal edit platillo */
+  editPlat(plat:any){
+    this.plate$ = plat
+    console.log(this.plate$)
+    $("#modalEditFood").modal('show');
   }
 }
