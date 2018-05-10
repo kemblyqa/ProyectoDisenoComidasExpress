@@ -20,6 +20,8 @@
       {"source":"/api/categoria", "function":"categoria"},
       {"source":"/api/filtroPlat", "function":"filtroPlat"},
       {"source":"/api/addPlatillo", "function":"addPlatillo"},
+      {"source":"/api/modPlatillo", "function":"modPlatillo"},
+      {"source":"/api/delPlatillo", "function":"delPlatillo"},
       {"source": "**","destination": "/index.html"}
     ]
   },
