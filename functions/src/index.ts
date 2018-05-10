@@ -48,26 +48,23 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
             query=query.where('nombre','==',nombre)
         query.get()
         .then((snapshot) => {
-            var platList = [];
-            snapshot.forEach(element => {
-                platList.push(element.data())
-            });
-            if (platList.length<=pagina)
+            if (snapshot.docs.length<=pagina*12)
                 response.send({status:true,data:[]})
             let platRich = []
-            for (let x=pagina*12;platList[x]!=undefined;x++){
-                restaurantes.doc(platList[x].restaurante).get().then((Restaurante) => {
+            let len = (snapshot.docs.length-(pagina*12))>12?12:(snapshot.docs.length-(pagina*12))
+            for (let x=pagina*12;x<snapshot.docs.length;x++){
+                restaurantes.doc(snapshot.docs[x].data().restaurante).get().then((Restaurante) => {
                     var res;
                     if(!Restaurante.exists)
                         res="Desconocido"
                     else
                         res={nombre:Restaurante.data().nombre,id:Restaurante.id};
                     platRich.push({
-                        imagen:platList[x].imagen,
-                        descripcion:platList[x].descripcion,
-                        nombre:platList[x].nombre,
+                        imagen:snapshot.docs[x].data().imagen,
+                        descripcion:snapshot.docs[x].data().descripcion,
+                        nombre:snapshot.docs[x].data().nombre,
                         Restaurante:res})
-                    if(platList[x+1]==undefined || x+1>=pagina*12){
+                    if(platRich.length==len){
                         response.send({status:true,data:platRich});
                         return
                     }
@@ -105,7 +102,7 @@ export const addPlatillo = functions.https.onRequest((request, response) => {
                 if(!snapshot2.exists)
                     response.send({status:false,data:"El restaurante no existe"})
                 else
-                platillos.add({restaurante:keyRest,imagen:imagen,categoria:categoria,descripcion:descripcion,nombre:nombre}).then(ref =>{
+                platillos.add({restaurante:keyRest,imagen:imagen,categoria:categoria,descripcion:descripcion,nombre:nombre,precio:precio}).then(ref =>{
                     response.send({status:true,data:ref.id})
                 })
             }).catch(err=>{response.send({status:false,data:"Error insertando platillo"})})
