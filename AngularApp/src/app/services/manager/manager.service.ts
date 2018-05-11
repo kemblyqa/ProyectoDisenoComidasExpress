@@ -6,6 +6,9 @@ import { Category, ManagerInterface, Platillo } from './../../models/manager.int
 const ENDPOINT_GETCATEGORIES = "categoria"
 const ENDPOINT_GETPLATILLOS = "GetPlatillosC"
 const ENDPOINT_PLATILLOS_REST = "filtroPlat"
+const ENDPOINT_ADDPLATILLO = "addPlatillo" 
+const ENDPOINT_MODPLATILLO = "modPlatillo" 
+const ENDPOINT_DELPLATILLO = "delPlatillo" 
 
 @Injectable()
 export class ManagerService {
@@ -14,11 +17,43 @@ export class ManagerService {
 
     constructor(private _service: HttpClient){}
 
-    public getCategories() {
-        return this._service.get<ManagerInterface>(`${this.apiUrl}${ENDPOINT_GETCATEGORIES}`)
-    }
-
-    public getPlatillosByCategory(cat: any) {
-        return this._service.get<ManagerInterface>(`${this.apiUrl}${ENDPOINT_PLATILLOS_REST}`, {params: {categoria:cat}})
+    public getPlatillosByCategory(cat: any, page:any, restId: any) { 
+        return this._service.get<ManagerInterface>(`${this.apiUrl}${ENDPOINT_PLATILLOS_REST}`,  
+        { 
+            params: { 
+                categoria:cat,  
+                pagina:page, 
+                keyRest: restId 
+            } 
+        }) 
+    } 
+ 
+    public addPlatillo(name:any, description:any, price:any, category: any, rest:any, image:any){ 
+        return this._service.post<ManagerInterface>(`${this.apiUrl}${ENDPOINT_ADDPLATILLO}`,{ 
+            descripcion: description, 
+            imagen: image, 
+            categoria: category, 
+            keyRest: rest, 
+            nombre: name, 
+            precio: price 
+        }) 
+    } 
+ 
+    public modPlatillo(name:any, description:any, price:any, category: any, rest:any, image:any){ 
+        return this._service.post<ManagerInterface>(`${this.apiUrl}${ENDPOINT_MODPLATILLO}`,{ 
+            descripcion: description, 
+            imagen: image, 
+            categoria: category, 
+            keyRest: rest, 
+            nombre: name, 
+            precio: price 
+        }) 
+    } 
+ 
+    public delPlatillo(name:any, rest:any){ 
+        return this._service.post<ManagerInterface>(`${this.apiUrl}${ENDPOINT_DELPLATILLO}`,{ 
+            keyRest: rest, 
+            nombre: name 
+        }) 
     }
 }

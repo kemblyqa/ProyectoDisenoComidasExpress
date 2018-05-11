@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { Platillo, Category, ManagerInterface } from './../../models/manager.interface';
+import { Platillo, ManagerInterface } from './../../models/manager.interface';
 import { ManagerService } from './../../services/manager/manager.service';
 import { ManagerModel } from '../../models/manager.model';
 import { Component, OnInit } from '@angular/core';
@@ -13,29 +13,39 @@ declare var $ :any;
   styleUrls: ['./menu-restaurant.component.css']
 })
 export class MenuRestaurantComponent{
+  /* restaurante id y nombre */ 
+  private restName:string = "Soda El Mercadito" 
+  private restId:string = "rest4" 
   /* categories */
-  categories:Array<any>
-  catSelected:any
+  private categories:Array<any> 
+  private catSelected:any 
+  private page:any = 1 
+  /* edit platillo */ 
+  private descriptionPlate:any 
+  private pricePlate:any 
+  private namePlate:any 
+  private imagePlate:any 
+  private categoryPlate:any 
   /* platillos observable */
-  platillos$:Observable<Platillo[]>
-  plate$:Observable<Platillo>
+  private platillos$:Observable<Platillo[]> 
   constructor(private _router:Router, private _managerService:ManagerService) {
     this.initCategories() 
   }
   /* inits categories to show platillos */
   initCategories(){
-    this._managerService.getCategories()
-    .subscribe(
-      res => {
-        if(res.status){
-          this.categories = res.data
-        }
-      }
-    )
+    this._managerService.getPlatillosByCategory(this.catSelected, this.page, this.restId) 
+    .subscribe( 
+      res => { 
+        if(res.status){ 
+          console.log(res.data) 
+          this.platillos$ = res.data 
+        } 
+      } 
+    ) 
   }
   /* updates menu */
   updateMenu(){
-    this._managerService.getPlatillosByCategory(this.catSelected)
+    this._managerService.getPlatillosByCategory(this.catSelected, this.page, this.restId) 
     .subscribe(
       res => {
         if(res.status){
@@ -45,9 +55,16 @@ export class MenuRestaurantComponent{
     )
   }
   /* modal edit platillo */
-  editPlat(plat:any){
-    this.plate$ = plat
-    console.log(this.plate$)
+  editPlat(plat:Platillo){ 
+    this.descriptionPlate = plat.descripcion 
+    this.namePlate = plat.nombre 
+    this.pricePlate = plat.precio 
+    this.imagePlate = plat.imagen 
+    this.categoryPlate = this.catSelected 
     $("#modalEditFood").modal('show');
   }
+
+  updatePlat(){ 
+     
+  } 
 }
