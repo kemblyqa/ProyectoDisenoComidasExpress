@@ -63,7 +63,8 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
                         imagen:snapshot.docs[x].data().imagen,
                         descripcion:snapshot.docs[x].data().descripcion,
                         nombre:snapshot.docs[x].data().nombre,
-                        Restaurante:res})
+                        Restaurante:res,
+                        precio:snapshot.docs[x].data().precio})
                     if(platRich.length==len){
                         response.send({status:true,data:platRich});
                         return
@@ -164,6 +165,55 @@ export const delPlatillo = functions.https.onRequest((request, response) => {
                         response.send({status:false,data:"Error removing document " + error });
                     });
                 });
+            }
+        }).catch(err=>{response.send({status:false,data:"Error insertando platillo"})})
+    }
+    else
+        response.send({status:false,data:'Metodo no encontrado'})
+})
+
+export const addCarro = functions.https.onRequest((request, response) => {
+    if (request.method='POST'){
+        let keyRest = request.body.keyRest
+        let nombre = request.body.nombre
+        let cantidad = request.body.cantidad
+        let ubicacion = request.body.ubicacion
+        let fecha = request.body.fecha
+        let email = request.body.email
+        if (keyRest==undefined || nombre==undefined ||cantidad==undefined||ubicacion==undefined ||fecha==undefined || email==undefined){
+            response.send({status:false,data:"Faltan datos"})
+            return
+        }
+        platillos.where('nombre','==',nombre).where('restaurante','==',keyRest).get().then((snapshot) => {
+            if(snapshot.empty)
+                response.send({status:false,data:"Este platillo no existe"})
+            else{
+                usuarios.doc(email).get()
+                .then(usuario =>
+                    {
+                        if(usuario.exists){
+                            let carrito = usuario.data().carrito
+                            carrito.forEach(element => {
+                                if(element.platillo==snapshot.docs[0].id){
+                                    response.send({status:false,data:"Este platillo ya está en tu carrito"})
+                                    return
+                                }
+                            });
+                            carrito.push({
+                                platillo:snapshot.docs[0].id,cantidad:cantidad,ubicacion:ubicacion,fecha:fecha
+                            })
+                            usuarios.doc(email).update({carrito:carrito})
+                            .then(function() {
+                                console.log("Enviado")
+                                response.send({status:true,data:"Añadido"})
+                            })
+                            .catch(function(error) 
+                            {response.send({status:false,data:"Error de conexión en la base de datos"})})
+                        }
+                        else
+                            response.send({status:false,data:"El usuario solicitado no existe"})
+                    })
+                    .catch(err=> response.send({status:false,data:"Error de conexión en la base de datos"}))
             }
         }).catch(err=>{response.send({status:false,data:"Error insertando platillo"})})
     }
