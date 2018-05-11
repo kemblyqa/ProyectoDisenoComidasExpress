@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { Platillo, ManagerInterface } from './../../models/manager.interface';
+import { Platillo, StatusData } from './../../models/manager.interface';
 import { ManagerService } from './../../services/manager/manager.service';
 import { ManagerModel } from '../../models/manager.model';
 import { Component, OnInit } from '@angular/core';
@@ -25,24 +25,36 @@ export class MenuRestaurantComponent{
   private pricePlate:any 
   private namePlate:any 
   private imagePlate:any 
+  private allCategories:Array<any>
   private categoryPlate:any 
   /* platillos observable */
   private platillos$:Observable<Platillo[]> 
-  constructor(private _router:Router, private _managerService:ManagerService) {
-    this.initCategories() 
-  }
-  /* inits categories to show platillos */
-  initCategories(){
-    this._managerService.getPlatillosByCategory(this.catSelected, this.page, this.restId) 
+  constructor(private _router:Router, private _managerService:ManagerService) { 
+    this.initCustomCategories() 
+    this.initAllCategories() 
+  } 
+  /* inits categories to show platillos */ 
+  initCustomCategories(){ 
+    this._managerService.getRestCategories(this.restId) 
     .subscribe( 
       res => { 
         if(res.status){ 
-          console.log(res.data) 
-          this.platillos$ = res.data 
+          this.categories = res.data 
         } 
       } 
     ) 
   }
+  /* inits all categories */
+  initAllCategories(){
+    this._managerService.getAllCategories()
+    .subscribe(
+      res => {
+        if(res.status){
+          this.allCategories = res.data
+        }
+      }
+    )
+  } 
   /* updates menu */
   updateMenu(){
     this._managerService.getPlatillosByCategory(this.catSelected, this.page, this.restId) 

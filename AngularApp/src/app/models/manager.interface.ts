@@ -1,4 +1,4 @@
-export interface ManagerInterface {
+export interface StatusData {
     status: boolean
     data:any
 }

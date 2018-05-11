@@ -75,7 +75,10 @@
             <div class="form-group row"> 
               <label class="col-sm-3 col-form-label">Categoría: </label> 
               <div class="col-sm-8"> 
-                <input type="text" [(ngModel)]="categoryPlate" class="form-control" id="catP" placeholder="Nueva categoría..."> 
+                <select [(ngModel)]="categoryPlate" class="form-control opacity">
+                  <option *ngFor="let cat of allCategories"
+                    [value]="cat">{{cat}}</option> 
+                  </select>
               </div> 
             </div> 
             <div class="form-group row"> 
