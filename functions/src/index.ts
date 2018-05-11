@@ -172,18 +172,36 @@ export const delPlatillo = functions.https.onRequest((request, response) => {
         response.send({status:false,data:'Metodo no encontrado'})
 })
 
-export const addCarro = functions.https.onRequest((request, response) => {
+export const itemCarro = functions.https.onRequest((request, response) => {
     if (request.method='POST'){
+        let ubicacion;
+        try{ubicacion = JSON.parse(request.body.ubicacion)}
+        catch(e){response.send({status:false,data:"Error interpretando la ubicación"});return}
+        let fecha;
+        try{
+            fecha = new Date(request.body.fecha)
+            if(isNaN(fecha.getTime())){response.send({status:false,data:"Error interpretando la fecha"});return}
+            if((fecha.getTime()-Date.now())<10800000){
+                response.send({status:false,data:"La fecha del pedido debe estar 5 horas delante de la fecha actual"})
+                return
+            }
+        }
+        catch(e){response.send({status:false,data:"Error interpretando la ubicación"});return}
+        if (
+            typeof(request.body.keyRest)!='string' || 
+            typeof(request.body.nombre)!='string' ||
+            isNaN(parseInt(request.body.cantidad,10))|| 
+            typeof(ubicacion[0])!='number'|| typeof(ubicacion[1])!='number' 
+            ||request.body.fecha==undefined || request.body.email==undefined)
+            {
+            response.send({status:false,data:"No se recibieron los parametros correctos"})
+            return}
         let keyRest = request.body.keyRest
         let nombre = request.body.nombre
-        let cantidad = request.body.cantidad
-        let ubicacion = request.body.ubicacion
-        let fecha = request.body.fecha
+        let cantidad = parseInt(request.body.cantidad,10)
         let email = request.body.email
-        if (keyRest==undefined || nombre==undefined ||cantidad==undefined||ubicacion==undefined ||fecha==undefined || email==undefined){
-            response.send({status:false,data:"Faltan datos"})
-            return
-        }
+        let override = request.body.override == 'true'
+        ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])
         platillos.where('nombre','==',nombre).where('restaurante','==',keyRest).get().then((snapshot) => {
             if(snapshot.empty)
                 response.send({status:false,data:"Este platillo no existe"})
@@ -193,15 +211,14 @@ export const addCarro = functions.https.onRequest((request, response) => {
                     {
                         if(usuario.exists){
                             let carrito = usuario.data().carrito
-                            carrito.forEach(element => {
-                                if(element.platillo==snapshot.docs[0].id){
-                                    response.send({status:false,data:"Este platillo ya está en tu carrito"})
-                                    return
-                                }
-                            });
-                            carrito.push({
+                            console.log(override==false)
+                            if(carrito[snapshot.docs[0].id]!=undefined && !override){
+                                response.send({status:false,data:"El platillo a insertar ya se encuentra en tu carrito, puedes editarlo"})
+                                return
+                            }
+                            carrito[snapshot.docs[0].id]={
                                 platillo:snapshot.docs[0].id,cantidad:cantidad,ubicacion:ubicacion,fecha:fecha
-                            })
+                            }
                             usuarios.doc(email).update({carrito:carrito})
                             .then(function() {
                                 console.log("Enviado")
@@ -213,7 +230,7 @@ export const addCarro = functions.https.onRequest((request, response) => {
                         else
                             response.send({status:false,data:"El usuario solicitado no existe"})
                     })
-                    .catch(err=> response.send({status:false,data:"Error de conexión en la base de datos"}))
+                    .catch(err=> {response.send({status:false,data:"Error de conexión en la base de datos"})})
             }
         }).catch(err=>{response.send({status:false,data:"Error insertando platillo"})})
     }
