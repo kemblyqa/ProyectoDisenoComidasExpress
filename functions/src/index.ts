@@ -11,16 +11,18 @@ var usuarios = db.collection("Usuario");
 var platillos = db.collection("Platillo");
 var restaurantes = db.collection("Restaurante");
 var pedidos = db.collection("Pedido");
-
 export const categoria = functions.https.onRequest((request, response) => {
     if (request.method=="GET"){
         platillos.get()
         .then((snapshot) => {
-            var categorias = [];
+            let categorias = [];
+            let temp = {}
             snapshot.forEach((doc) => {
-                console.log(doc.data().categoria)
-                categorias.push(doc.data().categoria);
+                temp[doc.data().categoria]=doc.data().categoria;
             });
+            for (var cat in temp){
+                categorias.push(cat)
+            }
             response.status(200).send({status:true,data:categorias});
         })
         .catch((err) => {
@@ -105,7 +107,7 @@ export const addPlatillo = functions.https.onRequest((request, response) => {
                 else
                 platillos.add({restaurante:keyRest,imagen:imagen,categoria:categoria,descripcion:descripcion,nombre:nombre,precio:precio}).then(ref =>{
                     response.send({status:true,data:ref.id})
-                })
+                }).catch(err=>{response.send({status:false,data:"Error inesperado en la base de datos"})})
             }).catch(err=>{response.send({status:false,data:"Error insertando platillo"})})
         }).catch(err=>{response.send({status:false,data:"Error insertando platillo"})})
     }
@@ -121,7 +123,6 @@ export const modPlatillo = functions.https.onRequest((request, response) => {
         let categoria = request.body.categoria
         let nombre = request.body.nombre
         let precio = Number(request.body.precio)
-        console.log("Tipo "+typeof(precio) + " " + precio)
         if (descripcion==undefined || imagen==undefined || keyRest==undefined ||categoria==undefined||nombre==undefined || precio==undefined || typeof(precio)!='number' || precio<0){
             response.send({status:false,data:"Faltan datos"})
             return
@@ -140,7 +141,7 @@ export const modPlatillo = functions.https.onRequest((request, response) => {
                     response.send({status:true,data:element.id})
                 });
             }
-        }).catch(err=>{response.send({status:false,data:"Error insertando platillo"})})
+        }).catch(err=>{response.send({status:false,data:"Error modificando platillo"})})
     }
     else
         response.send({status:false,data:'Metodo no encontrado'})
@@ -211,7 +212,6 @@ export const itemCarro = functions.https.onRequest((request, response) => {
                     {
                         if(usuario.exists){
                             let carrito = usuario.data().carrito
-                            console.log(override==false)
                             if(carrito[snapshot.docs[0].id]!=undefined && !override){
                                 response.send({status:false,data:"El platillo a insertar ya se encuentra en tu carrito, puedes editarlo"})
                                 return
@@ -221,7 +221,6 @@ export const itemCarro = functions.https.onRequest((request, response) => {
                             }
                             usuarios.doc(email).update({carrito:carrito})
                             .then(function() {
-                                console.log("Enviado")
                                 response.send({status:true,data:"Añadido"})
                             })
                             .catch(function(error) 
