@@ -13,7 +13,10 @@ var restaurantes = db.collection("Restaurante");
 var pedidos = db.collection("Pedido");
 export const categoria = functions.https.onRequest((request, response) => {
     if (request.method=="GET"){
-        platillos.get()
+        let query = platillos
+        if(request.query.keyRest!=undefined)
+            query=query.where('restaurante','==',request.query.keyRest)
+        query.get()
         .then((snapshot) => {
             let categorias = [];
             let temp = {}
