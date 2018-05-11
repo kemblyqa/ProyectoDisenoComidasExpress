@@ -186,7 +186,7 @@ export const itemCarro = functions.https.onRequest((request, response) => {
             fecha = new Date(request.body.fecha)
             if(isNaN(fecha.getTime())){response.send({status:false,data:"Error interpretando la fecha"});return}
             if((fecha.getTime()-Date.now())<10800000){
-                response.send({status:false,data:"La fecha del pedido debe estar 5 horas delante de la fecha actual"})
+                response.send({status:false,data:"La fecha del pedido debe estar 3 horas delante de la fecha actual"})
                 return
             }
         }
@@ -235,6 +235,32 @@ export const itemCarro = functions.https.onRequest((request, response) => {
                     .catch(err=> {response.send({status:false,data:"Error de conexión en la base de datos"})})
             }
         }).catch(err=>{response.send({status:false,data:"Error insertando platillo"})})
+    }
+    else
+        response.send({status:false,data:'Metodo no encontrado'})
+})
+export const delCarro = functions.https.onRequest((request, response) => {
+    if (request.method='POST'){
+        if (
+            typeof(request.body.email)!='string' ||
+            typeof(request.body.platillo)!='string')
+            {
+            response.send({status:false,data:"No se recibieron los parametros correctos"})
+            return}
+        let email = request.body.email
+        let platillo = request.body.platillo
+        usuarios.doc(email).get().then((snapshot) => {
+            if(!snapshot.exists)
+                response.send({status:false,data:"El usuario "+email+" no existe"})
+            else{
+                let carrito = snapshot.data().carrito
+                if(carrito[platillo]==undefined){response.send({status:false,data:"Este platillo no está en tu carrito"});return}
+                delete carrito[platillo]
+                usuarios.doc(email).update({carrito:carrito}).then(()=>{
+                    response.send({status:true,data:"Eliminado"})
+                })
+            }
+        }).catch(err=>{response.send({status:false,data:"Error eliminando platillo"})})
     }
     else
         response.send({status:false,data:'Metodo no encontrado'})

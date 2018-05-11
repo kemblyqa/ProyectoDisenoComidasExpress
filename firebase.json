@@ -23,6 +23,7 @@
       {"source":"/api/modPlatillo", "function":"modPlatillo"},
       {"source":"/api/delPlatillo", "function":"delPlatillo"},
       {"source":"/api/itemCarro", "function":"itemCarro"},
+      {"source":"/api/delCarro", "function":"delCarro"},
       {"source": "**","destination": "/index.html"}
     ]
   },
