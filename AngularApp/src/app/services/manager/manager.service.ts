@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Category, StatusData, Platillo } from './../../models/manager.interface';
+import { Subject } from 'rxjs/Subject';
 //manager and restaurant endpoints
 const ENDPOINT_GETCATEGORIES = "categoria"
 const ENDPOINT_GETPLATILLOS = "GetPlatillosC"
@@ -13,8 +14,9 @@ const ENDPOINT_DELPLATILLO = "delPlatillo"
 @Injectable()
 export class ManagerService {
     //url develop mode
-	public apiUrl:string = "http://localhost:5000/api/";
+    public apiUrl:string = "http://localhost:5000/api/";
     constructor(private _service: HttpClient){}
+
     /* get rest categories to show in menu */
     public getRestCategories(rest:any){
         return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_GETCATEGORIES}`,{
@@ -39,25 +41,25 @@ export class ManagerService {
         }) 
     } 
     /* add a new plate */
-    public addPlatillo(name:any, description:any, price:any, category: any, rest:any, image:any){ 
+    public addPlatillo(name:any, description:any, price:any, category: any, rest:string, image:any){ 
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_ADDPLATILLO}`,{ 
+            nombre: name, 
             descripcion: description, 
-            imagen: image, 
+            precio: price,
             categoria: category, 
             keyRest: rest, 
-            nombre: name, 
-            precio: price 
+            imagen: image 
         }) 
     } 
     /* edits a existing plate */
-    public modPlatillo(name:any, description:any, price:any, category: any, rest:any, image:any){ 
+    public modPlatillo(name:any, description:any, price:any, category: any, rest:string, image:any){ 
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_MODPLATILLO}`,{ 
+            nombre: name, 
             descripcion: description, 
-            imagen: image, 
+            precio: price,
             categoria: category, 
             keyRest: rest, 
-            nombre: name, 
-            precio: price 
+            imagen: image
         }) 
     } 
     /* deletes a existing plate */

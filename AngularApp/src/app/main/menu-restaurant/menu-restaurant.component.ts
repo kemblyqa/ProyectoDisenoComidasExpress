@@ -4,6 +4,7 @@ import { ManagerService } from './../../services/manager/manager.service';
 import { ManagerModel } from '../../models/manager.model';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormControl } from '@angular/forms';
 declare var jquery:any;
 declare var $ :any;
 
@@ -13,6 +14,9 @@ declare var $ :any;
   styleUrls: ['./menu-restaurant.component.css']
 })
 export class MenuRestaurantComponent{
+  /* modal messages */
+  private successMessage:any
+  private failedMessage:any
   /* restaurante id y nombre */ 
   private restName:string = "Soda El Mercadito" 
   private restId:string = "rest4" 
@@ -22,13 +26,13 @@ export class MenuRestaurantComponent{
   private page:any = 1 
   /* edit platillo */ 
   private descriptionPlate:any 
-  private pricePlate:any 
+  private pricePlate:number 
   private namePlate:any 
   private imagePlate:any 
   private allCategories:Array<any>
   private categoryPlate:any 
   /* platillos observable */
-  private platillos$:Observable<Platillo[]> 
+  private platillos$:Platillo[]
   constructor(private _router:Router, private _managerService:ManagerService) { 
     this.initCustomCategories() 
     this.initAllCategories() 
@@ -66,17 +70,113 @@ export class MenuRestaurantComponent{
       }
     )
   }
+  /* modal success! */
+  successMessageModal(message:any){
+    this.successMessage = message
+    $("#modalSuccess").modal("show")
+  }
+  /* failed success! */
+  failedMessageModal(message:any){
+    this.failedMessage = message
+    $("#modalFailed").modal("show")
+  }
+  /* modal create new platillo */
+  addPlatModal(){
+    this.descriptionPlate = "" 
+    this.namePlate = "" 
+    this.pricePlate = 0 
+    this.imagePlate = "" 
+    this.categoryPlate = this.catSelected 
+    $("#modalCreateFood").modal("show")
+    $( "#modalCreateFoodCreate" ).click(()=> {
+      this.createPlat(
+        this.namePlate,
+        this.descriptionPlate,
+        this.pricePlate,
+        this.categoryPlate,
+        this.imagePlate
+      )
+    });
+  }
   /* modal edit platillo */
-  editPlat(plat:Platillo){ 
+  editPlatModal(plat:Platillo){ 
     this.descriptionPlate = plat.descripcion 
     this.namePlate = plat.nombre 
     this.pricePlate = plat.precio 
     this.imagePlate = plat.imagen 
     this.categoryPlate = this.catSelected 
-    $("#modalEditFood").modal('show');
+    $("#modalEditFood").modal("show")
+    $( "#modalEditFoodSaveChanges" ).click(()=> {
+      this.updatePlat(
+        this.namePlate,
+        this.descriptionPlate,
+        this.pricePlate,
+        this.categoryPlate,
+        this.imagePlate
+      )
+    });
   }
 
-  updatePlat(){ 
-     
+  delPlatModal(plat:Platillo){
+    $("#modalDelFood").modal("show")
+    $( "#modalDelFoodSaveChanges" ).click(()=> {
+      this.deletePlat(plat)
+    });
+  }
+
+  createPlat(namePlate:any,descriptionPlate:any,pricePlate:number,categoryPlate:any,imagePlate:any){
+    this._managerService.addPlatillo(
+      namePlate,
+      descriptionPlate,
+      pricePlate,
+      categoryPlate,
+      this.restId,
+      imagePlate
+    ).subscribe(
+      success=>{
+        if(success.status){
+          this.successMessageModal("Exito")
+          this.updateMenu()
+        } 
+        else 
+          this.failedMessageModal(success.data)
+      }
+    )
+  }
+
+  updatePlat(namePlate:any,descriptionPlate:any,pricePlate:number,categoryPlate:any,imagePlate:any){ 
+     this._managerService.modPlatillo(
+      namePlate,
+      descriptionPlate,
+      pricePlate,
+      categoryPlate,
+      this.restId,
+      imagePlate
+    ).subscribe(
+      success=>{
+        if(success.status){
+          console.log(JSON.stringify(success))
+          this.successMessageModal("Exito")
+          this.updateMenu()
+        } 
+        else 
+          this.failedMessageModal(success.data)
+      }
+    )
   } 
+
+  deletePlat(plat:Platillo){
+    this._managerService.delPlatillo(plat.nombre, this.restId)
+    .subscribe(
+      success=>{
+        if(success.status){
+          console.log(JSON.stringify(success))
+          this.successMessageModal("Exito")
+          this.updateMenu()
+        } 
+        else 
+          this.failedMessageModal(success.data)
+      }
+    )
+  }
 }
