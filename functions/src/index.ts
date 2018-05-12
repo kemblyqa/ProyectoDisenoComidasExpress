@@ -69,7 +69,8 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
                         descripcion:snapshot.docs[x].data().descripcion,
                         nombre:snapshot.docs[x].data().nombre,
                         Restaurante:res,
-                        precio:snapshot.docs[x].data().precio})
+                        precio:snapshot.docs[x].data().precio,
+                        id: snapshot.docs[x].id})
                     if(platRich.length==len){
                         response.send({status:true,data:platRich});
                         return
@@ -122,27 +123,26 @@ export const modPlatillo = functions.https.onRequest((request, response) => {
     if (request.method='POST'){
         let descripcion = request.body.descripcion
         let imagen = request.body.imagen
-        let keyRest = request.body.keyRest
         let categoria = request.body.categoria
         let nombre = request.body.nombre
         let precio = Number(request.body.precio)
-        if (descripcion==undefined || imagen==undefined || keyRest==undefined ||categoria==undefined||nombre==undefined || precio==undefined || typeof(precio)!='number' || precio<0){
+        let keyPlat = request.body.keyPlat
+        if (descripcion==undefined || keyPlat==undefined || imagen==undefined || categoria==undefined||nombre==undefined || precio==undefined || typeof(precio)!='number' || precio<0){
             response.send({status:false,data:"Faltan datos"})
             return
         }
-        platillos.where('restaurante','==',keyRest).where('nombre','==',nombre).get().then(snapshot => {
-            if(snapshot.empty)
-                response.send({status:false,data:"Este platillo no existe en este restaurante"})
+        platillos.doc(keyPlat).get().then(snapshot => {
+            if(!snapshot.exists)
+                response.send({status:false,data:"El platillo solicitado no existe"})
             else{
-                snapshot.forEach(element => {
-                    platillos.doc(element.id).set({
-                        precio:precio,
-                        categoria:categoria,
-                        imagen:imagen,
-                        descripcion:descripcion
-                    },  {merge:true})
-                    response.send({status:true,data:element.id})
-                });
+                platillos.doc(keyPlat).set({
+                    nombre:nombre,
+                    precio:precio,
+                    categoria:categoria,
+                    imagen:imagen,
+                    descripcion:descripcion
+                },  {merge:true})
+                response.send({status:true,data:keyPlat})
             }
         }).catch(err=>{response.send({status:false,data:"Error modificando platillo"})})
     }
