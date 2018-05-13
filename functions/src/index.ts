@@ -41,23 +41,23 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
         let categoria = request.query.categoria
         let keyRest = request.query.keyRest
         let nombre = request.query.nombre
-        let pagina = request.query.pagina
+        let pagina = parseInt(request.query.pagina)
         let query = platillos
-        if (pagina==undefined || pagina<1 || typeof(pagina)!='number')
-            pagina=0
+        if (pagina<1 || isNaN(pagina))
+            pagina=1
         if(categoria!=undefined)
             query=query.where('categoria','==',categoria)
         if(keyRest!=undefined)
             query=query.where('restaurante','==',keyRest)
         if(nombre!=undefined)
             query=query.where('nombre','==',nombre)
-        query.get()
+        query.orderBy('nombre').get()
         .then((snapshot) => {
-            if (snapshot.docs.length<=pagina*12)
+            if (snapshot.docs.length<=(pagina-1)*12)
                 response.send({status:true,data:[]})
             let platRich = []
-            let len = (snapshot.docs.length-(pagina*12))>12?12:(snapshot.docs.length-(pagina*12))
-            for (let x=pagina*12;x<snapshot.docs.length;x++){
+            let len = (snapshot.docs.length-((pagina-1)*12))>12?12:(snapshot.docs.length-((pagina-1)*12))
+            for (let x=(pagina-1)*12;x<snapshot.docs.length;x++){
                 restaurantes.doc(snapshot.docs[x].data().restaurante).get().then((Restaurante) => {
                     var res;
                     if(!Restaurante.exists)
@@ -73,17 +73,11 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
                         id: snapshot.docs[x].id})
                     if(platRich.length==len){
                         response.send({status:true,data:platRich});
-                        return
                     }
-                })
-                .catch((err) => {
-                    response.send({status:false,data:'Error obteniendo restaurante'});
-                });
+                }).catch((err) => {
+                    response.send({status:false,data:'Error obteniendo restaurante'})});
             }
-        })
-        .catch((err) => {
-            response.send({status:false,data:'Error obteniendo documentos'});
-        });
+        }).catch((err) => {response.send({status:false,data:'Error obteniendo documentos'})});
     }
     else
         response.send({status:false,data:'Solicitud desconocida'});
@@ -127,7 +121,7 @@ export const modPlatillo = functions.https.onRequest((request, response) => {
         let nombre = request.body.nombre
         let precio = Number(request.body.precio)
         let keyPlat = request.body.keyPlat
-        if (descripcion==undefined || keyPlat==undefined || imagen==undefined || categoria==undefined||nombre==undefined || precio==undefined || typeof(precio)!='number' || precio<0){
+        if (descripcion==undefined || keyPlat==undefined || imagen==undefined || categoria==undefined||nombre==undefined || precio==undefined || isNaN(precio) || precio<0){
             response.send({status:false,data:"Faltan datos"})
             return
         }
@@ -245,6 +239,7 @@ export const itemCarro = functions.https.onRequest((request, response) => {
     else
         response.send({status:false,data:'Metodo no encontrado'})
 })
+
 export const delCarro = functions.https.onRequest((request, response) => {
     if (request.method='POST'){
         if (
@@ -270,4 +265,17 @@ export const delCarro = functions.https.onRequest((request, response) => {
     }
     else
         response.send({status:false,data:'Metodo no encontrado'})
+})
+
+export const caja = functions.https.onRequest((request, response) => {
+    if(request.method=='POST'){
+        let email = request.body.email
+        if(email==undefined)
+            response.send({status:false,data:"Se requiere el campo email"})
+        else{
+
+        }
+    }
+    else
+        response.send({status:false,data:'Metodo invalido'})
 })
