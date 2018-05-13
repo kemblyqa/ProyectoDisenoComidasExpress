@@ -96,8 +96,8 @@ export const addPlatillo = functions.https.onRequest((request, response) => {
         let categoria = request.body.categoria
         let keyRest = request.body.keyRest
         let nombre = request.body.nombre
-        let precio = request.body.precio
-        if (descripcion==undefined || imagen==undefined || keyRest==undefined ||categoria==undefined||nombre==undefined || precio==undefined || typeof(precio)!='number' || precio<0){
+        let precio = parseInt(request.body.precio)
+        if (descripcion==undefined || imagen==undefined || keyRest==undefined ||categoria==undefined||nombre==undefined || precio==undefined || isNaN(precio) || precio<0){
             response.send({status:false,data:"Falta un dato"})
             return
         }
@@ -135,14 +135,20 @@ export const modPlatillo = functions.https.onRequest((request, response) => {
             if(!snapshot.exists)
                 response.send({status:false,data:"El platillo solicitado no existe"})
             else{
-                platillos.doc(keyPlat).set({
-                    nombre:nombre,
-                    precio:precio,
-                    categoria:categoria,
-                    imagen:imagen,
-                    descripcion:descripcion
-                },  {merge:true})
-                response.send({status:true,data:keyPlat})
+                platillos.where('restaurante','==',snapshot.data().restaurante).where('nombre','==',nombre).get().then(dupes =>{
+                    if(dupes.empty){
+                        platillos.doc(keyPlat).set({
+                            nombre:nombre,
+                            precio:precio,
+                            categoria:categoria,
+                            imagen:imagen,
+                            descripcion:descripcion
+                        },  {merge:true})
+                        response.send({status:true,data:keyPlat})
+                    }
+                    else
+                        response.send({status:false,data:"El nombre de este platillo ya existe en el restaurante destino"})
+                }).catch(err=>{response.send({status:false,data:"Error modificando platillo"})})
             }
         }).catch(err=>{response.send({status:false,data:"Error modificando platillo"})})
     }
