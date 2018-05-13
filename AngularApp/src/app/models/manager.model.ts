@@ -1,4 +1,4 @@
-import { Platillo, Category } from './manager.interface';
+import { Platillo} from './manager.interface'; 
 export class ManagerModel {
     navItems:Array<any>
     constructor(){

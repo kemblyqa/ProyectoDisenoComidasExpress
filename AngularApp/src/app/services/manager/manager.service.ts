@@ -1,24 +1,72 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Category, ManagerInterface, Platillo } from './../../models/manager.interface';
+import { Category, StatusData, Platillo } from './../../models/manager.interface';
+import { Subject } from 'rxjs/Subject';
 //manager and restaurant endpoints
 const ENDPOINT_GETCATEGORIES = "categoria"
 const ENDPOINT_GETPLATILLOS = "GetPlatillosC"
 const ENDPOINT_PLATILLOS_REST = "filtroPlat"
+const ENDPOINT_ADDPLATILLO = "addPlatillo" 
+const ENDPOINT_MODPLATILLO = "modPlatillo" 
+const ENDPOINT_DELPLATILLO = "delPlatillo" 
 
 @Injectable()
 export class ManagerService {
     //url develop mode
-	public apiUrl:string = "http://localhost:5000/api/";
-
+    public apiUrl:string = "http://localhost:5000/api/";
     constructor(private _service: HttpClient){}
 
-    public getCategories() {
-        return this._service.get<ManagerInterface>(`${this.apiUrl}${ENDPOINT_GETCATEGORIES}`)
+    /* get rest categories to show in menu */
+    public getRestCategories(rest:any){
+        return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_GETCATEGORIES}`,{
+            params: {
+                keyRest: rest
+            }
+        })
     }
-
-    public getPlatillosByCategory(cat: any) {
-        return this._service.get<ManagerInterface>(`${this.apiUrl}${ENDPOINT_PLATILLOS_REST}`, {params: {categoria:cat}})
+    /* get all the categories to add a plate */
+    public getAllCategories(){
+        return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_GETCATEGORIES}`)
+    }
+    /* get plates by category selected */
+    public getPlatillosByCategory(cat:any, page:any, restId: any) { 
+        return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_PLATILLOS_REST}`,  
+        { 
+            params: { 
+                categoria:cat,
+                pagina:page, 
+                keyRest: restId 
+            } 
+        }) 
+    } 
+    /* add a new plate */
+    public addPlatillo(name:any, description:any, price:any, category: any, rest:string, image:any){ 
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_ADDPLATILLO}`,{ 
+            nombre: name, 
+            descripcion: description, 
+            precio: price,
+            categoria: category, 
+            keyRest: rest, 
+            imagen: image 
+        }) 
+    } 
+    /* edits a existing plate */
+    public modPlatillo(name:any, description:any, price:any, category: any, rest:string, image:any){ 
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_MODPLATILLO}`,{ 
+            nombre: name, 
+            descripcion: description, 
+            precio: price,
+            categoria: category, 
+            keyRest: rest, 
+            imagen: image
+        }) 
+    } 
+    /* deletes a existing plate */
+    public delPlatillo(name:any, rest:any){ 
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_DELPLATILLO}`,{ 
+            keyRest: rest, 
+            nombre: name 
+        }) 
     }
 }

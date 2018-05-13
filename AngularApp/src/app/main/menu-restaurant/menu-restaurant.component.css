@@ -24,3 +24,7 @@
 .menu {
     background-image: url("/../assets/icons/menu.jpg");
 }
+
+textarea { 
+    resize: none; 
+}   
