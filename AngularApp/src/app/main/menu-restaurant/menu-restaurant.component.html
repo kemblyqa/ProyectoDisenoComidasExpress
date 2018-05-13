@@ -43,7 +43,67 @@
     </div>
   </div>
   <!-- pagination -->
-  <div class="modal" id="modalEditFood" tabindex="-1" role="dialog">
+
+  <!-- modify food -->
+  <div class="modal fade bd-example-modal-lg" id="modalEditFood" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img class="card-img-top" src="{{imagePlate}}" width="300px" data-holder-rendered="true"> 
+        </div>
+        <div class="modal-body">
+            <div class="form-group row"> 
+              <label class="col-sm-3 col-form-label">Nombre: </label> 
+              <div class="col-sm-8"> 
+                <input type="text" [(ngModel)]="namePlate" class="form-control" id="nameP" placeholder="Nuevo nombre..."> 
+              </div> 
+            </div> 
+            <div class="form-group row"> 
+              <label class="col-sm-3 col-form-label">Descripción: </label> 
+              <div class="col-sm-8"> 
+                <textarea class="form-control" maxlength="150" [(ngModel)]="descriptionPlate" rows="4"></textarea> 
+              </div> 
+            </div> 
+            <div class="form-group row"> 
+              <label class="col-sm-3 col-form-label">Precio: </label> 
+              <div class="col-sm-8"> 
+                <div class="input-group"> 
+                  <div class="input-group-prepend"> 
+                    <span class="input-group-text">₡</span> 
+                  </div> 
+                  <input type="text" [(ngModel)]="pricePlate" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Nuevo precio..."> 
+                  <div class="input-group-append"> 
+                    <span class="input-group-text">.00</span> 
+                  </div> 
+                </div> 
+              </div> 
+            </div> 
+            <div class="form-group row"> 
+              <label class="col-sm-3 col-form-label">Categoría: </label> 
+              <div class="col-sm-8"> 
+                <select [(ngModel)]="categoryPlate" class="form-control opacity">
+                  <option *ngFor="let cat of allCategories"
+                    [value]="cat">{{cat}}</option> 
+                  </select>
+              </div> 
+            </div> 
+            <div class="form-group row"> 
+                <label class="col-sm-3 col-form-label">Link a imagen: </label> 
+                <div class="col-sm-8"> 
+                  <input type="text" [(ngModel)]="imagePlate" class="form-control" id="imageP" placeholder="Link nueva imagen..."> 
+                </div> 
+              </div> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
+          <button type="button" id="modalEditFoodSaveChanges" class="btn btn-danger" data-dismiss="modal">Guardar</button> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- add new plate -->
+  <div class="modal" id="modalCreateFood" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -86,7 +146,7 @@
               </div> 
             </div> 
             <div class="form-group row"> 
-                <label class="col-sm-3 col-form-label">Imagen: </label> 
+                <label class="col-sm-3 col-form-label">Link a imagen: </label> 
                 <div class="col-sm-8"> 
                   <input type="text" [(ngModel)]="imagePlate" class="form-control" id="imageP" placeholder="Link imagen..."> 
                 </div> 
@@ -94,11 +154,13 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
-          <button type="button" id="modalEditFoodSaveChanges" class="btn btn-danger" data-dismiss="modal">Guardar</button> 
+          <button type="button" id="modalCreateFoodCreate" class="btn btn-danger" data-dismiss="modal">Guardar</button> 
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- MODALS ABOUT INFORMATION -->
   <!-- confirmation modal -->
   <div class="modal" id="modalSuccess" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -115,65 +177,6 @@
       </div>
     </div>
   </div>
-  <!-- add new plate -->
-  <div class="modal fade bd-example-modal-lg" id="modalCreateFood" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <img class="card-img-top" src="{{imagePlate}}" width="300px" data-holder-rendered="true"> 
-          </div>
-          <div class="modal-body">
-              <div class="form-group row"> 
-                <label class="col-sm-3 col-form-label">Nombre: </label> 
-                <div class="col-sm-8"> 
-                  <input type="text" [(ngModel)]="namePlate" class="form-control" id="nameP" placeholder="Nuevo nombre..."> 
-                </div> 
-              </div> 
-              <div class="form-group row"> 
-                <label class="col-sm-3 col-form-label">Descripción: </label> 
-                <div class="col-sm-8"> 
-                  <textarea class="form-control" maxlength="150" [(ngModel)]="descriptionPlate" rows="4"></textarea> 
-                </div> 
-              </div> 
-              <div class="form-group row"> 
-                <label class="col-sm-3 col-form-label">Precio: </label> 
-                <div class="col-sm-8"> 
-                  <div class="input-group"> 
-                    <div class="input-group-prepend"> 
-                      <span class="input-group-text">₡</span> 
-                    </div> 
-                    <input type="text" [(ngModel)]="pricePlate" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Nuevo precio..."> 
-                    <div class="input-group-append"> 
-                      <span class="input-group-text">.00</span> 
-                    </div> 
-                  </div> 
-                </div> 
-              </div> 
-              <div class="form-group row"> 
-                <label class="col-sm-3 col-form-label">Categoría: </label> 
-                <div class="col-sm-8"> 
-                  <select [(ngModel)]="categoryPlate" class="form-control opacity">
-                    <option *ngFor="let cat of allCategories"
-                      [value]="cat">{{cat}}</option> 
-                    </select>
-                </div> 
-              </div> 
-              <div class="form-group row"> 
-                  <label class="col-sm-3 col-form-label">Imagen: </label> 
-                  <div class="col-sm-8"> 
-                    <input type="text" [(ngModel)]="imagePlate" class="form-control" id="imageP" placeholder="Link nueva imagen..."> 
-                  </div> 
-                </div> 
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
-            <button type="button" id="modalCreateFoodCreate" class="btn btn-danger" data-dismiss="modal">Guardar</button> 
-          </div>
-        </div>
-      </div>
-    </div>
-
-  <!-- MODALS ABOUT INFORMATION -->
   <!-- failed modal -->
   <div class="modal" id="modalFailed" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -189,22 +192,22 @@
         </div>
       </div>
     </div>
-    </div>
+  </div>
     <!-- delete platillo -->
-    <div class="modal" id="modalDelFood" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Eliminar platillo</h5>
-          </div>
-          <div class="modal-body">
-            <p>Está seguro de eliminar este platillo?</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" id="modalDelFoodSaveChanges" data-dismiss="modal">Aceptar</button>
-          </div>
+  <div class="modal" id="modalDelFood" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Eliminar platillo</h5>
+        </div>
+        <div class="modal-body">
+          <p>Está seguro de eliminar este platillo?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="modalDelFoodSaveChanges" data-dismiss="modal">Aceptar</button>
         </div>
       </div>
     </div>
+  </div>
 </main>

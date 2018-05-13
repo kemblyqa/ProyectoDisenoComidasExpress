@@ -97,6 +97,14 @@ export const addPlatillo = functions.https.onRequest((request, response) => {
         let keyRest = request.body.keyRest
         let nombre = request.body.nombre
         let precio = request.body.precio
+
+        console.log(descripcion)
+        console.log(imagen)
+        console.log(categoria)
+        console.log(keyRest)
+        console.log(nombre)
+        console.log(precio)
+
         if (descripcion==undefined || imagen==undefined || keyRest==undefined ||categoria==undefined||nombre==undefined || precio==undefined || typeof(precio)!='number' || precio<0){
             response.send({status:false,data:"Falta un dato"})
             return
