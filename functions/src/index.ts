@@ -54,7 +54,6 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
             query=query.where('nombre','==',nombre)
         query.get()
         .then((snapshot) => {
-            console.log(snapshot)
             if (snapshot.docs.length<=(pagina-1)*12)
                 response.send({status:true,data:[]})
             let platRich = []
@@ -282,7 +281,7 @@ export const caja = functions.https.onRequest((request, response) => {
                     for(var item in carrito){
                         platillos.doc(carrito[item].platillo).get().then(platillo=>{
                             if(platillo.exists){
-                                pedidos.add({email:email,restaurante:carrito[item].restaurante,ubicacion:carrito[item].ubicacion,platillo:carrito[item].platillo,fecha:carrito[item].fecha,cantidad:carrito[item].cantidad,estado:"pendiente"}).then(ref=>{
+                                pedidos.add({email:email,restaurante:platillo.data().restaurante,ubicacion:carrito[item].ubicacion,platillo:carrito[item].platillo,fecha:carrito[item].fecha,cantidad:carrito[item].cantidad,estado:"pendiente"}).then(ref=>{
                                     delete carrito[item]
                                     if(Object.keys(carrito).length==0){
                                         save(email,carrito)
