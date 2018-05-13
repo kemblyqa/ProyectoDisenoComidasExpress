@@ -41,7 +41,7 @@ export class ManagerService {
         }) 
     } 
     /* add a new plate */
-    public addPlatillo(name:any, description:any, price:any, category: any, rest:string, image:any){ 
+    public addPlatillo(name:any, description:any, price:number, category: any, rest:string, image:any){ 
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_ADDPLATILLO}`,{ 
             nombre: name, 
             descripcion: description, 
@@ -52,14 +52,15 @@ export class ManagerService {
         }) 
     } 
     /* edits a existing plate */
-    public modPlatillo(name:any, description:any, price:any, category: any, rest:string, image:any){ 
+    public modPlatillo(name:any, description:any, price:number, category: any, rest:string, image:any, id:any){ 
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_MODPLATILLO}`,{ 
             nombre: name, 
             descripcion: description, 
             precio: price,
             categoria: category, 
             keyRest: rest, 
-            imagen: image
+            imagen: image,
+            keyPlat:id
         }) 
     } 
     /* deletes a existing plate */

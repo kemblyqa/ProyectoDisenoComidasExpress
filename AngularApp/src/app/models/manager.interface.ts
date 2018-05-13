@@ -13,7 +13,10 @@ export interface Platillo{
     descripcion: string
     nombre: string
     precio: number 
-    restaurante: string 
+    restaurante: {
+        id: string
+        nombre:string
+    } 
     categoria: string 
 }
 

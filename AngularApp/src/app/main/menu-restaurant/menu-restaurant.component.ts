@@ -84,7 +84,7 @@ export class MenuRestaurantComponent{
   addPlatModal(){
     this.descriptionPlate = "" 
     this.namePlate = "" 
-    this.pricePlate = 0 
+    this.pricePlate = null 
     this.imagePlate = "" 
     this.categoryPlate = this.catSelected 
     $("#modalCreateFood").modal("show")
@@ -112,7 +112,8 @@ export class MenuRestaurantComponent{
         this.descriptionPlate,
         this.pricePlate,
         this.categoryPlate,
-        this.imagePlate
+        this.imagePlate,
+        plat.id
       )
     });
   }
@@ -144,14 +145,15 @@ export class MenuRestaurantComponent{
     )
   }
 
-  updatePlat(namePlate:any,descriptionPlate:any,pricePlate:number,categoryPlate:any,imagePlate:any){ 
+  updatePlat(namePlate:any,descriptionPlate:any,pricePlate:number,categoryPlate:any,imagePlate:any, id:any){ 
      this._managerService.modPlatillo(
       namePlate,
       descriptionPlate,
       pricePlate,
       categoryPlate,
       this.restId,
-      imagePlate
+      imagePlate,
+      id
     ).subscribe(
       success=>{
         if(success.status){
