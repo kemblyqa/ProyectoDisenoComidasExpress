@@ -39,6 +39,10 @@ textarea {
 	height:60px;
 	bottom:40px;
 	right:40px;
-	text-align:center;
+	text-align:center;  
 	box-shadow: 2px 2px 3px #999;
+}
+
+.fix-image-list{
+    height: 200px
 }

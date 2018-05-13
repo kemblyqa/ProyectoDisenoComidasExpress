@@ -12,12 +12,14 @@ import { ROUTES } from './app.routing';
 import { AppComponent } from './app.component';
 import { MenuRestaurantComponent } from './main/menu-restaurant/menu-restaurant.component';
 import { MainPageComponent } from './main/main-page/main-page.component';
+import { OrdersComponent } from './main/orders/orders.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuRestaurantComponent,
-    MainPageComponent
+    MainPageComponent,
+    OrdersComponent
   ],
   imports: [
     BrowserModule,
