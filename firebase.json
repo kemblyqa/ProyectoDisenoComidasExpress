@@ -24,6 +24,8 @@
       {"source":"/api/delPlatillo", "function":"delPlatillo"},
       {"source":"/api/itemCarro", "function":"itemCarro"},
       {"source":"/api/delCarro", "function":"delCarro"},
+      {"source":"/api/caja", "function":"caja"},
+      {"source":"/api/filtroPedidos", "function":"filtroPedidos"},
       {"source": "**","destination": "/index.html"}
     ]
   },
