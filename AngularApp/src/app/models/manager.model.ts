@@ -6,6 +6,10 @@ export class ManagerModel {
             {
                 item: "Menu",
                 href: '/menu'
+            },
+            {
+                item: "Pedidos",
+                href: '/pedidos'
             }
         ]
     }

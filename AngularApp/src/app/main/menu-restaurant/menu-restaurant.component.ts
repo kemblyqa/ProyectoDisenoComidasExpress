@@ -32,7 +32,8 @@ export class MenuRestaurantComponent{
   private allCategories:Array<any>
   private categoryPlate:any 
   /* platillos observable */
-  private platillos$:Platillo[]
+  private platillos:Platillo[]
+  private currentPlate:Platillo
   constructor(private _router:Router, private _managerService:ManagerService) { 
     this.initCustomCategories() 
     this.initAllCategories() 
@@ -65,7 +66,7 @@ export class MenuRestaurantComponent{
     .subscribe(
       res => {
         if(res.status){
-          this.platillos$ = res.data
+          this.platillos = res.data
         }
       }
     )
@@ -73,12 +74,20 @@ export class MenuRestaurantComponent{
   /* modal success! */
   successMessageModal(message:any){
     this.successMessage = message
-    $("#modalSuccess").modal("show")
+    $("#modalSuccess").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
   }
   /* failed success! */
   failedMessageModal(message:any){
     this.failedMessage = message
-    $("#modalFailed").modal("show")
+    $("#modalFailed").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
   }
   /* modal create new platillo */
   addPlatModal(){
@@ -87,16 +96,11 @@ export class MenuRestaurantComponent{
     this.pricePlate = null 
     this.imagePlate = "" 
     this.categoryPlate = this.catSelected 
-    $("#modalCreateFood").modal("show")
-    $( "#modalCreateFoodCreate" ).click(()=> {
-      this.createPlat(
-        this.namePlate,
-        this.descriptionPlate,
-        this.pricePlate,
-        this.categoryPlate,
-        this.imagePlate
-      )
-    });
+    $("#modalCreateFood").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
   }
   /* modal edit platillo */
   editPlatModal(plat:Platillo){ 
@@ -104,39 +108,36 @@ export class MenuRestaurantComponent{
     this.namePlate = plat.nombre 
     this.pricePlate = plat.precio 
     this.imagePlate = plat.imagen 
-    this.categoryPlate = this.catSelected 
-    $("#modalEditFood").modal("show")
-    $( "#modalEditFoodSaveChanges" ).click(()=> {
-      this.updatePlat(
-        this.namePlate,
-        this.descriptionPlate,
-        this.pricePlate,
-        this.categoryPlate,
-        this.imagePlate,
-        plat.id
-      )
-    });
+    this.categoryPlate = this.catSelected
+    this.currentPlate = this.getIdPlatillo(plat) 
+    $("#modalEditFood").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
   }
 
   delPlatModal(plat:Platillo){
-    $("#modalDelFood").modal("show")
-    $( "#modalDelFoodSaveChanges" ).click(()=> {
-      this.deletePlat(plat)
-    });
+    this.currentPlate = plat
+    $("#modalDelFood").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
   }
 
-  createPlat(namePlate:any,descriptionPlate:any,pricePlate:number,categoryPlate:any,imagePlate:any){
+  createPlat(){
     this._managerService.addPlatillo(
-      namePlate,
-      descriptionPlate,
-      pricePlate,
-      categoryPlate,
+      this.namePlate,
+      this.descriptionPlate,
+      this.pricePlate,
+      this.categoryPlate,
       this.restId,
-      imagePlate
+      this.imagePlate  
     ).subscribe(
       success=>{
         if(success.status){
-          this.successMessageModal("Exito")
+          this.successMessageModal("Se ha creado el nuevo platillo correctamente.")
           this.updateMenu()
         } 
         else 
@@ -145,20 +146,19 @@ export class MenuRestaurantComponent{
     )
   }
 
-  updatePlat(namePlate:any,descriptionPlate:any,pricePlate:number,categoryPlate:any,imagePlate:any, id:any){ 
-     this._managerService.modPlatillo(
-      namePlate,
-      descriptionPlate,
-      pricePlate,
-      categoryPlate,
+  updatePlat(){ 
+    this._managerService.modPlatillo(
+      this.namePlate,
+      this.descriptionPlate,
+      this.pricePlate,
+      this.categoryPlate,
       this.restId,
-      imagePlate,
-      id
+      this.imagePlate,
+      this.currentPlate.id
     ).subscribe(
       success=>{
         if(success.status){
-          console.log(JSON.stringify(success))
-          this.successMessageModal("Exito")
+          this.successMessageModal("Se ha actualizado el platillo correctamente.")
           this.updateMenu()
         } 
         else 
@@ -167,18 +167,21 @@ export class MenuRestaurantComponent{
     )
   } 
 
-  deletePlat(plat:Platillo){
-    this._managerService.delPlatillo(plat.nombre, this.restId)
+  deletePlat(){
+    this._managerService.delPlatillo(this.currentPlate.nombre, this.restId)
     .subscribe(
       success=>{
         if(success.status){
-          console.log(JSON.stringify(success))
-          this.successMessageModal("Exito")
+          this.successMessageModal("Se ha eliminado el platillo correctamente.")
           this.updateMenu()
         } 
         else 
           this.failedMessageModal(success.data)
       }
     )
+  }
+
+  getIdPlatillo(obj:Platillo):Platillo {
+    return this.platillos.find(plate => plate.id == obj.id)
   }
 }
