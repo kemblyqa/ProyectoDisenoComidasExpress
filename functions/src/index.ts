@@ -1,4 +1,5 @@
 import * as functions from 'firebase-functions';
+import { request } from 'https';
 
 const async = require('async')
 const admin = require('firebase-admin');
@@ -51,7 +52,7 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
             query=query.where('restaurante','==',keyRest)
         if(nombre!=undefined)
             query=query.where('nombre','==',nombre)
-        query.orderBy('nombre').get()
+        query.get()
         .then((snapshot) => {
             if (snapshot.docs.length<=(pagina-1)*12)
                 response.send({status:true,data:[]})
@@ -130,7 +131,7 @@ export const modPlatillo = functions.https.onRequest((request, response) => {
                 response.send({status:false,data:"El platillo solicitado no existe"})
             else{
                 platillos.where('restaurante','==',snapshot.data().restaurante).where('nombre','==',nombre).get().then(dupes =>{
-                    if(dupes.empty){
+                    if(dupes.empty || (!dupes.empty && dupes.docs.length==1 && dupes.docs[0].id==keyPlat)){
                         platillos.doc(keyPlat).set({
                             nombre:nombre,
                             precio:precio,
@@ -273,9 +274,54 @@ export const caja = functions.https.onRequest((request, response) => {
         if(email==undefined)
             response.send({status:false,data:"Se requiere el campo email"})
         else{
-
+            usuarios.doc(email).get().then(usuario =>{
+                if(usuario.exists){
+                    let carrito = usuario.data().carrito
+                    let save = (email,carrito)=>{usuarios.doc(email).set({carrito:carrito},{merge:true})}
+                    for(var item in carrito){
+                        platillos.doc(carrito[item].platillo).get().then(platillo=>{
+                            if(platillo.exists){
+                                pedidos.add({email:email,restaurante:platillo.data().restaurante,ubicacion:carrito[item].ubicacion,platillo:carrito[item].platillo,fecha:carrito[item].fecha,cantidad:carrito[item].cantidad,estado:"pendiente"}).then(ref=>{
+                                    delete carrito[item]
+                                    if(Object.keys(carrito).length==0){
+                                        save(email,carrito)
+                                        response.send({status:true,data:"Carrito procesado"})
+                                    }
+                                }).catch(err => {save(email,carrito);response.send({status:false,data:"Error procesando un pedido"})})
+                            }
+                            else {save(email,carrito);response.send({status:false,data:"Uno de los platillos del carrito no existe"})}
+                        }).catch(err => {save(email,carrito);response.send({status:false,data:"Error procesando un pedido"})})
+                    }
+                }
+                else
+                    response.send({status:false,data:"El usuario solicitado no existe"})
+            })
         }
     }
     else
         response.send({status:false,data:'Metodo invalido'})
+})
+
+export const filtroPedidos = functions.https.onRequest((request, response) => {
+    if(request.method=='GET'){
+        let restaurante = request.query.keyRest
+        let estado = request.query.estado
+        let email = request.query.email
+        let query = pedidos
+        if(restaurante!=undefined)
+            query=query.where('restaurante','==',restaurante)
+        if(estado!=undefined)
+            query=query.where('estado','==',estado)
+        if(email!=undefined)
+            query=query.where('email','==',email)
+        query.get().then(items => {
+            let pedRich = []
+            items.forEach(element => {
+                pedRich.push(element.data())
+            });
+            response.send({status:true,data:pedRich})
+        }).catch(err => {response.send({status:false,data:"Error obteniendo pedidos"})})
+    }
+    else
+        response.send({status:false,data:"Metodo no reconocido"})
 })
