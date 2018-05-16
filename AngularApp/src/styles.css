@@ -1,30 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~bootstrap/dist/css/bootstrap.css';
 @import url('https://fonts.googleapis.com/css?family=Pangolin');
-
 /* body {
     background: url("assets/icons/wallpaper_restaurant_3.jpg");
 } */
-
 .imageCircle {
     border-radius: 50%;
     width: 20%;
 }
-
 .centerDiv{
     margin:0 auto;
     width: 100%;
     text-align: center
 }
-
 .centerBtn{
     text-align: center;
 }
-
 .centerTitle {
     text-align: center;
 }
-
 .acceptButton {
     background-color: rgb(252, 54, 80);
     color: #fff;
@@ -32,7 +26,6 @@
     font-size: large;
     border: none;
 }
-
 .cancelButton {
     background-color: rgb(177, 177, 177);
     color: #fff;
@@ -40,7 +33,6 @@
     font-size: large;
     border: none;
 }
-
 body, html {
     height: 100%;
     width: 100%;

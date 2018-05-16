@@ -45,7 +45,9 @@ export class MenuRestaurantComponent{
       res => { 
         if(res.status){ 
           this.categories = res.data 
-        } 
+        }
+        else 
+          this.failedMessageModal(res.data)
       } 
     ) 
   }
@@ -57,6 +59,8 @@ export class MenuRestaurantComponent{
         if(res.status){
           this.allCategories = res.data
         }
+        else 
+          this.failedMessageModal(res.data)
       }
     )
   } 
@@ -68,6 +72,8 @@ export class MenuRestaurantComponent{
         if(res.status){
           this.platillos = res.data
         }
+        else 
+          this.failedMessageModal(res.data)
       }
     )
   }
@@ -180,7 +186,6 @@ export class MenuRestaurantComponent{
       }
     )
   }
-
   getIdPlatillo(obj:Platillo):Platillo {
     return this.platillos.find(plate => plate.id == obj.id)
   }

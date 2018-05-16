@@ -1,3 +1,5 @@
+import { Router } from '@angular/router';
+import { ManagerService } from './../../services/manager/manager.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,10 +8,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./orders.component.css']
 })
 export class OrdersComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  constructor(private _managerService: ManagerService, private _router: Router) { }
+  ngOnInit() { }
 }

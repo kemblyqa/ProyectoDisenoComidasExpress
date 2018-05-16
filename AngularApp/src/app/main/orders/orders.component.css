@@ -1,0 +1,6 @@
+.bar-content{
+    margin: 2%;
+}
+.active a{
+    background-color: green !important;
+}   

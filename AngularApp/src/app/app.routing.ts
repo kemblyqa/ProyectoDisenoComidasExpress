@@ -11,10 +11,10 @@ export const ROUTES: Routes = [
         path: 'dashboard', component: MainPageComponent,
         children: [
             {
-                path: 'menu', component: MenuRestaurantComponent
+                path: '', redirectTo: 'dashboard', pathMatch: 'full'
             },
             {
-                path: '', redirectTo: 'dashboard', pathMatch: 'full'
+                path: 'menu', component: MenuRestaurantComponent
             },
             {
                 path: 'pedidos', component: OrdersComponent
