@@ -1,13 +1,21 @@
 <main role="main">
-  <div class="centerDiv">
-    <div class="bar-content">
-      <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
-        <div class="btn-group" *ngFor="let item of orderItems">
-          <button class="btn btn-danger" data-toggle="pill" (click)="goTo(item.href)" role="tab">{{item.item}}</button>
+    <!-- show categories -->
+  <section class="jumbotron order" style="margin: 0%; padding: 16px 8px 32px">
+    <div class="container text-center">
+      <h5 class="card-title font-subtitle">Lista de pedidos</h5>
+      <h6 class="card-title font-title">{{restName}}</h6>
+      <label style="margin-top: 6%" class="col col-form-label font-normal-sub">Tipos de pedidos</label>  
+      <div class="centerDiv">
+        <div class="bar-content">
+          <ul class="nav mb-3 justify-content-center" role="tablist">
+            <li style="margin: 0% 1%" *ngFor="let item of orderItems">
+              <button class="btn btn-info" data-toggle="pill" (click)="goTo(item.href)" role="tab">{{item.item}}</button>
+            </li>
+          </ul>
         </div>
-      </ul>
+      </div>
     </div>
-  </div>
+  </section>
   <router-outlet></router-outlet>
 </main>
 <!-- confirmation modal -->

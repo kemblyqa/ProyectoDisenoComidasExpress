@@ -11,6 +11,7 @@ import { Component, OnInit } from '@angular/core';
 export class OrdersComponent {
   manage:ManagerModel
   orderItems:Array<any>
+  restName:string = "Soda el Mercadito"
   constructor(private _managerService: ManagerService, private _router: Router) {
     this.manage = new ManagerModel()
     this.orderItems = this.manage.getOrderItems()

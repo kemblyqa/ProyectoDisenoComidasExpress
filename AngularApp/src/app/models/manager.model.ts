@@ -2,7 +2,9 @@ import { Platillo} from './manager';
 export class ManagerModel {
     navItems:Array<any>
     orderItems:Array<any>
-    headersTable:Array<any>
+    headersApprovedTable:Array<any>
+    headersPendingTable:Array<any>
+    headersDeclinedTable:Array<any>
     constructor(){
         this.navItems = [
             {
@@ -28,9 +30,17 @@ export class ManagerModel {
                 href: "/rechazados"
             }
         ]
-        this.headersTable = [
+        this.headersApprovedTable = [
             "Cantidad", "Platillo",
-            "Fecha", "Email", "Estado", "Finalizado"
+            "Fecha","Hora", "Email", "Estado", "Ubicación", "Finalizado"
+        ]
+        this.headersPendingTable = [
+            "Cantidad", "Platillo",
+            "Fecha","Hora", "Email", "Estado", "Ubicación", "Verificar"
+        ]
+        this.headersDeclinedTable = [
+            "Cantidad", "Platillo",
+            "Fecha","Hora", "Email", "Estado", "Ubicación", "Motivo"
         ]
     }
     getNavItems(){
@@ -39,7 +49,13 @@ export class ManagerModel {
     getOrderItems(){
         return this.orderItems
     }
-    getTableHeaders(){
-        return this.headersTable
+    getApprovedTableHeaders(){
+        return this.headersApprovedTable
+    }
+    getPendingTableHeaders(){
+        return this.headersPendingTable
+    }
+    getDeclinedTableHeaders(){
+        return this.headersDeclinedTable
     }
 }

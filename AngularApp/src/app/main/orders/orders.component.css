@@ -1,3 +1,7 @@
 .bar-content{
     margin: 2%;
 }   
+
+.order {
+    background-image: url("/../assets/icons/orders_1.jpg");
+}

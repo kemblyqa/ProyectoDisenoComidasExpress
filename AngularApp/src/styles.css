@@ -37,3 +37,42 @@ body, html {
     height: 100%;
     width: 100%;
 }
+.opacity {
+    opacity: 0.7;
+}
+
+.font-title {
+    font-family: 'Pangolin', cursive;
+    font-size: 50px;
+    color: white;
+}
+
+.font-subtitle {
+    font-family: 'Pangolin', cursive;
+    font-size: 25px;
+    color: blanchedalmond;
+}
+
+.font-normal-sub {
+    font-family: 'Pangolin', cursive;
+    font-size: 20px;
+    color: white;
+}
+textarea { 
+    resize: none; 
+}   
+
+.btn-add {
+    border-radius: 50%;
+    font-size: 24px
+}
+
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	text-align:center;  
+	box-shadow: 2px 2px 3px #999;
+}

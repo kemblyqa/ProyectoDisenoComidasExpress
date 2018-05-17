@@ -1,0 +1,3 @@
+ngb-pagination /deep/ .page-item.disabled .page-link {
+    background-color: greenyellow;
+}

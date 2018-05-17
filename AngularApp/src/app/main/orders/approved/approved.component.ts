@@ -21,9 +21,10 @@ export class ApprovedComponent {
   manage:ManagerModel
   headers:Array<any>
   orders:Pedido
+  page = 1;total = 13 * 10
   constructor(private _managerService:ManagerService) {
     this.manage = new ManagerModel()
-    this.headers = this.manage.getTableHeaders()
+    this.headers = this.manage.getApprovedTableHeaders()
     this.getOrders()
   }
   /* modal success! */
@@ -44,6 +45,7 @@ export class ApprovedComponent {
       show: true
     })
   }
+  /* get approved orders */
   getOrders(){
     this._managerService.getAllOrders("keyAuto")
     .subscribe(
@@ -55,5 +57,13 @@ export class ApprovedComponent {
         }
       }
     )
+  }
+  /* finish orders */
+  isFinished(event){
+    if(event.target.checked){
+      console.log("finalizar")
+      //finish order
+      //refresh orders
+    }
   }
 }

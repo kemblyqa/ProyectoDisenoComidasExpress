@@ -16,6 +16,7 @@ import { OrdersComponent } from './main/orders/orders.component';
 import { ApprovedComponent } from './main/orders/approved/approved.component';
 import { PendingComponent } from './main/orders/pending/pending.component';
 import { DeclinedComponent } from './main/orders/declined/declined.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { DeclinedComponent } from './main/orders/declined/declined.component';
     BrowserModule,
     FormsModule,
     RouterModule.forRoot(ROUTES),
-    HttpClientModule
+    HttpClientModule,
+    NgbModule.forRoot()
   ],
   providers: [
     ManagerService  

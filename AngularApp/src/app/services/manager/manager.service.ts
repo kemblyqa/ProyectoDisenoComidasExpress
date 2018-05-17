@@ -80,5 +80,13 @@ export class ManagerService {
         })
     }
     /* retrieves pending orders */
+    public getPendingOrders(rest:any){
+        return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_ALLORDERS}`,{
+            params:{
+                keyRest:rest,
+                estado:"pendiente"
+            }
+        })
+    }
     /* retrieves declined orders */
 }
