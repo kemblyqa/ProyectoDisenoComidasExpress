@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { Platillo, StatusData } from './../../models/manager.interface';
+import { Platillo, StatusData } from './../../models/manager';
 import { ManagerService } from './../../services/manager/manager.service';
 import { ManagerModel } from '../../models/manager.model';
 import { Component, OnInit } from '@angular/core';
@@ -36,7 +36,7 @@ export class MenuRestaurantComponent{
   private currentPlate:Platillo
   constructor(private _router:Router, private _managerService:ManagerService) { 
     this.initCustomCategories() 
-    this.initAllCategories() 
+    this.initAllCategories()
   } 
   /* inits categories to show platillos */ 
   initCustomCategories(){ 

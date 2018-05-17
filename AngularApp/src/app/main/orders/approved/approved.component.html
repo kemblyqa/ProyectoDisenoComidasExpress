@@ -1,0 +1,17 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th *ngFor="let head of headers" scope="col">{{head}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr scope="row">
+      <td *ngFor="let order of orders">{{order.cantidad}}</td>
+      <td *ngFor="let order of orders">{{order.platillo}}</td>
+      <td *ngFor="let order of orders">{{order.fecha}}</td>
+      <td *ngFor="let order of orders">{{order.email}}</td>
+      <td *ngFor="let order of orders">{{order.estado}}</td>
+      <td *ngFor="let order of orders">{{order.ubicacion._latitude}} y {{order.ubicacion._longitude}}</td>
+    </tr>
+  </tbody>
+</table>

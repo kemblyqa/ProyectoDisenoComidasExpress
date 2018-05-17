@@ -1,3 +1,4 @@
+import { ManagerModel } from './../../models/manager.model';
 import { Router } from '@angular/router';
 import { ManagerService } from './../../services/manager/manager.service';
 import { Component, OnInit } from '@angular/core';
@@ -7,7 +8,14 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.css']
 })
-export class OrdersComponent implements OnInit {
-  constructor(private _managerService: ManagerService, private _router: Router) { }
-  ngOnInit() { }
+export class OrdersComponent {
+  manage:ManagerModel
+  orderItems:Array<any>
+  constructor(private _managerService: ManagerService, private _router: Router) {
+    this.manage = new ManagerModel()
+    this.orderItems = this.manage.getOrderItems()
+  }
+  goTo(path:any){
+    this._router.navigate([`dashboard/pedidos${path}`])
+  }
 }

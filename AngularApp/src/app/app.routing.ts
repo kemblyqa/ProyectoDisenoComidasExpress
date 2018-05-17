@@ -1,3 +1,6 @@
+import { DeclinedComponent } from './main/orders/declined/declined.component';
+import { PendingComponent } from './main/orders/pending/pending.component';
+import { ApprovedComponent } from './main/orders/approved/approved.component';
 import { OrdersComponent } from './main/orders/orders.component';
 import { MainPageComponent } from './main/main-page/main-page.component';
 import { MenuRestaurantComponent } from './main/menu-restaurant/menu-restaurant.component';
@@ -17,7 +20,21 @@ export const ROUTES: Routes = [
                 path: 'menu', component: MenuRestaurantComponent
             },
             {
-                path: 'pedidos', component: OrdersComponent
+                path: 'pedidos', component: OrdersComponent,
+                children: [
+                    {
+                        path: '', redirectTo: 'dashboard', pathMatch: 'full'
+                    },
+                    {
+                        path: 'actuales', component: ApprovedComponent
+                    },
+                    {
+                        path: 'pendientes', component: PendingComponent
+                    },
+                    {
+                        path: 'rechazados', component: DeclinedComponent
+                    },
+                ]
             }
         ]
     },

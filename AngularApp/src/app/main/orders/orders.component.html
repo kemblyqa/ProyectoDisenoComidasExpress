@@ -1,22 +1,44 @@
 <main role="main">
-  <div id="topheader" class="centerDiv">
+  <div class="centerDiv">
     <div class="bar-content">
       <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Pedidos aprobados</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Pedidos por aprobar</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Pedidos rechazados</a>
-        </li>
+        <div class="btn-group" *ngFor="let item of orderItems">
+          <button class="btn btn-danger" data-toggle="pill" (click)="goTo(item.href)" role="tab">{{item.item}}</button>
+        </div>
       </ul>
     </div>
   </div>
-  <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">...</div>
-    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...</div>
-    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
-  </div>
+  <router-outlet></router-outlet>
 </main>
+<!-- confirmation modal -->
+<div class="modal" id="modalSuccess" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Transacción exitosa</h5>
+      </div>
+      <div class="modal-body">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- failed modal -->
+<div class="modal" id="modalFailed" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Transacción fallida</h5>
+      </div>
+      <div class="modal-body">
+        <p>{{failedMessage}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>

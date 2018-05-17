@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Category, StatusData, Platillo } from './../../models/manager.interface';
+import { StatusData } from './../../models/manager';
 import { Subject } from 'rxjs/Subject';
 //manager and restaurant endpoints
 const ENDPOINT_GETCATEGORIES = "categoria"
@@ -10,6 +10,7 @@ const ENDPOINT_PLATILLOS_REST = "filtroPlat"
 const ENDPOINT_ADDPLATILLO = "addPlatillo" 
 const ENDPOINT_MODPLATILLO = "modPlatillo" 
 const ENDPOINT_DELPLATILLO = "delPlatillo" 
+const ENDPOINT_ALLORDERS = "filtroPedidos"
 
 @Injectable()
 export class ManagerService {
@@ -70,4 +71,14 @@ export class ManagerService {
             nombre: name 
         }) 
     }
+    /* retrieves approved orders */
+    public getAllOrders(rest:any){
+        return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_ALLORDERS}`,{
+            params:{
+                keyRest:rest
+            }
+        })
+    }
+    /* retrieves pending orders */
+    /* retrieves declined orders */
 }

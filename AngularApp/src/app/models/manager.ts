@@ -25,3 +25,16 @@ export interface Restaurante {
     descripcion: string
     nombre: string
 }
+
+export interface Pedido {
+    ubicacion: {
+        latitude: number,
+        longitude: number
+    }
+    email: string
+    fecha: Date
+    restaurante: string
+    platillo:string
+    estado:string
+    cantidad:number
+}

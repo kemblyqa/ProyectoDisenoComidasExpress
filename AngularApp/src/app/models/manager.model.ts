@@ -1,6 +1,8 @@
-import { Platillo} from './manager.interface'; 
+import { Platillo} from './manager'; 
 export class ManagerModel {
     navItems:Array<any>
+    orderItems:Array<any>
+    headersTable:Array<any>
     constructor(){
         this.navItems = [
             {
@@ -12,8 +14,32 @@ export class ManagerModel {
                 href: '/pedidos'
             }
         ]
+        this.orderItems = [
+            {
+                item: "Pedidos actuales",
+                href: "/actuales"
+            },
+            {
+                item: "Pedidos pendientes",
+                href: "/pendientes"
+            },
+            {
+                item: "Pedidos rechazados",
+                href: "/rechazados"
+            }
+        ]
+        this.headersTable = [
+            "Cantidad", "Platillo",
+            "Fecha", "Email", "Estado", "Finalizado"
+        ]
     }
     getNavItems(){
         return this.navItems
+    }
+    getOrderItems(){
+        return this.orderItems
+    }
+    getTableHeaders(){
+        return this.headersTable
     }
 }
