@@ -281,7 +281,16 @@ export const caja = functions.https.onRequest((request, response) => {
                     for(var item in carrito){
                         platillos.doc(carrito[item].platillo).get().then(platillo=>{
                             if(platillo.exists){
-                                pedidos.add({email:email,restaurante:platillo.data().restaurante,ubicacion:carrito[item].ubicacion,platillo:carrito[item].platillo,fecha:carrito[item].fecha,cantidad:carrito[item].cantidad,estado:"pendiente"}).then(ref=>{
+                                pedidos.add({email:email,
+                                    restaurante:platillo.data().restaurante,
+                                    ubicacion:carrito[item].ubicacion,
+                                    categoria:platillo.data().categoria,
+                                    descripcion:platillo.data().descripcion,
+                                    nombre:platillo.data().nombre,
+                                    precio:platillo.data().precio,
+                                    fecha:carrito[item].fecha,
+                                    cantidad:carrito[item].cantidad
+                                    ,estado:"pendiente"}).then(ref=>{
                                     delete carrito[item]
                                     if(Object.keys(carrito).length==0){
                                         save(email,carrito)
@@ -324,4 +333,73 @@ export const filtroPedidos = functions.https.onRequest((request, response) => {
     }
     else
         response.send({status:false,data:"Metodo no reconocido"})
+})
+
+export const verCarrito = functions.https.onRequest((request, response) => {
+    if(request.method=='GET'){
+        let email = request.query.email
+        if(email==undefined){
+            response.send({status:false,data:"Falta email"})
+            return;
+        }
+        usuarios.doc(email).get().then(usuario => {
+            if(usuario.exists){
+                let carrito = usuario.data().carrito
+                let carritoRich=[]
+                let keys=[]
+                for(let key in carrito){console.log(key)
+                    keys.push(key)
+                }
+                for(let x =0;x<keys.length;x++){
+                    platillos.doc(keys[x]).get().then(platillo => {
+                        restaurantes.doc(platillo.data().restaurante).get().then(rest =>{
+                            carritoRich.push({
+                                clave:keys[x],
+                                nombre:platillo.data().nombre,
+                                descripcion:platillo.data().descripcion,
+                                cantidad:carrito[keys[x]].cantidad,
+                                precio:platillo.data().precio,
+                                fecha:carrito[keys[x]].fecha,
+                                ubicacion:carrito[keys[x]].ubicacion,
+                                restaurante:[platillo.data().restaurante,rest.data().nombre]})
+                            if(keys.length==carritoRich.length)
+                                response.send({status:true,data:carritoRich})
+                        }).catch(err => {response.send({status:false,data:"Error obteniendo restaurante"})})
+                    }).catch(err => {response.send({status:false,data:"Error obteniendo platillos"})})
+                }
+            }
+            else
+                response.send({status:false,data:"El usuario no existe"})
+        }).catch(err => {response.send({status:false,data:"Error obteniendo el usuario"})})
+    }
+    else
+        response.send({status:false,data:"Metodo no reconocido"})
+})
+
+export const setEstado = functions.https.onRequest((request, response) => {
+    if(request.method=='POST'){
+        let keyPedido = request.body.pedido
+        let estado = request.body.estado
+        if(keyPedido==undefined || estado=="pendiente" || estado==undefined || (estado!="aprobado" && estado!="rechazado"&&estado!="finalizado"))
+            response.send({status:false,data:"Datos no validos"})
+        else{
+            pedidos.doc(keyPedido).get().then(pedido => {
+                if(pedido.exists){
+                    let pEstado=pedido.data().estado
+                    if(pEstado=="pendiente" && estado=="finalizado")
+                        response.send({status:false,data:"No se puede finalizar un producto pendiente"})
+                    else if(pEstado=="rechazado" || pEstado=="finalizado")
+                        response.send({status:false,data:"No se puede modificar el estado \"rechazado\" ni \"finalizado\""})
+                    else{
+                        pedidos.doc(keyPedido).set({estado:estado},{merge:true})
+                        response.send({status:true,data:"El pedido " + keyPedido + " ha sido " + estado})
+                    }
+                }
+                else
+                    response.send({status:false,data:"El pedido solicitado no existe"})
+            })
+        }
+    }
+    else
+        response.send({status:false,data:"Metodo no reconocido"});
 })

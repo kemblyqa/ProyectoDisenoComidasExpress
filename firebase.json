@@ -26,6 +26,8 @@
       {"source":"/api/delCarro", "function":"delCarro"},
       {"source":"/api/caja", "function":"caja"},
       {"source":"/api/filtroPedidos", "function":"filtroPedidos"},
+      {"source":"/api/verCarrito", "function":"verCarrito"},
+      {"source":"/api/setEstado", "function":"setEstado"},
       {"source": "**","destination": "/index.html"}
     ]
   },
