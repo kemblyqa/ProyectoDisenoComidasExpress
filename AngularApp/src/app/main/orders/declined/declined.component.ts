@@ -21,6 +21,7 @@ export class DeclinedComponent {
   manage:ManagerModel
   headers:Array<any>
   orders:Pedido
+  page = 1;total = 13 * 10
   constructor(private _managerService:ManagerService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getDeclinedTableHeaders()

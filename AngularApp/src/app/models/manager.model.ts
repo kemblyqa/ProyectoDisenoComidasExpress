@@ -32,7 +32,7 @@ export class ManagerModel {
         ]
         this.headersApprovedTable = [
             "Cantidad", "Platillo",
-            "Fecha","Hora", "Email", "Estado", "Ubicación", "Finalizado"
+            "Fecha","Hora", "Email", "Estado", "Ubicación", "Finalizado", "Entrega"
         ]
         this.headersPendingTable = [
             "Cantidad", "Platillo",
