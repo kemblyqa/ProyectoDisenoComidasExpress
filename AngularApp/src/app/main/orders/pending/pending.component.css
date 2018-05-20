@@ -17,3 +17,21 @@ ngb-pagination /deep/ .page-item .page-link {
 ngb-pagination /deep/ .page-item.disabled .page-link {
     color: gray;   
 }
+
+.btn-verify {
+	text-align:center;  
+    background-color: white;
+    border: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.yes {
+    color: green
+}
+
+.no {
+    color: red
+}

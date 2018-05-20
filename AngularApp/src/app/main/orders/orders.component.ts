@@ -11,10 +11,15 @@ import { Component, OnInit } from '@angular/core';
 export class OrdersComponent {
   manage:ManagerModel
   orderItems:Array<any>
+  orderOpts:Array<any>
   restName:string = "Soda el Mercadito"
   constructor(private _managerService: ManagerService, private _router: Router) {
     this.manage = new ManagerModel()
     this.orderItems = this.manage.getOrderItems()
+    this.orderOpts = this.manage.getOrderOptions()
+  }
+  otherOptions(opt:number){
+    
   }
   goTo(path:any){
     this._router.navigate([`dashboard/pedidos${path}`])

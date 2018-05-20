@@ -34,7 +34,11 @@ export interface Pedido {
     email: string
     fecha: Date
     restaurante: string
-    platillo:string
+    nombre:string
     estado:string
     cantidad:number
+    descripcion:string
+    precio:number
+    categoria:string
+    entrega:string
 }
