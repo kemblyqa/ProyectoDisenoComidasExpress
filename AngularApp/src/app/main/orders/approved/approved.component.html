@@ -16,9 +16,18 @@
         <td>{{order.precio}}</td>
         <td>{{order.estado}}</td>
         <td>{{order.categoria}}</td>
-        <td>{{order.ubicacion._latitude}}°, {{order.ubicacion._longitude}}°</td>
+        <td *ngIf="order.ubicacion._latitude == undefined && order.ubicacion._longitude == undefined">
+          Recoger aquí</td>
+        <td *ngIf="order.ubicacion._latitude != undefined && order.ubicacion._longitude != undefined">
+          {{order.ubicacion._latitude}}°, {{order.ubicacion._longitude}}°</td>
         <td>{{order.entrega}}</td>
-        <td><input type="checkbox" (change)="isFinished($event)"></td>
+        <td style="text-align: center;vertical-align: middle">
+          <button class="btn-finish">
+            <i style="font-size: 12px;" class="material-icons" (click)="isFinished()">
+              done
+            </i>
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>

@@ -59,11 +59,7 @@ export class ApprovedComponent {
     )
   }
   /* finish orders */
-  isFinished(event){
-    if(event.target.checked){
-      console.log("finalizar")
-      //finish order
-      //refresh orders
-    }
+  isFinished(){
+    console.log("fin")
   }
 }

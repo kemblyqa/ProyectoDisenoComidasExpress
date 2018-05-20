@@ -16,8 +16,12 @@
         <td>{{order.precio}}</td>
         <td>{{order.estado}}</td>
         <td>{{order.categoria}}</td>
-        <td>{{order.ubicacion._latitude}}°, {{order.ubicacion._longitude}}°</td>
-        <td><div class="btn-group">
+        <td *ngIf="order.ubicacion._latitude == undefined && order.ubicacion._longitude == undefined">
+          Recoger aquí</td>
+        <td *ngIf="order.ubicacion._latitude != undefined && order.ubicacion._longitude != undefined">
+          {{order.ubicacion._latitude}}°, {{order.ubicacion._longitude}}°</td>
+        <td>{{order.entrega}}</td>  
+        <td style="text-align: center;vertical-align: middle"><div class="btn-group">
           <button class="btn-verify yes"><i class="material-icons">
             check_circle
             </i></button>
@@ -32,23 +36,23 @@
 <ngb-pagination class="col-md-12 justify-content-center" [collectionSize]="total" [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
 <!-- decline modal -->
 <div class="modal" id="modalDecline" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Rechazar pedido</h5>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Rechazar pedido</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row"> 
+          <label class="col-sm-4 col-form-label">Razón de rechazo: </label> 
+          <div class="col-sm-8"> 
+            <input type="text" [(ngModel)]="declineReason" class="form-control" id="nameP" placeholder="Justificación..."> 
+          </div> 
         </div>
-        <div class="modal-body">
-          <div class="form-group row"> 
-            <label class="col-sm-4 col-form-label">Razón de rechazo: </label> 
-            <div class="col-sm-8"> 
-              <input type="text" [(ngModel)]="declineReason" class="form-control" id="nameP" placeholder="Justificación..."> 
-            </div> 
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="button" (click)="declineOrder()" class="btn btn-info" data-dismiss="modal">Aceptar</button>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" (click)="declineOrder()" class="btn btn-info" data-dismiss="modal">Aceptar</button>
       </div>
     </div>
   </div>
+</div>

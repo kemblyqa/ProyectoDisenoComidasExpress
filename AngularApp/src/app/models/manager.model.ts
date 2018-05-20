@@ -6,6 +6,7 @@ export class ManagerModel {
     headersApprovedTable:Array<any>
     headersPendingTable:Array<any>
     headersDeclinedTable:Array<any>
+    headersExpiredTable:Array<any>
     constructor(){
         this.navItems = [
             {
@@ -25,10 +26,6 @@ export class ManagerModel {
             {
                 item: "Pedidos pendientes",
                 href: "/pendientes"
-            },
-            {
-                item: "Pedidos rechazados",
-                href: "/rechazados"
             }
         ]
         this.orderOptions = [
@@ -37,13 +34,17 @@ export class ManagerModel {
                 opt:1
             },
             {
-                item: "Historial de pedidos",
+                item: "Ver pedidos rechazados",
                 opt:2
+            },
+            {
+                item: "Historial de pedidos",
+                opt:3
             }
         ]
         this.headersApprovedTable = [
             "Cantidad", "Platillo", "Descripcion",
-            "Fecha","Hora", "Email", "Precio", "Estado", "Categoria", "Ubicación", "Entrega","Finalizado"
+            "Fecha","Hora", "Email", "Precio", "Estado", "Categoria", "Ubicación", "Entrega","Finalizar"
         ]
         this.headersPendingTable = [
             "Cantidad", "Platillo", "Descripcion",
@@ -52,6 +53,10 @@ export class ManagerModel {
         this.headersDeclinedTable = [
             "Cantidad", "Platillo", "Descripcion",
             "Fecha","Hora", "Email", "Precio", "Estado", "Categoria", "Ubicación", "Entrega", "Motivo"
+        ]
+        this.headersExpiredTable = [
+            "Cantidad", "Platillo", "Descripcion",
+            "Fecha","Hora", "Email", "Precio", "Estado", "Categoria", "Ubicación", "Entrega"
         ]
     }
     getNavItems(){
@@ -62,6 +67,9 @@ export class ManagerModel {
     }
     getOrderOptions(){
         return this.orderOptions
+    }
+    getExpiredTableHeaders(){
+        return this.headersExpiredTable
     }
     getApprovedTableHeaders(){
         return this.headersApprovedTable

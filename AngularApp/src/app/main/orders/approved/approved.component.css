@@ -17,3 +17,13 @@ ngb-pagination /deep/ .page-item .page-link {
 ngb-pagination /deep/ .page-item.disabled .page-link {
     color: gray;   
 }
+
+.btn-finish {
+    background-color: blue;
+    color: white;
+    width:28px;
+	height:28px;
+    border-radius: 50%;
+    border: 0px;
+    text-align: center;
+}

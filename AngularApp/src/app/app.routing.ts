@@ -1,4 +1,3 @@
-import { DeclinedComponent } from './main/orders/declined/declined.component';
 import { PendingComponent } from './main/orders/pending/pending.component';
 import { ApprovedComponent } from './main/orders/approved/approved.component';
 import { OrdersComponent } from './main/orders/orders.component';
@@ -30,10 +29,7 @@ export const ROUTES: Routes = [
                     },
                     {
                         path: 'pendientes', component: PendingComponent
-                    },
-                    {
-                        path: 'rechazados', component: DeclinedComponent
-                    },
+                    }
                 ]
             }
         ]
