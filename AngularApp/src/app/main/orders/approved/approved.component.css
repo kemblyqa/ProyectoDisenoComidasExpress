@@ -1,3 +1,19 @@
+.justify-content-center {
+    display: flex !important;
+    justify-content: center !important;
+}
+
+ngb-pagination /deep/ .page-item.active .page-link {
+    background-color: #117a8b !important;
+    border: lightgray solid 1px;
+    color: white;
+}
+
+ngb-pagination /deep/ .page-item .page-link {
+    border: lightgray solid 1px;
+    color: black;   
+}
+
 ngb-pagination /deep/ .page-item.disabled .page-link {
-    background-color: greenyellow;
+    color: gray;   
 }

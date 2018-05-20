@@ -1,19 +1,25 @@
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th *ngFor="let head of headers" scope="col">{{head}}</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let order of orders" scope="row">
-      <td>{{order.cantidad}}</td>
-      <td>{{order.platillo}}</td>
-      <td>{{order.fecha | date: 'dd/MM/yyyy'}}</td>
-      <td>{{order.fecha | date:'shortTime'}}</td>
-      <td>{{order.email}}</td>
-      <td>{{order.estado}}</td>
-      <td>{{order.ubicacion._latitude}}°, {{order.ubicacion._longitude}}°</td>
-      <td>Sin producto</td>
-    </tr>
-  </tbody>
-</table>
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th *ngFor="let head of headers" scope="col">{{head}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orders" scope="row">
+        <td style="text-align: center">{{order.cantidad}}</td>
+        <td>{{order.nombre}}</td>
+        <td>{{order.descripcion}}</td>
+        <td>{{order.fecha | date: 'dd/MM/yyyy'}}</td>
+        <td>{{order.fecha | date:'shortTime'}}</td>
+        <td>{{order.email}}</td>
+        <td>{{order.precio}}</td>
+        <td>{{order.estado}}</td>
+        <td>{{order.categoria}}</td>
+        <td>{{order.ubicacion._latitude}}°, {{order.ubicacion._longitude}}°</td>
+        <td>Sin producto</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<ngb-pagination class="col-md-12 justify-content-center" [collectionSize]="total" [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>

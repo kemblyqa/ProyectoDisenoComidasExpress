@@ -1,6 +1,17 @@
 <main role="main">
     <!-- show categories -->
   <section class="jumbotron order" style="margin: 0%; padding: 16px 8px 32px">
+    
+    <div ngbDropdown class="d-inline-block">
+      <i ngbDropdownToggle class="material-icons menu-tool">
+        more_vert
+        </i>
+      <div ngbDropdownMenu>
+        <div *ngFor="let o of orderOpts">
+          <button (click)="otherOptions(o.opt)" class="dropdown-item">{{o.item}}</button>
+        </div>
+      </div>
+    </div>
     <div class="container text-center">
       <h5 class="card-title font-subtitle">Lista de pedidos</h5>
       <h6 class="card-title font-title">{{restName}}</h6>

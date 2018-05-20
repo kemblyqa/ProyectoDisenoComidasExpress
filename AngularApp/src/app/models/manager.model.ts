@@ -2,6 +2,7 @@ import { Platillo} from './manager';
 export class ManagerModel {
     navItems:Array<any>
     orderItems:Array<any>
+    orderOptions:Array<any>
     headersApprovedTable:Array<any>
     headersPendingTable:Array<any>
     headersDeclinedTable:Array<any>
@@ -30,17 +31,27 @@ export class ManagerModel {
                 href: "/rechazados"
             }
         ]
+        this.orderOptions = [
+            {
+                item:"Ver pedidos expirados",
+                opt:1
+            },
+            {
+                item: "Historial de pedidos",
+                opt:2
+            }
+        ]
         this.headersApprovedTable = [
-            "Cantidad", "Platillo",
-            "Fecha","Hora", "Email", "Estado", "Ubicación", "Finalizado"
+            "Cantidad", "Platillo", "Descripcion",
+            "Fecha","Hora", "Email", "Precio", "Estado", "Categoria", "Ubicación", "Entrega","Finalizado"
         ]
         this.headersPendingTable = [
-            "Cantidad", "Platillo",
-            "Fecha","Hora", "Email", "Estado", "Ubicación", "Verificar"
+            "Cantidad", "Platillo", "Descripcion",
+            "Fecha","Hora", "Email", "Precio", "Estado", "Categoria", "Ubicación", "Entrega", "Verificar"
         ]
         this.headersDeclinedTable = [
-            "Cantidad", "Platillo",
-            "Fecha","Hora", "Email", "Estado", "Ubicación", "Motivo"
+            "Cantidad", "Platillo", "Descripcion",
+            "Fecha","Hora", "Email", "Precio", "Estado", "Categoria", "Ubicación", "Entrega", "Motivo"
         ]
     }
     getNavItems(){
@@ -48,6 +59,9 @@ export class ManagerModel {
     }
     getOrderItems(){
         return this.orderItems
+    }
+    getOrderOptions(){
+        return this.orderOptions
     }
     getApprovedTableHeaders(){
         return this.headersApprovedTable

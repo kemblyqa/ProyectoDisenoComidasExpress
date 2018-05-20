@@ -34,6 +34,7 @@ export class MenuRestaurantComponent{
   /* platillos observable */
   private platillos:Platillo[]
   private currentPlate:Platillo
+  total = 13 * 10
   constructor(private _router:Router, private _managerService:ManagerService) { 
     this.initCustomCategories() 
     this.initAllCategories()
