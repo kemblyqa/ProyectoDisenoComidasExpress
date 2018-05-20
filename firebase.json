@@ -28,6 +28,7 @@
       {"source":"/api/filtroPedidos", "function":"filtroPedidos"},
       {"source":"/api/verCarrito", "function":"verCarrito"},
       {"source":"/api/setEstado", "function":"setEstado"},
+      {"source":"/api/subirImagenPlat", "function":"subirImagenPlat"},
       {"source": "**","destination": "/index.html"}
     ]
   },
