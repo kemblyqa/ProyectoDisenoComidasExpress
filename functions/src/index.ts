@@ -3,11 +3,11 @@ import { request } from 'https';
 
 const async = require('async')
 const admin = require('firebase-admin');
-
+const gcs = require('@google-cloud/storage')
 admin.initializeApp(functions.config().firebase);
 
 var db = admin.firestore();
-
+var bucket = admin.storage().bucket();
 var usuarios = db.collection("Usuario");
 var platillos = db.collection("Platillo");
 var restaurantes = db.collection("Restaurante");
@@ -43,9 +43,9 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
         let keyRest = request.query.keyRest
         let nombre = request.query.nombre
         let pagina = parseInt(request.query.pagina)
-        let query = platillos
         if (pagina<1 || isNaN(pagina))
             pagina=1
+        let query = platillos
         if(categoria!=undefined)
             query=query.where('categoria','==',categoria)
         if(keyRest!=undefined)
@@ -55,7 +55,7 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
         query.get()
         .then((snapshot) => {
             if (snapshot.docs.length<=(pagina-1)*12)
-                response.send({status:true,data:[]})
+                response.send({status:true,data:[[],0]})
             let platRich = []
             let len = (snapshot.docs.length-((pagina-1)*12))>12?12:(snapshot.docs.length-((pagina-1)*12))
             for (let x=(pagina-1)*12;x<snapshot.docs.length;x++){
@@ -72,9 +72,8 @@ export const filtroPlat = functions.https.onRequest((request, response) => {
                         Restaurante:res,
                         precio:snapshot.docs[x].data().precio,
                         id: snapshot.docs[x].id})
-                    if(platRich.length==len){
-                        response.send({status:true,data:platRich});
-                    }
+                    if(platRich.length==len)
+                        response.send({status:true,data:[platRich,Math.floor(snapshot.docs.length/12)+(snapshot.docs.length%12!=0?1:0)]});
                 }).catch((err) => {
                     response.send({status:false,data:'Error obteniendo restaurante'})});
             }
@@ -180,8 +179,13 @@ export const delPlatillo = functions.https.onRequest((request, response) => {
 export const itemCarro = functions.https.onRequest((request, response) => {
     if (request.method='POST'){
         let ubicacion;
-        try{ubicacion = JSON.parse(request.body.ubicacion)}
-        catch(e){response.send({status:false,data:"Error interpretando la ubicación"});return}
+        if (request.body.ubicacion=='local')
+            ubicacion=request.body.ubicacion;
+        else{
+            try{ubicacion = JSON.parse(request.body.ubicacion)
+                ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])}
+            catch(e){response.send({status:false,data:"Error interpretando la ubicación"});return}
+        }
         let fecha;
         try{
             fecha = new Date(request.body.fecha)
@@ -191,13 +195,12 @@ export const itemCarro = functions.https.onRequest((request, response) => {
                 return
             }
         }
-        catch(e){response.send({status:false,data:"Error interpretando la ubicación"});return}
+        catch(e){response.send({status:false,data:"Error interpretando la fecha"});return}
         if (
             typeof(request.body.keyRest)!='string' || 
             typeof(request.body.nombre)!='string' ||
-            isNaN(parseInt(request.body.cantidad,10))|| 
-            typeof(ubicacion[0])!='number'|| typeof(ubicacion[1])!='number' 
-            ||request.body.fecha==undefined || request.body.email==undefined)
+            isNaN(parseInt(request.body.cantidad,10))||
+            request.body.fecha==undefined || request.body.email==undefined)
             {
             response.send({status:false,data:"No se recibieron los parametros correctos"})
             return}
@@ -206,7 +209,6 @@ export const itemCarro = functions.https.onRequest((request, response) => {
         let cantidad = parseInt(request.body.cantidad,10)
         let email = request.body.email
         let override = request.body.override == 'true'
-        ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])
         platillos.where('nombre','==',nombre).where('restaurante','==',keyRest).get().then((snapshot) => {
             if(snapshot.empty)
                 response.send({status:false,data:"Este platillo no existe"})
@@ -316,6 +318,10 @@ export const filtroPedidos = functions.https.onRequest((request, response) => {
         let restaurante = request.query.keyRest
         let estado = request.query.estado
         let email = request.query.email
+        let pagina = parseInt(request.query.pagina)
+        if (pagina<1 || isNaN(pagina))
+            pagina=1
+
         let query = pedidos
         if(restaurante!=undefined)
             query=query.where('restaurante','==',restaurante)
@@ -324,11 +330,16 @@ export const filtroPedidos = functions.https.onRequest((request, response) => {
         if(email!=undefined)
             query=query.where('email','==',email)
         query.get().then(items => {
+            if (items.docs.length<=(pagina-1)*10)
+                response.send({status:true,data:[[],0]})
             let pedRich = []
-            items.forEach(element => {
-                pedRich.push(element.data())
-            });
-            response.send({status:true,data:pedRich})
+            let len = (items.docs.length-((pagina-1)*10))>10?10:(items.docs.length-((pagina-1)*10))
+            for (let x=(pagina-1)*10;x<items.docs.length;x++){
+                pedRich.push(items.docs[x].data())
+                if (pedRich.length==len){
+                    response.send({status:true,data:[pedRich,Math.floor(items.docs.length/10)+(items.docs.length%10!=0?1:0)]})
+                }
+            }
         }).catch(err => {response.send({status:false,data:"Error obteniendo pedidos"})})
     }
     else
@@ -402,4 +413,45 @@ export const setEstado = functions.https.onRequest((request, response) => {
     }
     else
         response.send({status:false,data:"Metodo no reconocido"});
+})
+
+export const subirImagenPlat = functions.https.onRequest((request, response) => {
+    if (request.method === 'POST') {
+        let keyPlat=request.body.keyPlat
+        var img = request.body.img
+        if(keyPlat==undefined || img==undefined || !Buffer.from(img, 'base64').toString('base64')===img){
+            response.send({status:false,data:"Platillo o imagen no valido"})
+            return;
+        }
+        platillos.doc(keyPlat).get().then(snapshot =>{
+            if(!snapshot.exists){
+                response.send({status:false,data:"El platillo solicitado no existe"})
+                return
+            }
+            var mimeType = 'image/jpeg',
+        fileName = keyPlat+'.jpg',
+        imageBuffer = new Buffer(img, 'base64');
+        var file = bucket.file('platillos/' + fileName);
+        file.save(imageBuffer,{
+            metadata: {contentType: mimeType}}, 
+            error => {
+            if (error) {
+                response.send({status:false,data:'No se pudo subir la imagen.'});
+            }
+            file.acl.add({
+                entity: 'allUsers',
+                role: gcs.acl.READER_ROLE
+                }, 
+                function(err, aclObject) {
+                    if (!err){
+                        let URL = "https://storage.googleapis.com/designexpresstec.appspot.com/" + file.id;
+                        platillos.doc(keyPlat).set({imagen:URL},{merge:true})
+                        response.send({status:true,data:URL});
+                    }
+                    else
+                        response.send({status:false,data:"No se pudieron establecer los servicios: " + err});
+                });
+        });
+        }).catch(err =>{response.send({status:false,data:"Error obteniendo el platillo"})})
+    } else  response.send({status:false,data:"Solo se admite POST"});
 })
