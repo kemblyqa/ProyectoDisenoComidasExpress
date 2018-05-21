@@ -336,6 +336,7 @@ export const filtroPedidos = functions.https.onRequest((request, response) => {
             let len = (items.docs.length-((pagina-1)*10))>10?10:(items.docs.length-((pagina-1)*10))
             for (let x=(pagina-1)*10;x<items.docs.length;x++){
                 pedRich.push(items.docs[x].data())
+                pedRich[pedRich.length-1]["id"]=items.docs[x].id
                 if (pedRich.length==len){
                     response.send({status:true,data:[pedRich,Math.floor(items.docs.length/10)+(items.docs.length%10!=0?1:0)]})
                 }
@@ -417,8 +418,8 @@ export const setEstado = functions.https.onRequest((request, response) => {
 
 export const subirImagenPlat = functions.https.onRequest((request, response) => {
     if (request.method === 'POST') {
-        let keyPlat=request.body.keyPlat
-        var img = request.body.img
+        let keyPlat=request.body.keyPlat //clave de platillo
+        var img = request.body.img //base64
         if(keyPlat==undefined || img==undefined || !Buffer.from(img, 'base64').toString('base64')===img){
             response.send({status:false,data:"Platillo o imagen no valido"})
             return;
@@ -429,29 +430,29 @@ export const subirImagenPlat = functions.https.onRequest((request, response) => 
                 return
             }
             var mimeType = 'image/jpeg',
-        fileName = keyPlat+'.jpg',
-        imageBuffer = new Buffer(img, 'base64');
-        var file = bucket.file('platillos/' + fileName);
-        file.save(imageBuffer,{
-            metadata: {contentType: mimeType}}, 
-            error => {
-            if (error) {
-                response.send({status:false,data:'No se pudo subir la imagen.'});
-            }
-            file.acl.add({
-                entity: 'allUsers',
-                role: gcs.acl.READER_ROLE
-                }, 
-                function(err, aclObject) {
-                    if (!err){
-                        let URL = "https://storage.googleapis.com/designexpresstec.appspot.com/" + file.id;
-                        platillos.doc(keyPlat).set({imagen:URL},{merge:true})
-                        response.send({status:true,data:URL});
-                    }
-                    else
-                        response.send({status:false,data:"No se pudieron establecer los servicios: " + err});
-                });
-        });
+            fileName = keyPlat+'.jpg',
+            imageBuffer = new Buffer(img, 'base64');
+            var file = bucket.file('platillos/' + fileName);
+            file.save(imageBuffer,{
+                metadata: {contentType: mimeType}}, 
+                error => {
+                if (error) {
+                    response.send({status:false,data:'No se pudo subir la imagen.'});
+                }
+                file.acl.add({
+                    entity: 'allUsers',
+                    role: gcs.acl.READER_ROLE //gcs ->'@google-cloud/storage'
+                    },
+                    function(err, aclObject) {
+                        if (!err){
+                            let URL = "https://storage.googleapis.com/designexpresstec.appspot.com/" + file.id;
+                            platillos.doc(keyPlat).set({imagen:URL},{merge:true})
+                            response.send({status:true,data:URL});
+                        }
+                        else
+                            response.send({status:false,data:"No se pudieron establecer los servicios: " + err});
+                    });
+            });
         }).catch(err =>{response.send({status:false,data:"Error obteniendo el platillo"})})
     } else  response.send({status:false,data:"Solo se admite POST"});
 })
