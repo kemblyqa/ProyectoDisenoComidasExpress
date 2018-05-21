@@ -22,10 +22,10 @@
           {{order.ubicacion._latitude}}°, {{order.ubicacion._longitude}}°</td>
         <td>{{order.entrega}}</td>  
         <td style="text-align: center;vertical-align: middle"><div class="btn-group">
-          <button class="btn-verify yes"><i class="material-icons">
+          <button (click)="approveOrder(order.id)" class="btn-verify yes"><i class="material-icons">
             check_circle
             </i></button>
-          <button class="btn-verify no" (click)="modalDeclineOrder()"><i class="material-icons">
+          <button class="btn-verify no" (click)="modalDeclineOrder(order.id)"><i class="material-icons">
             cancel
             </i></button>
         </div></td>

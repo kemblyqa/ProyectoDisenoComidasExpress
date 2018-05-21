@@ -53,7 +53,7 @@ export class ApprovedComponent {
   }
   /* get approved orders */
   getOrders(){
-    this._managerService.getAllOrders("keyAuto")
+    this._managerService.getCustomOrders("keyAuto","aprobado")
     .subscribe(
       success => {
         if(success.status){

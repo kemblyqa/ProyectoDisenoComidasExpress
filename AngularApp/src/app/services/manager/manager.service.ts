@@ -11,6 +11,7 @@ const ENDPOINT_ADDPLATILLO = "addPlatillo"
 const ENDPOINT_MODPLATILLO = "modPlatillo" 
 const ENDPOINT_DELPLATILLO = "delPlatillo" 
 const ENDPOINT_ALLORDERS = "filtroPedidos"
+const ENDPOINT_CHANGESTATUS = "setEstado"
 
 @Injectable()
 export class ManagerService {
@@ -71,22 +72,21 @@ export class ManagerService {
             nombre: name 
         }) 
     }
-    /* retrieves approved orders */
-    public getAllOrders(rest:any){
-        return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_ALLORDERS}`,{
-            params:{
-                keyRest:rest
-            }
-        })
-    }
-    /* retrieves pending orders */
-    public getPendingOrders(rest:any){
+    /* retrieves orders */
+    public getCustomOrders(rest:any, status:any){
         return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_ALLORDERS}`,{
             params:{
                 keyRest:rest,
-                estado:"pendiente"
+                estado:status
             }
         })
     }
-    /* retrieves declined orders */
+    /* change order status */
+    public changeStatus(orderID:any, status:any, reason:any){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_CHANGESTATUS}`,{
+            keyPedido: orderID,
+            estado:status,
+            motivo:reason
+        })
+    }
 }

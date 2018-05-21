@@ -14,6 +14,7 @@ export class PendingComponent {
   /* modal messages */
   private successMessage:any
   private failedMessage:any
+  private declineOrderId:any
   /* restaurante id y nombre */ 
   private restName:string = "Soda El Mercadito" 
   private restId:string = "rest4" 
@@ -54,7 +55,8 @@ export class PendingComponent {
     })
   }
   /* modal decline order reason */
-  modalDeclineOrder(){
+  modalDeclineOrder(id:any){
+    this.declineOrderId = id
     $("#modalDecline").modal({
       backdrop: 'static',
       keyboard: false,
@@ -63,7 +65,7 @@ export class PendingComponent {
   }
   /* get pending orders */
   getOrders(){
-    this._managerService.getPendingOrders("keyAuto")
+    this._managerService.getCustomOrders("keyAuto","pendiente")
     .subscribe(
       success => {
         if(success.status){
@@ -77,11 +79,31 @@ export class PendingComponent {
   }
   /* declines order */
   declineOrder(){
-    //declines order
-    //refresh order list
+    this._managerService.changeStatus(this.declineOrderId, "rechazado",this.declineReason)//falta motivo
+    .subscribe(
+      success => {
+        if(success.status){
+          this.successMessageModal(success.data)
+          this.getOrders()
+        } else {
+          this.failedMessageModal(success.data)
+        }
+      }
+    )
   }
-  approveOrder(){
-    //approves order
-    //refresh order list
+  /* approves order */
+  approveOrder(id:any){
+    this._managerService.changeStatus(id, "aprobado","")
+    .subscribe(
+      success => {
+        if(success.status){
+          this.successMessageModal(success.data)
+          this.getOrders()
+        } else {
+          console.log("no")
+          this.failedMessageModal(success.data)
+        }
+      }
+    )
   }
 }

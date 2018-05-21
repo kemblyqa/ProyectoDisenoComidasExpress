@@ -73,7 +73,7 @@ export class MenuRestaurantComponent{
       res => {
         if(res.status){
           this.platillos = res.data[0]
-          this.totalPages = res.data[1] * 20
+          this.totalPages = res.data[1] * 10
         }
         else 
           this.failedMessageModal(res.data)
@@ -82,6 +82,7 @@ export class MenuRestaurantComponent{
   }
   /* pagination update */
   updatePlatesPagination(){
+    console.log(this.page)
     this.updateMenu()
   }
   /* modal success! */
