@@ -23,7 +23,6 @@ export class MenuRestaurantComponent{
   /* categories */
   private categories:Array<any> 
   private catSelected:any 
-  private page:any = 1 
   /* edit platillo */ 
   private descriptionPlate:any 
   private pricePlate:number 
@@ -34,7 +33,9 @@ export class MenuRestaurantComponent{
   /* platillos observable */
   private platillos:Platillo[]
   private currentPlate:Platillo
-  total = 13 * 10
+  /* pagination */
+  private totalPages:number = 0
+  private page:number = 1
   constructor(private _router:Router, private _managerService:ManagerService) { 
     this.initCustomCategories() 
     this.initAllCategories()
@@ -71,12 +72,17 @@ export class MenuRestaurantComponent{
     .subscribe(
       res => {
         if(res.status){
-          this.platillos = res.data
+          this.platillos = res.data[0]
+          this.totalPages = res.data[1] * 20
         }
         else 
           this.failedMessageModal(res.data)
       }
     )
+  }
+  /* pagination update */
+  updatePlatesPagination(){
+    this.updateMenu()
   }
   /* modal success! */
   successMessageModal(message:any){

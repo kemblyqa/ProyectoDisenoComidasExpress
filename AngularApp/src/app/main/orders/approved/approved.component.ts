@@ -18,13 +18,19 @@ export class ApprovedComponent {
   private restName:string = "Soda El Mercadito" 
   private restId:string = "rest4" 
   /* headers */
-  manage:ManagerModel
-  headers:Array<any>
-  orders:Pedido
-  page = 1;total = 13 * 10
+  private manage:ManagerModel
+  private headers:Array<any>
+  private orders:Pedido
+  /* pagination */
+  private page:number = 1
+  private totalPages:number
   constructor(private _managerService:ManagerService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getApprovedTableHeaders()
+    this.getOrders()
+  }
+  /* pagination */
+  updateApprovedPagination(){
     this.getOrders()
   }
   /* modal success! */
@@ -51,7 +57,8 @@ export class ApprovedComponent {
     .subscribe(
       success => {
         if(success.status){
-          this.orders = success.data
+          this.orders = success.data[0]
+          this.totalPages = success.data[1] * 10
         } else {
           this.failedMessageModal(success.data)
         }

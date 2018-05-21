@@ -98,7 +98,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <ngb-pagination class="" [collectionSize]="total" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+        <ngb-pagination (click)="updateExpiredPagination()" class="" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
       </div>
     </div>
@@ -142,7 +142,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <ngb-pagination class="" [collectionSize]="total" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+        <ngb-pagination (click)="updateDeclinedPagination()" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
       </div>
     </div>
@@ -185,7 +185,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <ngb-pagination class="" [collectionSize]="total" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+          <ngb-pagination (click)="updateHistoryPagination()" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
         </div>
       </div>

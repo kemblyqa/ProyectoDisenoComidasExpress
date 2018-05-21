@@ -13,22 +13,22 @@ declare var $ :any;
 })
 export class OrdersComponent {
   /* models */
-  manage:ManagerModel
+  private manage:ManagerModel
   /* modal messages */
   private failedMessage:any
   /* headers */
-  orderItems:Array<any>
-  orderOpts:Array<any>
-  declinedHeaders:Array<any>
-  expiredHeaders:Array<any>
+  private orderItems:Array<any>
+  private orderOpts:Array<any>
+  private declinedHeaders:Array<any>
+  private expiredHeaders:Array<any>
   /* row lists */
-  expiredOrders:Pedido
-  declinedOrders:Pedido
-  historyOrders:Pedido
-
+  private expiredOrders:Pedido
+  private declinedOrders:Pedido
+  private historyOrders:Pedido
   /* pagination */
-  page = 1;total = 1 * 10
-  restName:string = "Soda el Mercadito"
+  private page:number = 1
+  private totalPages:number = 0
+  private restName:string = "Soda el Mercadito"
   constructor(private _managerService: ManagerService, private _router: Router) {
     this.manage = new ManagerModel()
     this.orderItems = this.manage.getOrderItems()
@@ -36,6 +36,16 @@ export class OrdersComponent {
     //table headers
     this.declinedHeaders = this.manage.getDeclinedTableHeaders()
     this.expiredHeaders = this.manage.getExpiredTableHeaders()
+  }
+  /* pagination */
+  updateExpiredPagination(){
+    this.getExpiredOrders()
+  }
+  updateDeclinedPagination(){
+    this.getDeclinedOrders()
+  }
+  updateHistoryPagination(){
+    this.getHistoryOrders()
   }
   /* failed success! */
   failedMessageModal(message:any){
@@ -93,7 +103,8 @@ export class OrdersComponent {
     .subscribe(
       success => {
         if(success.status){
-          this.expiredOrders = success.data
+          this.expiredOrders = success.data[0]
+          this.totalPages = success.data[1] * 10
         } else {
           this.failedMessageModal(success.data)
         }
@@ -106,7 +117,8 @@ export class OrdersComponent {
     .subscribe(
       success => {
         if(success.status){
-          this.declinedOrders = success.data
+          this.declinedOrders = success.data[0]
+          this.totalPages = success.data[1] * 10
         } else {
           this.failedMessageModal(success.data)
         }
@@ -119,7 +131,8 @@ export class OrdersComponent {
     .subscribe(
       success => {
         if(success.status){
-          this.historyOrders = success.data
+          this.historyOrders = success.data[0]
+          this.totalPages = success.data[1] * 10
         } else {
           this.failedMessageModal(success.data)
         }

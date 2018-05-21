@@ -38,8 +38,8 @@
       </div>
     </div>
   </div>
-  <ngb-pagination class="col-md-12 justify-content-center" [collectionSize]="total" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
   <!-- pagination -->
+  <ngb-pagination (click)="updatePlatesPagination()" class="col-md-12 justify-content-center" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
 
   <!-- modify food -->
   <div class="modal fade bd-example-modal-lg" id="modalEditFood" tabindex="-1" role="dialog">

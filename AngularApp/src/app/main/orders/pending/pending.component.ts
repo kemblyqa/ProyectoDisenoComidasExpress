@@ -20,13 +20,19 @@ export class PendingComponent {
   /* decline reasons */
   private declineReason:string
   /* headers */
-  manage:ManagerModel
-  headers:Array<any>
-  orders:Pedido
-  page = 1;total = 13 * 10
+  private manage:ManagerModel
+  private headers:Array<any>
+  private orders:Pedido
+  /* pagination */
+  private page:number = 1
+  private totalPages:number = 0
   constructor(private _managerService:ManagerService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getPendingTableHeaders()
+    this.getOrders()
+  }
+  /* pagination */
+  updatePendingPagination(){
     this.getOrders()
   }
   /* modal success! */
@@ -61,7 +67,8 @@ export class PendingComponent {
     .subscribe(
       success => {
         if(success.status){
-          this.orders = success.data
+          this.orders = success.data[0]
+          this.totalPages = success.data[1] * 10
         } else {
           this.failedMessageModal(success.data)
         }
