@@ -20,7 +20,7 @@ export class ApprovedComponent {
   /* headers */
   private manage:ManagerModel
   private headers:Array<any>
-  private orders:Pedido
+  private orders:Pedido[] = []
   /* pagination */
   private page:number = 1
   private totalPages:number
@@ -30,7 +30,8 @@ export class ApprovedComponent {
     this.getOrders()
   }
   /* pagination */
-  updateApprovedPagination(){
+  updateApprovedPagination(e){
+    this.page = e
     this.getOrders()
   }
   /* modal success! */
@@ -66,7 +67,17 @@ export class ApprovedComponent {
     )
   }
   /* finish orders */
-  isFinished(){
-    console.log("fin")
+  isFinished(id:any){
+    this._managerService.changeStatus(id, "finalizado")
+    .subscribe(
+      success => {
+        if(success.status){
+          this.successMessageModal(success.data)
+          this.getOrders()
+        } else {
+          this.failedMessageModal(success.data)
+        }
+      }
+    )
   }
 }

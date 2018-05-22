@@ -31,14 +31,15 @@ export class MenuRestaurantComponent{
   private allCategories:Array<any>
   private categoryPlate:any 
   /* platillos observable */
-  private platillos:Platillo[]
+  private platillos:Platillo[] = []
   private currentPlate:Platillo
   /* pagination */
-  private totalPages:number = 0
+  private totalPages:number
   private page:number = 1
-  constructor(private _router:Router, private _managerService:ManagerService) { 
+  constructor(private _router:Router, private _managerService:ManagerService) {
     this.initCustomCategories() 
     this.initAllCategories()
+    this.totalPages = 0 
   } 
   /* inits categories to show platillos */ 
   initCustomCategories(){ 
@@ -81,8 +82,8 @@ export class MenuRestaurantComponent{
     )
   }
   /* pagination update */
-  updatePlatesPagination(){
-    console.log(this.page)
+  updatePlatesPagination(e){
+    this.page = e
     this.updateMenu()
   }
   /* modal success! */

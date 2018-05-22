@@ -33,7 +33,8 @@ export class PendingComponent {
     this.getOrders()
   }
   /* pagination */
-  updatePendingPagination(){
+  updatePendingPagination(e){
+    this.page = e
     this.getOrders()
   }
   /* modal success! */
@@ -79,7 +80,7 @@ export class PendingComponent {
   }
   /* declines order */
   declineOrder(){
-    this._managerService.changeStatus(this.declineOrderId, "rechazado",this.declineReason)//falta motivo
+    this._managerService.changeStatus(this.declineOrderId, "rechazado")//falta motivo
     .subscribe(
       success => {
         if(success.status){
@@ -93,14 +94,14 @@ export class PendingComponent {
   }
   /* approves order */
   approveOrder(id:any){
-    this._managerService.changeStatus(id, "aprobado","")
+    console.log(id)
+    this._managerService.changeStatus(id, "aprobado")
     .subscribe(
       success => {
         if(success.status){
           this.successMessageModal(success.data)
           this.getOrders()
         } else {
-          console.log("no")
           this.failedMessageModal(success.data)
         }
       }

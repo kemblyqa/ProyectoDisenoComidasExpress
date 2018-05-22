@@ -82,11 +82,10 @@ export class ManagerService {
         })
     }
     /* change order status */
-    public changeStatus(orderID:any, status:any, reason:any){
+    public changeStatus(orderID:any, status:any){
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_CHANGESTATUS}`,{
-            keyPedido: orderID,
-            estado:status,
-            motivo:reason
+            pedido: orderID,
+            estado:status
         })
     }
 }

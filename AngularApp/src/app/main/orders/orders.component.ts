@@ -38,13 +38,16 @@ export class OrdersComponent {
     this.expiredHeaders = this.manage.getExpiredTableHeaders()
   }
   /* pagination */
-  updateExpiredPagination(){
+  updateExpiredPagination(e){
+    this.page = e
     this.getExpiredOrders()
   }
-  updateDeclinedPagination(){
+  updateDeclinedPagination(e){
+    this.page = e
     this.getDeclinedOrders()
   }
-  updateHistoryPagination(){
+  updateHistoryPagination(e){
+    this.page = e
     this.getHistoryOrders()
   }
   /* failed success! */
