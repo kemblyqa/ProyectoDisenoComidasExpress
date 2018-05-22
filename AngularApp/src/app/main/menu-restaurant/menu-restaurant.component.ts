@@ -109,7 +109,7 @@ export class MenuRestaurantComponent{
     this.descriptionPlate = "" 
     this.namePlate = "" 
     this.pricePlate = null 
-    this.imagePlate = "" 
+    //this.imagePlate = "" 
     this.categoryPlate = this.catSelected 
     $("#modalCreateFood").modal({
       backdrop: 'static',
@@ -122,7 +122,7 @@ export class MenuRestaurantComponent{
     this.descriptionPlate = plat.descripcion 
     this.namePlate = plat.nombre 
     this.pricePlate = plat.precio 
-    this.imagePlate = plat.imagen 
+    //this.imagePlate = plat.imagen 
     this.categoryPlate = this.catSelected
     this.currentPlate = this.getIdPlatillo(plat) 
     $("#modalEditFood").modal({
