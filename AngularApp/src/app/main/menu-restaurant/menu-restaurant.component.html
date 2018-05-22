@@ -39,7 +39,9 @@
     </div>
   </div>
   <!-- pagination -->
-  <ngb-pagination (click)="updatePlatesPagination()" class="col-md-12 justify-content-center" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+  <h5 *ngIf="platillos?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
+  <ngb-pagination *ngIf="platillos?.length > 0" (pageChange)="updatePlatesPagination($event)" class="col-md-12 justify-content-center" 
+    [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
 
   <!-- modify food -->
   <div class="modal fade bd-example-modal-lg" id="modalEditFood" tabindex="-1" role="dialog">

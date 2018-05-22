@@ -41,4 +41,5 @@ export interface Pedido {
     precio:number
     categoria:string
     entrega:string
+    id:string
 }

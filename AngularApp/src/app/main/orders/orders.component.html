@@ -69,7 +69,8 @@
         <h5 class="modal-title">Pedidos expirados</h5>
       </div>
       <div class="modal-body">
-        <div class="table-responsive">
+        <h5 *ngIf="expiredOrders?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
+        <div *ngIf="expiredOrders?.length > 0" class="table-responsive">
           <table class="table table-hover">
             <thead>
               <tr>
@@ -98,7 +99,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <ngb-pagination (click)="updateExpiredPagination()" class="" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+        <ngb-pagination *ngIf="expiredOrders?.length > 0" (click)="updateExpiredPagination($event)" class="" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
       </div>
     </div>
@@ -112,7 +113,8 @@
         <h5 class="modal-title">Pedidos rechazados</h5>
       </div>
       <div class="modal-body">
-        <div class="table-responsive">
+        <h5 *ngIf="declinedOrders?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
+        <div *ngIf="declinedOrders?.length > 0" class="table-responsive">
           <table class="table table-hover">
             <thead>
               <tr>
@@ -142,7 +144,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <ngb-pagination (click)="updateDeclinedPagination()" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+        <ngb-pagination *ngIf="declinedOrders?.length > 0" (click)="updateDeclinedPagination($event)" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
       </div>
     </div>
@@ -156,7 +158,8 @@
           <h5 style="width:85%" class="modal-title">Historial</h5>
         </div>
         <div class="modal-body">
-          <div class="table-responsive">
+          <h5 *ngIf="historyOrders?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
+          <div *ngIf="historyOrders?.length > 0" class="table-responsive">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -185,7 +188,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <ngb-pagination (click)="updateHistoryPagination()" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+          <ngb-pagination *ngIf="historyOrders?.length > 0" (click)="updateHistoryPagination($event)" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
         </div>
       </div>

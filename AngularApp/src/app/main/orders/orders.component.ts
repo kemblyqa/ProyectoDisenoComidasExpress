@@ -38,13 +38,16 @@ export class OrdersComponent {
     this.expiredHeaders = this.manage.getExpiredTableHeaders()
   }
   /* pagination */
-  updateExpiredPagination(){
+  updateExpiredPagination(e){
+    this.page = e
     this.getExpiredOrders()
   }
-  updateDeclinedPagination(){
+  updateDeclinedPagination(e){
+    this.page = e
     this.getDeclinedOrders()
   }
-  updateHistoryPagination(){
+  updateHistoryPagination(e){
+    this.page = e
     this.getHistoryOrders()
   }
   /* failed success! */
@@ -99,7 +102,7 @@ export class OrdersComponent {
   }
   /* get expired orders */
   getExpiredOrders(){
-    this._managerService.getAllOrders("keyAuto")
+    this._managerService.getCustomOrders("keyAuto","expirado")
     .subscribe(
       success => {
         if(success.status){
@@ -113,7 +116,7 @@ export class OrdersComponent {
   }
   /* get declined orders */
   getDeclinedOrders(){
-    this._managerService.getAllOrders("keyAuto")
+    this._managerService.getCustomOrders("keyAuto","rechazado")
     .subscribe(
       success => {
         if(success.status){
@@ -127,7 +130,7 @@ export class OrdersComponent {
   }
   /* get expired orders */
   getHistoryOrders(){
-    this._managerService.getAllOrders("keyAuto")
+    this._managerService.getCustomOrders("keyAuto","finalizado")
     .subscribe(
       success => {
         if(success.status){

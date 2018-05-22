@@ -1,4 +1,5 @@
-<div class="table-responsive">
+<h5 *ngIf="orders?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
+<div *ngIf="orders?.length > 0" class="table-responsive">
   <table class="table table-hover">
     <thead>
       <tr>
@@ -23,7 +24,7 @@
         <td>{{order.entrega}}</td>
         <td style="text-align: center;vertical-align: middle">
           <button class="btn-finish">
-            <i style="font-size: 12px;" class="material-icons" (click)="isFinished()">
+            <i style="font-size: 12px;" class="material-icons" (click)="isFinished(order.id)">
               done
             </i>
           </button>
@@ -32,4 +33,36 @@
     </tbody>
   </table>
 </div>
-<ngb-pagination (click)="updateApprovedPagination()" class="col-md-12 justify-content-center" [collectionSize]="totalPages" [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+<ngb-pagination *ngIf="orders?.length > 0" (click)="updateApprovedPagination($event)" class="col-md-12 justify-content-center" [collectionSize]="totalPages" [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+<!-- confirmation modal -->
+<div class="modal" id="modalSuccess" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Transacción exitosa</h5>
+      </div>
+      <div class="modal-body">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- failed modal -->
+<div class="modal" id="modalFailed" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Transacción fallida</h5>
+      </div>
+      <div class="modal-body">
+        <p>{{failedMessage}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
