@@ -477,7 +477,7 @@ export const subirImagenPlat = functions.https.onRequest((req, res) => {
     } else  res.send({status:false,data:"Solo se admite POST"});
 })
 
-export const setCliente = functions.https.onRequest((req, res) => {
+export const setUsuario = functions.https.onRequest((req, res) => {
     if (req.method == 'POST')
         if(isUndefined(req.body.nombre) || isUndefined(req.body.email) || isUndefined(req.body.telefono))
             res.send({status:false,data:"Faltan datos"})
