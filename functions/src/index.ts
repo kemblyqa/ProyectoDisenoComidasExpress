@@ -53,32 +53,39 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
             query=query.where('restaurante','==',keyRest)
         if(nombre!=undefined)
             query=query.where('nombre','==',nombre)
-        query.get()
+        query.orderBy("nombre").get()
         .then((snapshot) => {
             if (snapshot.docs.length<=(pagina-1)*12)
                 res.send({status:true,data:[[],0]})
             let platRich = []
             let len = (snapshot.docs.length-((pagina-1)*12))>12?12:(snapshot.docs.length-((pagina-1)*12))
-            for (let x=(pagina-1)*12;x<snapshot.docs.length;x++){
+            let cont = 0;
+            snapshot.forEach(e =>{
+                console.log(e.data().nombre)
+            })
+            for (let x=(pagina-1)*12;x<len+(pagina-1)*12;x++){
                 restaurantes.doc(snapshot.docs[x].data().restaurante).get().then((Restaurante) => {
-                    var res;
+                    var rest;
                     if(!Restaurante.exists)
-                        res="Desconocido"
+                        rest="Desconocido"
                     else
-                        res={nombre:Restaurante.data().nombre,id:Restaurante.id};
-                    platRich.push({
+                        rest={nombre:Restaurante.data().nombre,id:Restaurante.id};
+                    platRich[x%12] = {
                         imagen:snapshot.docs[x].data().imagen,
                         descripcion:snapshot.docs[x].data().descripcion,
                         nombre:snapshot.docs[x].data().nombre,
-                        Restaurante:res,
+                        Restaurante:rest,
                         precio:snapshot.docs[x].data().precio,
-                        id: snapshot.docs[x].id})
-                    if(platRich.length==len)
+                        id: snapshot.docs[x].id}
+                    cont++;
+                    if(cont==len)
                         res.send({status:true,data:[platRich,Math.floor(snapshot.docs.length/12)+(snapshot.docs.length%12!=0?1:0)]});
                 }).catch((err) => {
                     res.send({status:false,data:'Error obteniendo restaurante'})});
             }
-        }).catch((err) => {res.send({status:false,data:'Error obteniendo documentos'})});
+        }).catch((err) => {
+            console.log(err)
+            res.send({status:false,data:'Error obteniendo documentos'})});
     }
     else
         res.send({status:false,data:'Solicitud desconocida'});
@@ -183,7 +190,6 @@ export const itemCarro = functions.https.onRequest((req, res) => {
         try{ubicacion = JSON.parse(req.body.ubicacion)
             ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])}
         catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
-        }
         let fecha;
         try{
             fecha = new Date(req.body.fecha)
