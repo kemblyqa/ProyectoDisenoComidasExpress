@@ -29,6 +29,7 @@
       {"source":"/api/verCarrito", "function":"verCarrito"},
       {"source":"/api/setEstado", "function":"setEstado"},
       {"source":"/api/subirImagenPlat", "function":"subirImagenPlat"},
+      {"source":"/api/setCliente", "function":"setCliente"},
       {"source": "**","destination": "/index.html"}
     ]
   },

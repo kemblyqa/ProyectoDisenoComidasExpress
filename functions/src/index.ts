@@ -477,7 +477,7 @@ export const subirImagenPlat = functions.https.onRequest((req, res) => {
     } else  res.send({status:false,data:"Solo se admite POST"});
 })
 
-export const nuevoCliente = functions.https.onRequest((req, res) => {
+export const setCliente = functions.https.onRequest((req, res) => {
     if (req.method == 'POST')
         if(isUndefined(req.body.nombre) || isUndefined(req.body.email) || isUndefined(req.body.telefono))
             res.send({status:false,data:"Faltan datos"})
@@ -491,7 +491,7 @@ export const nuevoCliente = functions.https.onRequest((req, res) => {
                 res.send({status:false,data:"Correo no valido"})
             else{
                 usuarios.doc(req.body.email).get().then(snapshot => {
-                    if(!snapshot.exists)
+                    if(!snapshot.exists && !(req.body.override== 'true'))
                         res.send({status:false,data:"Este correo electronico ya está registrado"})
                     else{
                         usuarios.doc(req.body.email).set({
