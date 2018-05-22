@@ -60,9 +60,6 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
             let platRich = []
             let len = (snapshot.docs.length-((pagina-1)*12))>12?12:(snapshot.docs.length-((pagina-1)*12))
             let cont = 0;
-            snapshot.forEach(e =>{
-                console.log(e.data().nombre)
-            })
             for (let x=(pagina-1)*12;x<len+(pagina-1)*12;x++){
                 restaurantes.doc(snapshot.docs[x].data().restaurante).get().then((Restaurante) => {
                     var rest;
@@ -424,44 +421,63 @@ export const subirImagenPlat = functions.https.onRequest((req, res) => {
     if (req.method === 'POST') {
         let keyPlat=req.body.keyPlat //clave de platillo
         var img = req.body.img //base64
-        if(keyPlat==undefined || img==undefined || !Buffer.from(img, 'base64').toString('base64')===img){
+        var url = req.body.url //url
+        if(!isUndefined(img) && !isUndefined(url)){
+            res.send({status:false,data:"Solo puede enviar URL o IMG, no ambos"})
+            return
+        }
+        else if(keyPlat==undefined)
+            res.send({status:false,data:"Platillo no recibido"})
+        else if (url!=undefined){
+            platillos.doc(keyPlat).get().then(snapshot =>{
+                if(!snapshot.exists){
+                    res.send({status:false,data:"El platillo solicitado no existe"})
+                }
+                else{
+                    res.send({status:true,data:`La URL del platillo ${keyPlat} ha sido modificada a ${url}`})
+                }
+            }).catch(err =>{res.send({status:false,data:"Error obteniendo el platillo"})})
+        }
+        else if(img==undefined || !Buffer.from(img, 'base64').toString('base64')===img){
             res.send({status:false,data:"Platillo o imagen no valido"})
             return;
         }
-        platillos.doc(keyPlat).get().then(snapshot =>{
-            if(!snapshot.exists){
-                res.send({status:false,data:"El platillo solicitado no existe"})
-                return
-            }
-            var mimeType = 'image/jpeg',
-            fileName = keyPlat+'.jpg',
-            imageBuffer = new Buffer(img, 'base64');
-            var file = bucket.file('platillos/' + fileName);
-            file.save(imageBuffer,{
-                metadata: {contentType: mimeType}}, 
-                error => {
-                if (error) {
-                    res.send({status:false,data:'No se pudo subir la imagen.'});
+        else{
+            platillos.doc(keyPlat).get().then(snapshot =>{
+                if(!snapshot.exists){
+                    res.send({status:false,data:"El platillo solicitado no existe"})
+                    return
                 }
-                file.acl.add({
-                    entity: 'allUsers',
-                    role: gcs.acl.READER_ROLE //gcs ->'@google-cloud/storage'
-                    },
-                    function(err, aclObject) {
-                        if (!err){
-                            let URL = "https://storage.googleapis.com/designexpresstec.appspot.com/" + file.id;
-                            platillos.doc(keyPlat).set({imagen:URL},{merge:true})
-                            res.send({status:true,data:URL});
-                        }
-                        else
-                            res.send({status:false,data:"No se pudieron establecer los servicios: " + err});
-                    });
-            });
-        }).catch(err =>{res.send({status:false,data:"Error obteniendo el platillo"})})
+                var mimeType = 'image/jpeg',
+                fileName = keyPlat+'.jpg',
+                imageBuffer = new Buffer(img, 'base64');
+                var file = bucket.file('platillos/' + fileName);
+                file.save(imageBuffer,{
+                    metadata: {contentType: mimeType}}, 
+                    error => {
+                    if (error) {
+                        res.send({status:false,data:'No se pudo subir la imagen.'});
+                    }
+                    file.acl.add({
+                        entity: 'allUsers',
+                        role: gcs.acl.READER_ROLE //gcs ->'@google-cloud/storage'
+                        },
+                        function(err, aclObject) {
+                            if (!err){
+                                let URL = "https://storage.googleapis.com/designexpresstec.appspot.com/" + file.id;
+                                platillos.doc(keyPlat).set({imagen:URL},{merge:true})
+                                res.send({status:true,data:`La URL del platillo ${keyPlat} ahora es ${URL}`});
+                            }
+                            else
+                                res.send({status:false,data:"No se pudieron establecer los servicios: " + err});
+                        });
+                });
+            }).catch(err =>{res.send({status:false,data:"Error obteniendo el platillo"})})
+        }
     } else  res.send({status:false,data:"Solo se admite POST"});
 })
 
-export const nuevoCliente = functions.https.onRequest((req, res) => {
+export const setUsuario = functions.https.onRequest((req, res) => {
     if (req.method == 'POST')
         if(isUndefined(req.body.nombre) || isUndefined(req.body.email) || isUndefined(req.body.telefono))
             res.send({status:false,data:"Faltan datos"})
@@ -475,7 +491,7 @@ export const nuevoCliente = functions.https.onRequest((req, res) => {
                 res.send({status:false,data:"Correo no valido"})
             else{
                 usuarios.doc(req.body.email).get().then(snapshot => {
-                    if(!snapshot.exists)
+                    if(!snapshot.exists && !(req.body.override== 'true'))
                         res.send({status:false,data:"Este correo electronico ya está registrado"})
                     else{
                         usuarios.doc(req.body.email).set({
