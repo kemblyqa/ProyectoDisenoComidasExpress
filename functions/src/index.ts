@@ -179,13 +179,10 @@ export const delPlatillo = functions.https.onRequest((req, res) => {
 
 export const itemCarro = functions.https.onRequest((req, res) => {
     if (req.method='POST'){
-        let ubicacion;
-        if (req.body.ubicacion=='local')
-            ubicacion=req.body.ubicacion;
-        else{
-            try{ubicacion = JSON.parse(req.body.ubicacion)
-                ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])}
-            catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
+        let ubicacion
+        try{ubicacion = JSON.parse(req.body.ubicacion)
+            ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])}
+        catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
         }
         let fecha;
         try{
