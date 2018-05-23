@@ -13,6 +13,15 @@ var usuarios = db.collection("Usuario");
 var platillos = db.collection("Platillo");
 var restaurantes = db.collection("Restaurante");
 var pedidos = db.collection("Pedido");
+
+//comprueba que todos los datos de la lista están definidos
+function allDefined(list){
+    for (let x = 0;x<list.lenght;x++)
+        if(list[x]==undefined)
+            return false
+    return undefined
+}
+
 export const categoria = functions.https.onRequest((req, res) => {
     if (req.method=="GET"){
         let query = platillos
@@ -53,7 +62,9 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
             query=query.where('restaurante','==',keyRest)
         if(nombre!=undefined)
             query=query.where('nombre','==',nombre)
-        query.orderBy("nombre").get()
+        else
+            query=query.orderBy('nombre')
+        query.get()
         .then((snapshot) => {
             if (snapshot.docs.length<=(pagina-1)*12)
                 res.send({status:true,data:[[],0]})
@@ -82,7 +93,7 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
             }
         }).catch((err) => {
             console.log(err)
-            res.send({status:false,data:'Error obteniendo documentos'})});
+            res.send({status:false,data:`Error obteniendo documentos ${err}`})});
     }
     else
         res.send({status:false,data:'Solicitud desconocida'});
@@ -512,4 +523,33 @@ export const setUsuario = functions.https.onRequest((req, res) => {
         }
     else
         res.send({status:false,data:"Este endpoint solo admite POST"})
+})
+
+export const setTarjeta = functions.https.onRequest((req, res) => {
+    let codigo = req.body.codigo
+    let numero = req.body.numero
+    let exp = req.body.exp
+    let dueño = req.body.dueño
+    let proveedor = req.body.proveedor
+    let email = req.body.email
+    if(!allDefined([codigo,numero,exp,dueño,proveedor,email]))
+        res.send({status:false,data:"Faltan valores"})
+    else{
+        usuarios.doc(email).get().then(user => {
+            if(!user.exists)
+                res.send({status:false,data:"El email especificado no existe"})
+            else{
+                user.doc(email).set({tarjeta:{codigo:codigo,numero:numero,proveedor:proveedor,vencimiento:exp,dueño:dueño}},{merge:true})
+                res.send({status:true,data:`Se ha especificado la tarjeta para el usuario ${email}`})
+            }
+        }).catch(err => {res.send({status:false,data:`Error procesando usuario,error : ${err}`})})
+    }
+})
+
+export const setRestaurante = functions.https.onRequest((req, res) => {
+    
+})
+
+export const delRestaurante = functions.https.onRequest((req, res) => {
+    
 })
