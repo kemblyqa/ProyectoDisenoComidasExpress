@@ -20,16 +20,22 @@
         <td *ngIf="order.ubicacion._latitude == undefined && order.ubicacion._longitude == undefined">
           Recoger aquí</td>
         <td *ngIf="order.ubicacion._latitude != undefined && order.ubicacion._longitude != undefined">
-          {{order.ubicacion._latitude}}°, {{order.ubicacion._longitude}}°</td>
+          <button (click)="openMapModal(order.ubicacion._latitude, order.ubicacion._longitude)"
+          class="btn-open-map"><i class="material-icons">
+            open_in_new
+            </i></button>  
+        </td>
         <td>{{order.entrega}}</td>  
-        <td style="text-align: center;vertical-align: middle"><div class="btn-group">
-          <button (click)="approveOrder(order.id)" class="btn-verify yes"><i class="material-icons">
-            check_circle
-            </i></button>
-          <button class="btn-verify no" (click)="modalDeclineOrder(order.id)"><i class="material-icons">
-            cancel
-            </i></button>
-        </div></td>
+        <td style="text-align: center">
+          <div class="btn-group">
+            <button (click)="approveOrder(order.id)" class="btn-verify yes"><i class="material-icons">
+              check_circle
+              </i></button>
+            <button class="btn-verify no" (click)="modalDeclineOrder(order.id)"><i class="material-icons">
+              cancel
+              </i></button>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -85,6 +91,24 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- open map modal -->
+<div class="modal" id="modalMap" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ubicación del cliente</h5>
+      </div>
+      <div class="modal-body">
+        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15">
+          <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+        </agm-map>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Volver</button>
       </div>
     </div>
   </div>
