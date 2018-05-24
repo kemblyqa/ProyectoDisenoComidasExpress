@@ -36,6 +36,9 @@ export class MenuRestaurantComponent{
   /* pagination */
   private totalPages:number
   private page:number = 1
+  /* image */
+  imgOpt:boolean = true
+
   constructor(private _router:Router, private _managerService:ManagerService) {
     this.initCustomCategories() 
     this.initAllCategories()
@@ -109,7 +112,7 @@ export class MenuRestaurantComponent{
     this.descriptionPlate = "" 
     this.namePlate = "" 
     this.pricePlate = null 
-    this.imagePlate = "" 
+    //this.imagePlate = "" 
     this.categoryPlate = this.catSelected 
     $("#modalCreateFood").modal({
       backdrop: 'static',
@@ -161,6 +164,18 @@ export class MenuRestaurantComponent{
     )
   }
 
+  onFileChange(event) {
+    let reader = new FileReader();
+    if(event.target.files && event.target.files.length > 0) {
+      let file = event.target.files[0];
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.imagePlate = reader.result
+        console.log(this.imgOpt)
+      };
+    }
+  }
+
   updatePlat(){ 
     this._managerService.modPlatillo(
       this.namePlate,
@@ -168,7 +183,6 @@ export class MenuRestaurantComponent{
       this.pricePlate,
       this.categoryPlate,
       this.restId,
-      this.imagePlate,
       this.currentPlate.id
     ).subscribe(
       success=>{
@@ -180,7 +194,25 @@ export class MenuRestaurantComponent{
           this.failedMessageModal(success.data)
       }
     )
-  } 
+  }
+  
+  updateImage(){
+    if(this.imgOpt){//if upload image
+      this._managerService.uploadImage(this.currentPlate.id,this.imagePlate,"")
+      .subscribe(
+        success=>{
+          if(success.status){
+            this.successMessageModal("Se ha actualizado el platillo correctamente.")
+            this.updateMenu()
+          } 
+          else 
+            this.failedMessageModal(success.data)
+        }
+      )
+    } else {
+      this._managerService.uploadImage(this.currentPlate.id, "",this.imagePlate)
+    }
+  }
 
   deletePlat(){
     this._managerService.delPlatillo(this.currentPlate.nombre, this.restId)
@@ -195,6 +227,7 @@ export class MenuRestaurantComponent{
       }
     )
   }
+
   getIdPlatillo(obj:Platillo):Platillo {
     return this.platillos.find(plate => plate.id == obj.id)
   }

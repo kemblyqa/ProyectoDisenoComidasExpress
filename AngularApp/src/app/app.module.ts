@@ -16,6 +16,7 @@ import { OrdersComponent } from './main/orders/orders.component';
 import { ApprovedComponent } from './main/orders/approved/approved.component';
 import { PendingComponent } from './main/orders/pending/pending.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     FormsModule,
     RouterModule.forRoot(ROUTES),
     HttpClientModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    AgmCoreModule.forRoot({
+      apiKey: "AIzaSyDzOmASaIIJpYk_uAIVc3pv7BVjTZjhYvE"
+    })
   ],
   providers: [
     ManagerService  

@@ -12,6 +12,7 @@ const ENDPOINT_MODPLATILLO = "modPlatillo"
 const ENDPOINT_DELPLATILLO = "delPlatillo" 
 const ENDPOINT_ALLORDERS = "filtroPedidos"
 const ENDPOINT_CHANGESTATUS = "setEstado"
+const ENDPOINT_IMAGE = "subirImagenPlatillo"
 
 @Injectable()
 export class ManagerService {
@@ -54,14 +55,13 @@ export class ManagerService {
         }) 
     } 
     /* edits a existing plate */
-    public modPlatillo(name:any, description:any, price:number, category: any, rest:string, image:any, id:any){ 
+    public modPlatillo(name:any, description:any, price:number, category: any, rest:string, id:any){ 
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_MODPLATILLO}`,{ 
             nombre: name, 
             descripcion: description, 
             precio: price,
             categoria: category, 
             keyRest: rest, 
-            imagen: image,
             keyPlat:id
         }) 
     } 
@@ -86,6 +86,14 @@ export class ManagerService {
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_CHANGESTATUS}`,{
             pedido: orderID,
             estado:status
+        })
+    }
+    /* uploads a image */
+    public uploadImage(id:any, base64Img:any, urlImg:any){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_IMAGE}`,{
+            keyPlat: id,
+            img: base64Img,
+            url:urlImg
         })
     }
 }

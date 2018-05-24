@@ -1,7 +1,8 @@
 import { ManagerService } from './../../../services/manager/manager.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ManagerModel } from '../../../models/manager.model';
 import { Pedido } from '../../../models/manager';
+
 declare var jquery:any;
 declare var $ :any;
 
@@ -24,12 +25,14 @@ export class ApprovedComponent {
   /* pagination */
   private page:number = 1
   private totalPages:number
+  /* gmaps api */
+  lat: number = 10.362167730785652
+  lng: number = -84.51030575767209
   constructor(private _managerService:ManagerService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getApprovedTableHeaders()
     this.getOrders()
   }
-  /* pagination */
   updateApprovedPagination(e){
     this.page = e
     this.getOrders()
@@ -47,6 +50,16 @@ export class ApprovedComponent {
   failedMessageModal(message:any){
     this.failedMessage = message
     $("#modalFailed").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
+  }
+  /* open map modal */
+  openMapModal(lat:any, lng:any){
+    this.lat = lat
+    this.lng = lng
+    $("#modalMap").modal({
       backdrop: 'static',
       keyboard: false,
       show: true

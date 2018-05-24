@@ -71,3 +71,17 @@ textarea {
 	text-align:center;  
 	box-shadow: 2px 2px 3px #999;
 }
+
+agm-map {
+    height: 300px;
+}
+
+.btn-open-map {
+    background-color: green;
+    color: white;
+    width:28px;
+	height:28px;
+    border-radius: 5%;
+    border: 0px;
+    text-align: center;
+}

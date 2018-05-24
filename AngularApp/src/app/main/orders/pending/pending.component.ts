@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ManagerModel } from '../../../models/manager.model';
 import { Pedido } from '../../../models/manager';
 import { ManagerService } from '../../../services/manager/manager.service';
+import { AgmMap } from '@agm/core';
 declare var jquery:any;
 declare var $ :any;
 
@@ -27,11 +28,25 @@ export class PendingComponent {
   /* pagination */
   private page:number = 1
   private totalPages:number = 0
+  /* gmaps api */
+  lat: number = 10.362167730785652
+  lng: number = -84.51030575767209
   constructor(private _managerService:ManagerService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getPendingTableHeaders()
     this.getOrders()
   }
+  /* open map modal */
+  openMapModal(lat:any, lng:any){
+    this.lat = lat
+    this.lng = lng
+    $("#modalMap").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
+  }
+
   /* pagination */
   updatePendingPagination(e){
     this.page = e
@@ -79,8 +94,8 @@ export class PendingComponent {
     )
   }
   /* declines order */
-  declineOrder(){
-    this._managerService.changeStatus(this.declineOrderId, "rechazado")//falta motivo
+  declineOrder(reason:any){
+    this._managerService.changeStatus(this.declineOrderId, ["rechazado",reason])//falta motivo
     .subscribe(
       success => {
         if(success.status){
@@ -95,7 +110,7 @@ export class PendingComponent {
   /* approves order */
   approveOrder(id:any){
     console.log(id)
-    this._managerService.changeStatus(id, "aprobado")
+    this._managerService.changeStatus(id, ["aprobado",""])
     .subscribe(
       success => {
         if(success.status){
