@@ -25,7 +25,7 @@
             <div class="card-body">
               <h5 class="card-title">{{plat.nombre}}</h5>
               <p class="card-text">{{plat.descripcion}}</p>
-              <p class="card-text">Precio: {{plat.precio}}</p> 
+              <p class="card-text">Precio: ₡{{plat.precio}}</p> 
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" (click)="editPlatModal(plat)" class="btn btn-sm btn-danger">Editar</button>
@@ -85,17 +85,38 @@
                     [value]="cat">{{cat}}</option> 
                   </select>
               </div> 
+            </div>
+            <div style="margin-top: 3%" class="form-group justify-content-center">
+              <h6>Agregar imagen a platillo</h6> 
+            </div>
+            <div class="form-group justify-content-center">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [(ngModel)]="imgOpt" name="imageOpts" id="upImg" [value]="true">
+                <label class="form-check-label" for="upImg">Subir imagen</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [(ngModel)]="imgOpt" name="imageOpts" id="lnkImg" [value]="false">
+                <label class="form-check-label" for="lnkImg">Link a imagen</label>
+              </div>
             </div> 
-            <div class="form-group row"> 
-              <label class="col-sm-3 col-form-label">Link a imagen: </label> 
-              <div class="col-sm-8"> 
+            <div *ngIf="!imgOpt" class="form-group row"> 
+              <div class="input-group col-sm-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Link </span>
+                </div>
                 <input type="text" [(ngModel)]="imagePlate" class="form-control" id="imageP" placeholder="Link nueva imagen..."> 
-              </div> 
+              </div>
             </div> 
+            <div *ngIf="imgOpt" class="form-group row">
+                <div class="input-group col-sm-12">
+                  <label for="imagenC">Elija una imagen de la computadora</label>
+                  <input (change)="onFileChange($event)" type="file" accept=".jpg, .jpeg" class="form-control-file" id="imagenC">
+                </div>
+            </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
-          <button type="button" (click)="updatePlat()" id="modalEditFoodSaveChanges" class="btn btn-danger" data-dismiss="modal">Guardar</button> 
+          <button type="button" (click)="updatePlat()" class="btn btn-danger" data-dismiss="modal">Guardar</button> 
         </div>
       </div>
     </div>
@@ -109,47 +130,41 @@
           <h5 class="modal-title">Nuevo platillo</h5>  
         </div>
         <div class="modal-body">
-            <div class="form-group row"> 
-              <label class="col-sm-3 col-form-label">Nombre: </label> 
-              <div class="col-sm-8"> 
-                <input type="text" [(ngModel)]="namePlate" class="form-control" id="nameP" placeholder="Nombre..."> 
-              </div> 
+          <div class="form-group row"> 
+            <label class="col-sm-3 col-form-label">Nombre: </label> 
+            <div class="col-sm-8"> 
+              <input type="text" [(ngModel)]="namePlate" class="form-control" id="nameP" placeholder="Nombre..."> 
             </div> 
-            <div class="form-group row"> 
-              <label class="col-sm-3 col-form-label">Descripción: </label> 
-              <div class="col-sm-8"> 
-                <textarea class="form-control" maxlength="150" [(ngModel)]="descriptionPlate" rows="4" placeholder="Pequeña descripción..."></textarea> 
-              </div> 
+          </div> 
+          <div class="form-group row"> 
+            <label class="col-sm-3 col-form-label">Descripción: </label> 
+            <div class="col-sm-8"> 
+              <textarea class="form-control" maxlength="150" [(ngModel)]="descriptionPlate" rows="4" placeholder="Pequeña descripción..."></textarea> 
             </div> 
-            <div class="form-group row"> 
-              <label class="col-sm-3 col-form-label">Precio: </label> 
-              <div class="col-sm-8"> 
-                <div class="input-group"> 
-                  <div class="input-group-prepend"> 
-                    <span class="input-group-text">₡</span> 
-                  </div> 
-                  <input type="text" [(ngModel)]="pricePlate" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Precio..."> 
-                  <div class="input-group-append"> 
-                    <span class="input-group-text">.00</span> 
-                  </div> 
+          </div> 
+          <div class="form-group row"> 
+            <label class="col-sm-3 col-form-label">Precio: </label> 
+            <div class="col-sm-8"> 
+              <div class="input-group"> 
+                <div class="input-group-prepend"> 
+                  <span class="input-group-text">₡</span> 
+                </div> 
+                <input type="text" [(ngModel)]="pricePlate" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Precio..."> 
+                <div class="input-group-append"> 
+                  <span class="input-group-text">.00</span> 
                 </div> 
               </div> 
             </div> 
-            <div class="form-group row"> 
-              <label class="col-sm-3 col-form-label">Categoría: </label> 
-              <div class="col-sm-8"> 
-                <select [(ngModel)]="categoryPlate" class="form-control opacity">
-                  <option *ngFor="let cat of allCategories"
-                    [value]="cat">{{cat}}</option> 
-                  </select>
-              </div> 
+          </div> 
+          <div class="form-group row"> 
+            <label class="col-sm-3 col-form-label">Categoría: </label> 
+            <div class="col-sm-8"> 
+              <select [(ngModel)]="categoryPlate" class="form-control opacity">
+                <option *ngFor="let cat of allCategories"
+                  [value]="cat">{{cat}}</option> 
+                </select>
             </div> 
-            <div class="form-group row"> 
-                <label class="col-sm-3 col-form-label">Link a imagen: </label> 
-                <div class="col-sm-8"> 
-                  <input type="text" [(ngModel)]="imagePlate" class="form-control" id="imageP" placeholder="Link imagen..."> 
-                </div> 
-              </div> 
+          </div> 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
@@ -160,7 +175,39 @@
   </div>
   
   <!-- MODALS ABOUT INFORMATION -->
-  <!-- delete platillo -->
+  <!-- confirmation modal -->
+  <div class="modal" id="modalSuccess" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Transacción exitosa</h5>
+        </div>
+        <div class="modal-body">
+          <p>{{successMessage}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- failed modal -->
+  <div class="modal" id="modalFailed" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Transacción fallida</h5>
+        </div>
+        <div class="modal-body">
+          <p>{{failedMessage}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- delete platillo -->
   <div class="modal" id="modalDelFood" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">

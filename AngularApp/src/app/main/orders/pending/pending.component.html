@@ -21,17 +21,17 @@
           Recoger aquí</td>
         <td *ngIf="order.ubicacion._latitude != undefined && order.ubicacion._longitude != undefined">
           <button (click)="openMapModal(order.ubicacion._latitude, order.ubicacion._longitude)"
-          class="btn-open-map"><i class="material-icons">
+          class="btn-open-map" ngbTooltip="Abrir en mapa"><i class="material-icons">
             open_in_new
             </i></button>  
         </td>
         <td>{{order.entrega}}</td>  
         <td style="text-align: center">
           <div class="btn-group">
-            <button (click)="approveOrder(order.id)" class="btn-verify yes"><i class="material-icons">
+            <button (click)="approveOrder(order.id)" class="btn-verify yes" ngbTooltip="Aprobar"><i class="material-icons">
               check_circle
               </i></button>
-            <button class="btn-verify no" (click)="modalDeclineOrder(order.id)"><i class="material-icons">
+            <button class="btn-verify no" (click)="modalDeclineOrder(order.id)" ngbTooltip="Rechazar"><i class="material-icons">
               cancel
               </i></button>
           </div>

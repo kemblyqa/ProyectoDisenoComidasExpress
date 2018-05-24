@@ -12,8 +12,6 @@ declare var $ :any;
   styleUrls: ['./pending.component.css']
 })
 export class PendingComponent {
-  lat: number = 10.362167730785652
-  lng: number = -84.51030575767209
   /* modal messages */
   private successMessage:any
   private failedMessage:any
@@ -31,89 +29,17 @@ export class PendingComponent {
   private page:number = 1
   private totalPages:number = 0
   /* gmaps api */
-  currentLat:any
-  currentLong:any
-  marker:any
+  lat: number = 10.362167730785652
+  lng: number = -84.51030575767209
   constructor(private _managerService:ManagerService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getPendingTableHeaders()
     this.getOrders()
   }
-  /* init method */
-  // ngOnInit() {
-  //   /* init map *//* default location (will be Santa Clara) */
-  //   var mapProp = {
-      
-  //     center: new google.maps.LatLng(),
-  //     zoom: 15,
-  //     mapTypeId: google.maps.MapTypeId.ROADMAP
-  //   };
-  //   this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-
-    // this.map.addListener('click', (e) => {
-    //   this.placeMarkerAndPanTo(e.latLng, this.map);
-    // });
- // }
-  // findMe() {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition((position) => {
-  //       this.showPosition(position);
-  //     });
-  //   } else {
-  //     alert("Geolocation is not supported by this browser.");
-  //   }
-  // }
-
-  // showClientPosition(lat:any, lng:any){
-  //   let location = new google.maps.LatLng(lat, lng);
-  //   this.map.panTo(location);
-
-  //   if (this.marker) {
-  //      this.marker.setPosition(location);
-  //   }
-  //   else {
-  //     this.marker = new google.maps.Marker({
-  //       position: location,
-  //       map: this.map
-  //     });
-  //   }
-  // }
-  // showPosition(position) {
-  //   this.currentLat = position.coords.latitude;
-  //   this.currentLong = position.coords.longitude;
-
-  //   let location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-  //   this.map.panTo(location);
-
-  //   if (this.marker) {
-  //      this.marker.setPosition(location);
-  //   }
-  //   else {
-  //     this.marker = new google.maps.Marker({
-  //       position: location,
-  //       map: this.map,
-  //       title: 'Got you!'
-  //     });
-  //   }
-  // }
-  /* find the place and puts a mark in map */
-  // placeMarkerAndPanTo(latLng:google.maps.LatLng, map) {
-  //   if (this.marker) {
-  //     this.marker.setPosition(latLng);
-  //   }
-  //   else {
-  //     this.marker = new google.maps.Marker({
-  //       position: latLng,
-  //       map: this.map,
-  //       title: 'Got you!'
-  //     });
-  //   }
-  //   console.log(latLng.lat())
-  //   map.panTo(latLng);
-  // }
   /* open map modal */
   openMapModal(lat:any, lng:any){
-    //this.showClientPosition(lat,lng)
+    this.lat = lat
+    this.lng = lng
     $("#modalMap").modal({
       backdrop: 'static',
       keyboard: false,
@@ -168,8 +94,8 @@ export class PendingComponent {
     )
   }
   /* declines order */
-  declineOrder(){
-    this._managerService.changeStatus(this.declineOrderId, "rechazado")//falta motivo
+  declineOrder(reason:any){
+    this._managerService.changeStatus(this.declineOrderId, ["rechazado",reason])//falta motivo
     .subscribe(
       success => {
         if(success.status){
@@ -184,7 +110,7 @@ export class PendingComponent {
   /* approves order */
   approveOrder(id:any){
     console.log(id)
-    this._managerService.changeStatus(id, "aprobado")
+    this._managerService.changeStatus(id, ["aprobado",""])
     .subscribe(
       success => {
         if(success.status){
