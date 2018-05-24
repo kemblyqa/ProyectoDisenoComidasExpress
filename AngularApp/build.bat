@@ -1,2 +1,1 @@
 ng build -w
-pause
