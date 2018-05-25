@@ -30,6 +30,8 @@
       {"source":"/api/setEstado", "function":"setEstado"},
       {"source":"/api/subirImagenPlat", "function":"subirImagenPlat"},
       {"source":"/api/setUsuario", "function":"setUsuario"},
+      {"source":"/api/setTarjeta", "function":"setTarjeta"},
+      {"source":"/api/addRestaurante", "function":"addRestaurante"},
       {"source": "**","destination": "/index.html"}
     ]
   },

@@ -22,6 +22,21 @@ function allDefined(list){
     return undefined
 }
 
+function base64MimeType(encoded){
+    var result = null;
+  
+    if (typeof encoded !== 'string') {
+      return result;
+    }
+  
+    var mime = encoded.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*/);
+    if (mime && mime.length) {
+      result = mime[1];
+    }
+  
+    return result;
+}
+
 export const categoria = functions.https.onRequest((req, res) => {
     if (req.method=="GET"){
         let query = platillos
@@ -102,12 +117,11 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
 export const addPlatillo = functions.https.onRequest((req, res) => {
     if (req.method='POST'){
         let descripcion = req.body.descripcion
-        let imagen = req.body.imagen
         let categoria = req.body.categoria
         let keyRest = req.body.keyRest
         let nombre = req.body.nombre
         let precio = parseInt(req.body.precio)
-        if (descripcion==undefined || imagen==undefined || keyRest==undefined ||categoria==undefined||nombre==undefined || precio==undefined || isNaN(precio) || precio<0){
+        if (descripcion==undefined || keyRest==undefined ||categoria==undefined||nombre==undefined || precio==undefined || isNaN(precio) || precio<0){
             res.send({status:false,data:"Falta un dato"})
             return
         }
@@ -119,7 +133,7 @@ export const addPlatillo = functions.https.onRequest((req, res) => {
                 if(!snapshot2.exists)
                     res.send({status:false,data:"El restaurante no existe"})
                 else
-                platillos.add({restaurante:keyRest,imagen:imagen,categoria:categoria,descripcion:descripcion,nombre:nombre,precio:precio}).then(ref =>{
+                platillos.add({restaurante:keyRest,categoria:categoria,descripcion:descripcion,nombre:nombre,precio:precio}).then(ref =>{
                     res.send({status:true,data:ref.id})
                 }).catch(err=>{res.send({status:false,data:"Error inesperado en la base de datos"})})
             }).catch(err=>{res.send({status:false,data:"Error insertando platillo"})})
@@ -132,12 +146,11 @@ export const addPlatillo = functions.https.onRequest((req, res) => {
 export const modPlatillo = functions.https.onRequest((req, res) => {
     if (req.method='POST'){
         let descripcion = req.body.descripcion
-        let imagen = req.body.imagen
         let categoria = req.body.categoria
         let nombre = req.body.nombre
         let precio = Number(req.body.precio)
         let keyPlat = req.body.keyPlat
-        if (descripcion==undefined || keyPlat==undefined || imagen==undefined || categoria==undefined||nombre==undefined || precio==undefined || isNaN(precio) || precio<0){
+        if (descripcion==undefined || keyPlat==undefined || categoria==undefined||nombre==undefined || precio==undefined || isNaN(precio) || precio<0){
             res.send({status:false,data:"Faltan datos"})
             return
         }
@@ -151,7 +164,6 @@ export const modPlatillo = functions.https.onRequest((req, res) => {
                             nombre:nombre,
                             precio:precio,
                             categoria:categoria,
-                            imagen:imagen,
                             descripcion:descripcion
                         },  {merge:true})
                         res.send({status:true,data:keyPlat})
@@ -341,6 +353,7 @@ export const filtroPedidos = functions.https.onRequest((req, res) => {
             query=query.where('estado','==',estado)
         if(email!=undefined)
             query=query.where('email','==',email)
+        query.orderBy('fecha')
         query.get().then(items => {
             if (items.docs.length<=(pagina-1)*10)
                 res.send({status:true,data:[[],0]})
@@ -459,13 +472,24 @@ export const subirImagenPlat = functions.https.onRequest((req, res) => {
                     res.send({status:false,data:"El platillo solicitado no existe"})
                     return
                 }
-                var mimeType = 'image/jpeg',
-                fileName = keyPlat+'.jpg',
-                imageBuffer = new Buffer(img, 'base64');
+                img = img.split(',')
+                var mimeType = base64MimeType(img[0]);
+                if(mimeType==undefined){
+                    res.send({status:false,data:"La imagen enviada es invalida"})
+                    return
+                }
+                var tag = mimeType.split('/');
+                if(tag[0]!='image'){
+                    res.send({status:false,data:"La imagen enviada es invalida"})
+                    return
+                }
+                var fileName = keyPlat+'.'+tag[1]
+                var imageBuffer = new Buffer(img[1], 'base64');
                 var file = bucket.file('platillos/' + fileName);
                 file.save(imageBuffer,{
                     metadata: {contentType: mimeType}}, 
                     error => {
+                        console.log(file)
                     if (error) {
                         res.send({status:false,data:'No se pudo subir la imagen.'});
                     }
@@ -475,7 +499,7 @@ export const subirImagenPlat = functions.https.onRequest((req, res) => {
                         },
                         function(err, aclObject) {
                             if (!err){
-                                let URL = "https://storage.googleapis.com/designexpresstec.appspot.com/" + file.id;
+                                let URL = file.metadata.mediaLink
                                 platillos.doc(keyPlat).set({imagen:URL},{merge:true})
                                 res.send({status:true,data:`La URL del platillo ${keyPlat} ahora es ${URL}`});
                             }
@@ -502,21 +526,17 @@ export const setUsuario = functions.https.onRequest((req, res) => {
                 res.send({status:false,data:"Correo no valido"})
             else{
                 usuarios.doc(req.body.email).get().then(snapshot => {
-                    if(!snapshot.exists && !(req.body.override== 'true'))
+                    if(snapshot.exists && !(req.body.override== 'true'))
                         res.send({status:false,data:"Este correo electronico ya está registrado"})
                     else{
-                        usuarios.doc(req.body.email).set({
-                            nombre:req.body.nombre,
-                            telefono:req.body.telefono,
-                            ubicacion:ubicacion,
-                            restaurantes:[],
-                            tarjeta:{
-                                codigo:undefined,
-                                dueño:undefined,
-                                numero:undefined,
-                                proveedor:undefined,
-                                vencimiento:undefined}})
-                        res.send({status:true,data:`Bienvenido, ${req.body.nombre}` })
+                        try{
+                            console.log(`Bienvenido, ${req.body.nombre}`)
+                            usuarios.doc(req.body.email).set({
+                                nombre:req.body.nombre,
+                                telefono:req.body.telefono,
+                                ubicacion:ubicacion})
+                            res.send({status:true,data:`Bienvenido, ${req.body.nombre}` })
+                        }catch(e){console.log(e)}
                     }
                 }).catch(err => {res.send({status:false,data:"Error obteniendo datos de servidor"})})
             }
@@ -532,8 +552,8 @@ export const setTarjeta = functions.https.onRequest((req, res) => {
     let dueño = req.body.dueño
     let proveedor = req.body.proveedor
     let email = req.body.email
-    if(!allDefined([codigo,numero,exp,dueño,proveedor,email]))
-        res.send({status:false,data:"Faltan valores"})
+    if(!allDefined([codigo,numero,exp,dueño,proveedor,email]) || !(/([\d]{4})(-[\d]{4}){3}/gm).test(numero) || !(/\d{2}\/\d{2}\/\d{2}/gm).test(exp) || isNaN(parseInt(codigo)))
+        res.send({status:false,data:"Faltan valores o no son correctos"})
     else{
         usuarios.doc(email).get().then(user => {
             if(!user.exists)
@@ -546,10 +566,41 @@ export const setTarjeta = functions.https.onRequest((req, res) => {
     }
 })
 
-export const setRestaurante = functions.https.onRequest((req, res) => {
-    
-})
-
-export const delRestaurante = functions.https.onRequest((req, res) => {
-    
+export const addRestaurante = functions.https.onRequest((req, res) => {
+    if(req.method=='POST'){
+        let nombre = req.body.nombre
+        let empresa = req.body.empresa
+        let descripcion = req.body.descripcion
+        let ubicacion = req.body.ubicacion
+        let horario = req.body.horario
+        let email = req.body.email
+        if(allDefined([nombre,empresa,descripcion,ubicacion[0],ubicacion[1],horario]))
+            res.send({status:false,data:"Faltan Datos"})
+        else{
+            try{ubicacion = JSON.parse(req.body.ubicacion)
+                ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])}
+            catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
+            let regh = /\[\[((\[([0-1]?\d|2[0-3]),[0-5]\d\])(,\[([0-1]?\d|2[0-3]),[0-5]\d\])*)?\](,\[((\[([0-1]?\d|2[0-3]),[0-5]\d\])(,\[([0-1]?\d|2[0-3]),[0-5]\d\])*)?\]){6}\]/gm
+            if(!regh.test(horario))
+                res.send({status:false,data:"Formato de horario no valido, debe ser una lista de 6 (lista de tuplas numericas)"})
+            else{
+                horario = JSON.parse(horario)
+                usuarios.doc(email).get().then(user =>{
+                    if(user.exists){
+                        restaurantes.add({nombre: nombre,empresa:empresa,descripcion:descripcion,horario:horario,ubicacion:ubicacion}).then(ref =>{
+                            usuarios.doc(email).set({restaurantes:user.data().restaurantes.concat([ref.id])})
+                            res.send({status:true,data:"Restaurante creado"})
+                        })
+                    }
+                    else{
+                        res.send({status:false,data:"Este usuario no existe"})
+                    }
+                    
+                }).catch(e => {res.send({status:false,data:"Error obteniendo usuario: ",e});return})
+            }
+        }
+    }
+    else{
+        res.send({status:false,data:"Este metodo solo admite POST"})
+    }
 })
