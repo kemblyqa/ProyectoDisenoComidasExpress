@@ -44,14 +44,13 @@ export class ManagerService {
         }) 
     } 
     /* add a new plate */
-    public addPlatillo(name:any, description:any, price:number, category: any, rest:string, image:any){ 
+    public addPlatillo(name:any, description:any, price:number, category: any, rest:string){ 
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_ADDPLATILLO}`,{ 
             nombre: name, 
             descripcion: description, 
             precio: price,
             categoria: category, 
-            keyRest: rest, 
-            imagen: image 
+            keyRest: rest
         }) 
     } 
     /* edits a existing plate */
@@ -62,7 +61,7 @@ export class ManagerService {
             precio: price,
             categoria: category, 
             keyRest: rest, 
-            keyPlat:id
+            keyPlat: id
         }) 
     } 
     /* deletes a existing plate */
@@ -89,10 +88,15 @@ export class ManagerService {
         })
     }
     /* uploads a image */
-    public uploadImage(id:any, base64Img:any, urlImg:any){
+    public uploadBase64Image(id:any, base64Img:any){
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_IMAGE}`,{
             keyPlat: id,
-            img: base64Img,
+            img: base64Img
+        })
+    }
+    public uploadUrlImage(id:any, urlImg:any){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_IMAGE}`,{
+            keyPlat: id,
             url:urlImg
         })
     }
