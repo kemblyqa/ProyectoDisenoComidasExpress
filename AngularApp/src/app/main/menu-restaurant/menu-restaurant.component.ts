@@ -49,11 +49,7 @@ export class MenuRestaurantComponent{
     this._managerService.getRestCategories(this.restId) 
     .subscribe( 
       res => { 
-        if(res.status){ 
-          this.categories = res.data 
-        }
-        else 
-          this.failedMessageModal(res.data)
+        res.status ? this.categories = res.data : this.failedMessageModal(res.data)
       } 
     ) 
   }
@@ -62,11 +58,7 @@ export class MenuRestaurantComponent{
     this._managerService.getAllCategories()
     .subscribe(
       res => {
-        if(res.status){
-          this.allCategories = res.data
-        }
-        else 
-          this.failedMessageModal(res.data)
+        res.status ? this.allCategories = res.data : this.failedMessageModal(res.data)
       }
     )
   } 
@@ -150,16 +142,11 @@ export class MenuRestaurantComponent{
       this.descriptionPlate,
       this.pricePlate,
       this.categoryPlate,
-      this.restId,
-      this.imagePlate  
+      this.restId
     ).subscribe(
       success=>{
-        if(success.status){
-          this.successMessageModal("Se ha creado el nuevo platillo correctamente.")
-          this.updateMenu()
-        } 
-        else 
-          this.failedMessageModal(success.data)
+        success.status ? this.successMessageModal("Se ha creado el nuevo platillo correctamente.") : this.failedMessageModal(success.data)
+        this.updateMenu()
       }
     )
   }
@@ -169,65 +156,57 @@ export class MenuRestaurantComponent{
     if(event.target.files && event.target.files.length > 0) {
       let file = event.target.files[0];
       reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.imagePlate = reader.result
-        console.log(this.imgOpt)
-      };
+      reader.onload = () => { this.imagePlate = reader.result };
     }
   }
-
+  /* updates platillo */
   updatePlat(){ 
-    this._managerService.modPlatillo(
-      this.namePlate,
-      this.descriptionPlate,
-      this.pricePlate,
-      this.categoryPlate,
-      this.restId,
-      this.currentPlate.id
-    ).subscribe(
-      success=>{
-        if(success.status){
-          this.successMessageModal("Se ha actualizado el platillo correctamente.")
-          this.updateMenu()
-        } 
-        else 
-          this.failedMessageModal(success.data)
-      }
-    )
+    // this._managerService.modPlatillo(
+    //   this.namePlate,
+    //   this.descriptionPlate,
+    //   this.pricePlate,
+    //   this.categoryPlate,
+    //   this.restId,
+    //   this.currentPlate.id
+    // ).subscribe(
+    //   success=>{
+    //     success.status ? this.updateImage() : this.failedMessageModal(success.data)
+    //     this.updateMenu()
+    //   }
+    // )
+    console.log("alfo")
   }
-  
+  /* updates platillo image*/
   updateImage(){
     if(this.imgOpt){//if upload image
-      this._managerService.uploadImage(this.currentPlate.id,this.imagePlate,"")
+      this._managerService.uploadBase64Image(this.currentPlate.id,this.imagePlate)
       .subscribe(
         success=>{
-          if(success.status){
-            this.successMessageModal("Se ha actualizado el platillo correctamente.")
-            this.updateMenu()
-          } 
-          else 
-            this.failedMessageModal(success.data)
+          success.status ? this.successMessageModal("Se ha actualizado el platillo correctamente.") : this.failedMessageModal(success.data)
+          this.updateMenu()
         }
       )
-    } else {
-      this._managerService.uploadImage(this.currentPlate.id, "",this.imagePlate)
+    } else {//image url
+      this._managerService.uploadUrlImage(this.currentPlate.id,this.imagePlate)
+      .subscribe(
+        success=>{
+          success.status ? this.successMessageModal("Se ha actualizado el platillo correctamente.") : this.failedMessageModal(success.data)
+          this.updateMenu()
+        }
+      )
     }
   }
-
+  /* deletes platiilo */
   deletePlat(){
     this._managerService.delPlatillo(this.currentPlate.nombre, this.restId)
     .subscribe(
       success=>{
-        if(success.status){
-          this.successMessageModal("Se ha eliminado el platillo correctamente.")
-          this.updateMenu()
-        } 
-        else 
-          this.failedMessageModal(success.data)
+        success.status ? this.successMessageModal("Se ha eliminado el platillo correctamente.") : this.failedMessageModal(success.data)
+        this.updateMenu()
       }
     )
   }
-
+  /* get platillo object from list by id */
   getIdPlatillo(obj:Platillo):Platillo {
     return this.platillos.find(plate => plate.id == obj.id)
   }
