@@ -31,10 +31,20 @@ export class PendingComponent {
   /* gmaps api */
   lat: number = 10.362167730785652
   lng: number = -84.51030575767209
+  /* interval */
+  private ordersInterval:any
   constructor(private _managerService:ManagerService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getPendingTableHeaders()
     this.getOrders()
+  }
+  ngOnInit(){
+    this.ordersInterval = setInterval(()=>{
+      this.getOrders()
+    },3000)
+  }
+  ngOnDestroy(){
+    clearInterval(this.ordersInterval)
   }
   /* open map modal */
   openMapModal(lat:any, lng:any){
@@ -46,7 +56,6 @@ export class PendingComponent {
       show: true
     })
   }
-
   /* pagination */
   updatePendingPagination(e){
     this.page = e
@@ -94,16 +103,12 @@ export class PendingComponent {
     )
   }
   /* declines order */
-  declineOrder(reason:any){
-    this._managerService.changeStatus(this.declineOrderId, ["rechazado",reason])//falta motivo
+  declineOrder(){
+    this._managerService.changeStatus(this.declineOrderId, ["rechazado",this.declineReason])//falta motivo
     .subscribe(
       success => {
-        if(success.status){
-          this.successMessageModal(success.data)
-          this.getOrders()
-        } else {
-          this.failedMessageModal(success.data)
-        }
+        success.status ? this.successMessageModal(success.data):this.failedMessageModal(success.data)
+        this.getOrders()
       }
     )
   }
@@ -113,12 +118,8 @@ export class PendingComponent {
     this._managerService.changeStatus(id, ["aprobado",""])
     .subscribe(
       success => {
-        if(success.status){
-          this.successMessageModal(success.data)
-          this.getOrders()
-        } else {
-          this.failedMessageModal(success.data)
-        }
+        success.status ? this.successMessageModal(success.data):this.failedMessageModal(success.data)
+        this.getOrders()
       }
     )
   }

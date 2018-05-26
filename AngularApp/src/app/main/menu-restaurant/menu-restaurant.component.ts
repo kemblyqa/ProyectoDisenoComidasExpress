@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import { Platillo, StatusData } from './../../models/manager';
 import { ManagerService } from './../../services/manager/manager.service';
 import { ManagerModel } from '../../models/manager.model';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 declare var jquery:any;
@@ -13,7 +13,7 @@ declare var $ :any;
   templateUrl: './menu-restaurant.component.html',
   styleUrls: ['./menu-restaurant.component.css']
 })
-export class MenuRestaurantComponent{
+export class MenuRestaurantComponent implements OnInit {
   /* modal messages */
   private successMessage:any
   private failedMessage:any
@@ -38,12 +38,13 @@ export class MenuRestaurantComponent{
   private page:number = 1
   /* image */
   imgOpt:boolean = true
-
   constructor(private _router:Router, private _managerService:ManagerService) {
+    this.totalPages = 0 
+  }
+  ngOnInit(){
     this.initCustomCategories() 
     this.initAllCategories()
-    this.totalPages = 0 
-  } 
+  }
   /* inits categories to show platillos */ 
   initCustomCategories(){ 
     this._managerService.getRestCategories(this.restId) 
