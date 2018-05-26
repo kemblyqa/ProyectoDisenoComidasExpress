@@ -32,6 +32,7 @@
       {"source":"/api/setUsuario", "function":"setUsuario"},
       {"source":"/api/setTarjeta", "function":"setTarjeta"},
       {"source":"/api/addRestaurante", "function":"addRestaurante"},
+      {"source":"/api/modRestaurante", "function":"modRestaurante"},
       {"source": "**","destination": "/index.html"}
     ]
   },

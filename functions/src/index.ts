@@ -13,13 +13,14 @@ var usuarios = db.collection("Usuario");
 var platillos = db.collection("Platillo");
 var restaurantes = db.collection("Restaurante");
 var pedidos = db.collection("Pedido");
+let dias=[ 'l', 'k', 'm', 'j', 'v', 's', 'd' ]
 
 //comprueba que todos los datos de la lista están definidos
 function allDefined(list){
     for (let x = 0;x<list.lenght;x++)
         if(list[x]==undefined)
             return false
-    return undefined
+    return true
 }
 
 function base64MimeType(encoded){
@@ -35,6 +36,34 @@ function base64MimeType(encoded){
     }
   
     return result;
+}
+
+function getHorario(h:string){
+    let bien = true
+    try{
+        let horario=JSON.parse(h)
+        dias.forEach(x=>{
+            if(horario[x]==undefined){
+                bien=false
+                return undefined
+            }
+            for(let y = 0; horario[x][y]!=undefined; y++){
+                if(
+                    horario[x][y].init==undefined || 
+                    horario[x][y].end==undefined || 
+                    horario[x][y].init>horario[x][y].end || 
+                    horario[x][y].init<0 ||
+                    horario[x][y].end>1440){
+                        bien=false
+                        return undefined
+                    }
+            };
+        })
+        if(bien)
+            return horario
+        else
+            return undefined
+    }catch(e){return undefined}
 }
 
 export const categoria = functions.https.onRequest((req, res) => {
@@ -316,7 +345,7 @@ export const caja = functions.https.onRequest((req, res) => {
                                     precio:platillo.data().precio,
                                     fecha:carrito[item].fecha,
                                     cantidad:carrito[item].cantidad
-                                    ,estado:"pendiente"}).then(ref=>{
+                                    ,estado:{proceso:"pendiente"}}).then(ref=>{
                                     delete carrito[item]
                                     if(Object.keys(carrito).length==0){
                                         save(email,carrito)
@@ -350,7 +379,7 @@ export const filtroPedidos = functions.https.onRequest((req, res) => {
         if(restaurante!=undefined)
             query=query.where('restaurante','==',restaurante)
         if(estado!=undefined)
-            query=query.where('estado','==',estado)
+            query=query.where('estado.proceso','==',estado)
         if(email!=undefined)
             query=query.where('email','==',email)
         query.orderBy('fecha')
@@ -416,20 +445,21 @@ export const verCarrito = functions.https.onRequest((req, res) => {
 export const setEstado = functions.https.onRequest((req, res) => {
     if(req.method=='POST'){
         let keyPedido = req.body.pedido
-        let estado = req.body.estado
-        if(keyPedido==undefined || estado[0]=="pendiente" || estado[0]==undefined || (estado[0]!="aprobado" && estado[0]!="rechazado"&&estado[0]!="finalizado"))
+        let proceso = req.body.proceso
+        let razon = req.body.razon
+        if(keyPedido==undefined || proceso=="pendiente" || (proceso="rechazado" && razon == undefined) || proceso==undefined || (proceso!="aprobado" && proceso!="rechazado"&&proceso[0]!="finalizado"))
             res.send({status:false,data:"Datos no validos"})
         else{
             pedidos.doc(keyPedido).get().then(pedido => {
                 if(pedido.exists){
-                    let pEstado=pedido.data().estado
-                    if(pEstado[0]=="pendiente" && estado[0]=="finalizado")
+                    let pEstado=pedido.data().estado.proceso
+                    if(pEstado[0]=="pendiente" && proceso=="finalizado")
                         res.send({status:false,data:"No se puede finalizar un producto pendiente"})
                     else if(pEstado[0]=="rechazado" || pEstado[0]=="finalizado")
                         res.send({status:false,data:"No se puede modificar el estado \"rechazado\" ni \"finalizado\""})
                     else{
-                        pedidos.doc(keyPedido).set({estado:estado},{merge:true})
-                        res.send({status:true,data:"El pedido " + keyPedido + " ha sido " + estado[0]})
+                        pedidos.doc(keyPedido).set({estado:{proceso:proceso,razon:razon}},{merge:true})
+                        res.send({status:true,data:"El pedido " + keyPedido + " ha sido " + proceso})
                     }
                 }
                 else
@@ -572,31 +602,69 @@ export const addRestaurante = functions.https.onRequest((req, res) => {
         let empresa = req.body.empresa
         let descripcion = req.body.descripcion
         let ubicacion = req.body.ubicacion
-        let horario = req.body.horario
+        let horario = getHorario(req.body.horario)
         let email = req.body.email
-        if(allDefined([nombre,empresa,descripcion,ubicacion[0],ubicacion[1],horario]))
+        if(!allDefined([nombre,empresa,descripcion,ubicacion[0],ubicacion[1],horario])){
             res.send({status:false,data:"Faltan Datos"})
+            return
+        }
         else{
             try{ubicacion = JSON.parse(req.body.ubicacion)
                 ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])}
             catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
-            let regh = /\[\[((\[([0-1]?\d|2[0-3]),[0-5]\d\])(,\[([0-1]?\d|2[0-3]),[0-5]\d\])*)?\](,\[((\[([0-1]?\d|2[0-3]),[0-5]\d\])(,\[([0-1]?\d|2[0-3]),[0-5]\d\])*)?\]){6}\]/gm
-            if(!regh.test(horario))
-                res.send({status:false,data:"Formato de horario no valido, debe ser una lista de 6 (lista de tuplas numericas)"})
+            if(horario==undefined)
+                res.send({status:false,data:"Formato de horario no valido, debe ser una lista de 7 (lista de tuplas numericas)"})
             else{
-                horario = JSON.parse(horario)
                 usuarios.doc(email).get().then(user =>{
                     if(user.exists){
-                        restaurantes.add({nombre: nombre,empresa:empresa,descripcion:descripcion,horario:horario,ubicacion:ubicacion}).then(ref =>{
-                            usuarios.doc(email).set({restaurantes:user.data().restaurantes.concat([ref.id])})
+                        let data = {
+                            nombre: nombre,
+                            empresa:empresa,
+                            descripcion:descripcion,
+                            horario:horario,
+                            ubicacion:ubicacion}
+                        restaurantes.add(data).then(ref =>{
+                            let rests = user.data().restaurantes==undefined?[]:user.data().restaurantes
+                            rests.push(ref.id)
+                            usuarios.doc(email).set({restaurantes:rests},{merge:true})
                             res.send({status:true,data:"Restaurante creado"})
-                        })
+                        }).catch(e => {res.send({status:false,data:"Error insertando restaurante: ",e});return})
                     }
                     else{
                         res.send({status:false,data:"Este usuario no existe"})
                     }
                     
                 }).catch(e => {res.send({status:false,data:"Error obteniendo usuario: ",e});return})
+            }
+        }
+    }
+    else{
+        res.send({status:false,data:"Este metodo solo admite POST"})
+    }
+})
+
+export const modRestaurante = functions.https.onRequest((req, res) => {
+    if(req.method=='POST'){
+        let nombre = req.body.nombre
+        let empresa = req.body.empresa
+        let descripcion = req.body.descripcion
+        let ubicacion = req.body.ubicacion
+        let horario = getHorario(req.body.horario)
+        console.log(getHorario(req.body.horario))
+        let keyRest = req.body.keyRest
+        if(!allDefined([nombre,empresa,descripcion,ubicacion[0],ubicacion[1],horario,keyRest]))
+            res.send({status:false,data:"Faltan Datos"})
+        else{
+            try{ubicacion = JSON.parse(req.body.ubicacion)
+                ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])}
+            catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
+            if(horario==null)
+                res.send({status:false,data:"Formato de horario no valido, debe ser una lista de 7 (lista de tuplas numericas)"})
+            else{
+                restaurantes.doc(keyRest).update({nombre: nombre,empresa:empresa,descripcion:descripcion,horario:horario,ubicacion:ubicacion}).then(ref =>{
+                res.send({status:true,data:"Restaurante modificado"})
+                    
+                }).catch(e => {res.send({status:false,data:"Error modificando restaurante: ",e});return})
             }
         }
     }
