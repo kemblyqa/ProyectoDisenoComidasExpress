@@ -13,7 +13,7 @@ var usuarios = db.collection("Usuario");
 var platillos = db.collection("Platillo");
 var restaurantes = db.collection("Restaurante");
 var pedidos = db.collection("Pedido");
-let dias=[ 'l', 'k', 'm', 'j', 'v', 's', 'd' ]
+let dias=[ 'd','l', 'k', 'm', 'j', 'v', 's' ]
 
 //comprueba que todos los datos de la lista están definidos
 function allDefined(list){
@@ -66,6 +66,17 @@ function getHorario(h:string){
     }catch(e){return undefined}
 }
 
+function enHorario(pedido:Date,horario:Object) : boolean{
+    let dia = pedido.getDay()
+    let min = (pedido.getHours()*60) + pedido.getMinutes()
+    let atencion:Array<{init:number,end:number}> = horario[dias[dia]]
+    let aceptado:boolean = false 
+    atencion.forEach(e =>{
+        if(e.init<=min && e.end>=min)
+            aceptado=true
+    })
+    return aceptado
+}
 export const categoria = functions.https.onRequest((req, res) => {
     if (req.method=="GET"){
         let query = platillos
@@ -269,7 +280,12 @@ export const itemCarro = functions.https.onRequest((req, res) => {
                 usuarios.doc(email).get()
                 .then(usuario =>
                     {
-                        if(usuario.exists){
+                    if(usuario.exists){
+                        restaurantes.doc(keyRest).get().then(rest =>{
+                            if(!enHorario(fecha,rest.data().horario)){
+                                res.send({status:false,data:"El pedido no se ha realizado dentro del horario de atención del restaurante"})
+                                return
+                            }
                             let carrito = usuario.data().carrito
                             if(carrito[snapshot.docs[0].id]!=undefined && !override){
                                 res.send({status:false,data:"El platillo a insertar ya se encuentra en tu carrito, puedes editarlo"})
@@ -284,11 +300,13 @@ export const itemCarro = functions.https.onRequest((req, res) => {
                             })
                             .catch(function(error) 
                             {res.send({status:false,data:"Error de conexión en la base de datos"})})
+                        
+                        }).catch(err=> {
+                            res.send({status:false,data:`Error obteniendo restaurante: ${JSON.stringify(err)}`})})
                         }
-                        else
-                            res.send({status:false,data:"El usuario solicitado no existe"})
-                    })
-                    .catch(err=> {res.send({status:false,data:"Error de conexión en la base de datos"})})
+                    else
+                        res.send({status:false,data:"El usuario solicitado no existe"})
+                }).catch(err=> {res.send({status:false,data:"Error de conexión en la base de datos"})})
             }
         }).catch(err=>{res.send({status:false,data:"Error insertando platillo"})})
     }
@@ -453,18 +471,18 @@ export const setEstado = functions.https.onRequest((req, res) => {
             pedidos.doc(keyPedido).get().then(pedido => {
                 if(pedido.exists){
                     let pEstado=pedido.data().estado.proceso
-                    if(pEstado[0]=="pendiente" && proceso=="finalizado")
+                    if(pEstado=="pendiente" && proceso=="finalizado")
                         res.send({status:false,data:"No se puede finalizar un producto pendiente"})
-                    else if(pEstado[0]=="rechazado" || pEstado[0]=="finalizado")
+                    else if(pEstado=="rechazado" || pEstado=="finalizado")
                         res.send({status:false,data:"No se puede modificar el estado \"rechazado\" ni \"finalizado\""})
                     else{
-                        pedidos.doc(keyPedido).set({estado:{proceso:proceso,razon:razon}},{merge:true})
+                        pedidos.doc(keyPedido).set({estado:{proceso:proceso,razon:razon==undefined?"":razon}},{merge:true})
                         res.send({status:true,data:"El pedido " + keyPedido + " ha sido " + proceso})
                     }
                 }
                 else
                     res.send({status:false,data:"El pedido solicitado no existe"})
-            })
+            }).catch(err=>{res.send({status:false,data:"Error obteniendo pedido: ",err})})
         }
     }
     else
@@ -564,9 +582,10 @@ export const setUsuario = functions.https.onRequest((req, res) => {
                             usuarios.doc(req.body.email).set({
                                 nombre:req.body.nombre,
                                 telefono:req.body.telefono,
-                                ubicacion:ubicacion})
+                                ubicacion:ubicacion,
+                                carrito:{}})
                             res.send({status:true,data:`Bienvenido, ${req.body.nombre}` })
-                        }catch(e){console.log(e)}
+                        }catch(e){res.send({status:false,data:"Error insertando usuario: " e})}
                     }
                 }).catch(err => {res.send({status:false,data:"Error obteniendo datos de servidor"})})
             }
