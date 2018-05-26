@@ -1,5 +1,5 @@
 import { ManagerService } from './../../../services/manager/manager.service';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ManagerModel } from '../../../models/manager.model';
 import { Pedido } from '../../../models/manager';
 
@@ -82,15 +82,11 @@ export class ApprovedComponent {
   }
   /* finish orders */
   isFinished(id:any){
-    this._managerService.changeStatus(id, ["finalizado",""])
+    this._managerService.approveStatus(id, "finalizado")
     .subscribe(
       success => {
-        if(success.status){
-          this.successMessageModal(success.data)
-          this.getOrders()
-        } else {
-          this.failedMessageModal(success.data)
-        }
+        success.status ? this.successMessageModal(success.data) : this.failedMessageModal(success.data)
+        this.getOrders()
       }
     )
   }

@@ -35,7 +35,10 @@ export interface Pedido {
     fecha: Date
     restaurante: string
     nombre:string
-    estado:string
+    estado:{
+        proceso:string
+        razon:string
+    }
     cantidad:number
     descripcion:string
     precio:number

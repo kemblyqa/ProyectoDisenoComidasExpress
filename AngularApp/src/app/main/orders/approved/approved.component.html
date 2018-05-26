@@ -15,7 +15,6 @@
         <td>{{order.fecha | date:'shortTime'}}</td>
         <td>{{order.email}}</td>
         <td>{{order.precio}}</td>
-        <td>{{order.estado}}</td>
         <td>{{order.categoria}}</td>
         <td *ngIf="order.ubicacion._latitude == undefined && order.ubicacion._longitude == undefined">
           Recoger aquí</td>
@@ -25,7 +24,6 @@
             open_in_new
             </i></button>  
         </td>
-        <td>{{order.entrega}}</td>
         <td style="text-align: center;vertical-align: middle">
           <button class="btn-finish" ngbTooltip="Finalizar pedido">
             <i style="font-size: 12px;" class="material-icons" (click)="isFinished(order.id)">

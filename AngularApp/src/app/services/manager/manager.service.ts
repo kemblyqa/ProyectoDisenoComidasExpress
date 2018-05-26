@@ -12,7 +12,7 @@ const ENDPOINT_MODPLATILLO = "modPlatillo"
 const ENDPOINT_DELPLATILLO = "delPlatillo" 
 const ENDPOINT_ALLORDERS = "filtroPedidos"
 const ENDPOINT_CHANGESTATUS = "setEstado"
-const ENDPOINT_IMAGE = "subirImagenPlatillo"
+const ENDPOINT_IMAGE = "subirImagenPlat"
 
 @Injectable()
 export class ManagerService {
@@ -81,10 +81,18 @@ export class ManagerService {
         })
     }
     /* change order status */
-    public changeStatus(orderID:any, status:any){
+    public approveStatus(orderID:any, process:any){
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_CHANGESTATUS}`,{
             pedido: orderID,
-            estado:status
+            proceso: process
+        })
+    }
+    /* change order status */
+    public declineStatus(orderID:any, process:any, reason:any){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_CHANGESTATUS}`,{
+            pedido: orderID,
+            proceso: process,
+            razon: reason
         })
     }
     /* uploads a image */

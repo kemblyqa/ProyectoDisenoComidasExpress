@@ -447,7 +447,7 @@ export const setEstado = functions.https.onRequest((req, res) => {
         let keyPedido = req.body.pedido
         let proceso = req.body.proceso
         let razon = req.body.razon
-        if(keyPedido==undefined || proceso=="pendiente" || (proceso="rechazado" && razon == undefined) || proceso==undefined || (proceso!="aprobado" && proceso!="rechazado"&&proceso[0]!="finalizado"))
+        if(keyPedido==undefined || proceso=="pendiente" || (proceso=="rechazado" && razon == undefined) || proceso==undefined || (proceso!="aprobado" && proceso!="rechazado"&&proceso[0]!="finalizado"))
             res.send({status:false,data:"Datos no validos"})
         else{
             pedidos.doc(keyPedido).get().then(pedido => {

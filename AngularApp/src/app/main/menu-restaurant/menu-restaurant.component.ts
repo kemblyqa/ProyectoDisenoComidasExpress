@@ -162,23 +162,26 @@ export class MenuRestaurantComponent implements OnInit {
   }
   /* updates platillo */
   updatePlat(){ 
-    // this._managerService.modPlatillo(
-    //   this.namePlate,
-    //   this.descriptionPlate,
-    //   this.pricePlate,
-    //   this.categoryPlate,
-    //   this.restId,
-    //   this.currentPlate.id
-    // ).subscribe(
-    //   success=>{
-    //     success.status ? this.updateImage() : this.failedMessageModal(success.data)
-    //     this.updateMenu()
-    //   }
-    // )
+    this._managerService.modPlatillo(
+      this.namePlate,
+      this.descriptionPlate,
+      this.pricePlate,
+      this.categoryPlate,
+      this.restId,
+      this.currentPlate.id
+    ).subscribe(
+      success=>{
+        success.status ? this.updateImage() : this.failedMessageModal(success.data)
+        this.updateMenu()
+      }
+    )
     console.log("alfo")
   }
   /* updates platillo image*/
   updateImage(){
+    console.log(this.imagePlate)
+    console.log(this.currentPlate.id)
+    
     if(this.imgOpt){//if upload image
       this._managerService.uploadBase64Image(this.currentPlate.id,this.imagePlate)
       .subscribe(

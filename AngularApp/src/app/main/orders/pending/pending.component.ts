@@ -104,7 +104,7 @@ export class PendingComponent {
   }
   /* declines order */
   declineOrder(){
-    this._managerService.changeStatus(this.declineOrderId, ["rechazado",this.declineReason])//falta motivo
+    this._managerService.declineStatus(this.declineOrderId, "rechazado", this.declineReason)//falta motivo
     .subscribe(
       success => {
         success.status ? this.successMessageModal(success.data):this.failedMessageModal(success.data)
@@ -115,7 +115,7 @@ export class PendingComponent {
   /* approves order */
   approveOrder(id:any){
     console.log(id)
-    this._managerService.changeStatus(id, ["aprobado",""])
+    this._managerService.approveStatus(id, "aprobado")
     .subscribe(
       success => {
         success.status ? this.successMessageModal(success.data):this.failedMessageModal(success.data)
