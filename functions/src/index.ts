@@ -280,32 +280,33 @@ export const itemCarro = functions.https.onRequest((req, res) => {
                 usuarios.doc(email).get()
                 .then(usuario =>
                     {
-                        if(usuario.exists){
-                            restaurantes.doc(keyRest).get().then(rest =>{
-                                if(!enHorario(fecha,rest.data().horario)){
-                                    res.send({status:false,data:"El pedido no se ha realizado dentro del horario de atención del restaurante"})
-                                    return
-                                }
-                                let carrito = usuario.data().carrito
-                                if(carrito[snapshot.docs[0].id]!=undefined && !override){
-                                    res.send({status:false,data:"El platillo a insertar ya se encuentra en tu carrito, puedes editarlo"})
-                                    return
-                                }
-                                carrito[snapshot.docs[0].id]={
-                                    platillo:snapshot.docs[0].id,cantidad:cantidad,ubicacion:ubicacion,fecha:fecha
-                                }
-                                usuarios.doc(email).update({carrito:carrito})
-                                .then(function() {
-                                    res.send({status:true,data:"Añadido"})
-                                })
-                                .catch(function(error) 
-                                {res.send({status:false,data:"Error de conexión en la base de datos"})})
-                            
-                            }).catch(err=> {res.send({status:false,data:"Error obteniendo restaurante"})})
+                    if(usuario.exists){
+                        restaurantes.doc(keyRest).get().then(rest =>{
+                            if(!enHorario(fecha,rest.data().horario)){
+                                res.send({status:false,data:"El pedido no se ha realizado dentro del horario de atención del restaurante"})
+                                return
                             }
-                        else
-                            res.send({status:false,data:"El usuario solicitado no existe"})
-                    }).catch(err=> {res.send({status:false,data:"Error de conexión en la base de datos"})})
+                            let carrito = usuario.data().carrito
+                            if(carrito[snapshot.docs[0].id]!=undefined && !override){
+                                res.send({status:false,data:"El platillo a insertar ya se encuentra en tu carrito, puedes editarlo"})
+                                return
+                            }
+                            carrito[snapshot.docs[0].id]={
+                                platillo:snapshot.docs[0].id,cantidad:cantidad,ubicacion:ubicacion,fecha:fecha
+                            }
+                            usuarios.doc(email).update({carrito:carrito})
+                            .then(function() {
+                                res.send({status:true,data:"Añadido"})
+                            })
+                            .catch(function(error) 
+                            {res.send({status:false,data:"Error de conexión en la base de datos"})})
+                        
+                        }).catch(err=> {
+                            res.send({status:false,data:`Error obteniendo restaurante: ${JSON.stringify(err)}`})})
+                        }
+                    else
+                        res.send({status:false,data:"El usuario solicitado no existe"})
+                }).catch(err=> {res.send({status:false,data:"Error de conexión en la base de datos"})})
             }
         }).catch(err=>{res.send({status:false,data:"Error insertando platillo"})})
     }
@@ -581,9 +582,10 @@ export const setUsuario = functions.https.onRequest((req, res) => {
                             usuarios.doc(req.body.email).set({
                                 nombre:req.body.nombre,
                                 telefono:req.body.telefono,
-                                ubicacion:ubicacion})
+                                ubicacion:ubicacion,
+                                carrito:{}})
                             res.send({status:true,data:`Bienvenido, ${req.body.nombre}` })
-                        }catch(e){console.log(e)}
+                        }catch(e){res.send({status:false,data:"Error insertando usuario: " e})}
                     }
                 }).catch(err => {res.send({status:false,data:"Error obteniendo datos de servidor"})})
             }
