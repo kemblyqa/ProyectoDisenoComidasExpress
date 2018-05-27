@@ -17,7 +17,7 @@ export class ApprovedComponent {
   private failedMessage:any
   /* restaurante id y nombre */ 
   private restName:string = "Soda El Mercadito" 
-  private restId:string = "rest4" 
+  private restId:string = "NYJdrAl83G9dNWpF6z4J" 
   /* headers */
   private manage:ManagerModel
   private headers:Array<any>

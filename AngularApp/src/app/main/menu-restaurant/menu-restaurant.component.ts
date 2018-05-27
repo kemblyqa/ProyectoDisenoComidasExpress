@@ -19,10 +19,12 @@ export class MenuRestaurantComponent implements OnInit {
   private failedMessage:any
   /* restaurante id y nombre */ 
   private restName:string = "Soda El Mercadito" 
-  private restId:string = "rest4" 
+  private restId:string = "NYJdrAl83G9dNWpF6z4J" 
   /* categories */
   private categories:Array<any> 
   private catSelected:any 
+  private newCat:boolean
+  private modCat:boolean
   /* edit platillo */ 
   private descriptionPlate:any 
   private pricePlate:number 
@@ -38,12 +40,26 @@ export class MenuRestaurantComponent implements OnInit {
   private page:number = 1
   /* image */
   imgOpt:boolean = true
+  isCollapsed:boolean = true
   constructor(private _router:Router, private _managerService:ManagerService) {
     this.totalPages = 0 
   }
   ngOnInit(){
     this.initCustomCategories() 
     this.initAllCategories()
+  }
+  /* update all info */
+  update(){
+    this.initCustomCategories()
+    this.initAllCategories()
+    this.updateMenu()
+  }
+  /* switch cleans category var */
+  switchCat(){
+    this.categoryPlate = null
+  }
+  switchImg(){
+    this.imagePlate = null
   }
   /* inits categories to show platillos */ 
   initCustomCategories(){ 
@@ -80,7 +96,7 @@ export class MenuRestaurantComponent implements OnInit {
   /* pagination update */
   updatePlatesPagination(e){
     this.page = e
-    this.updateMenu()
+    this.update()
   }
   /* modal success! */
   successMessageModal(message:any){
@@ -105,7 +121,6 @@ export class MenuRestaurantComponent implements OnInit {
     this.descriptionPlate = "" 
     this.namePlate = "" 
     this.pricePlate = null 
-    //this.imagePlate = "" 
     this.categoryPlate = this.catSelected 
     $("#modalCreateFood").modal({
       backdrop: 'static',
@@ -114,7 +129,8 @@ export class MenuRestaurantComponent implements OnInit {
     })
   }
   /* modal edit platillo */
-  editPlatModal(plat:Platillo){ 
+  editPlatModal(plat:Platillo){
+    this.isCollapsed = true 
     this.descriptionPlate = plat.descripcion 
     this.namePlate = plat.nombre 
     this.pricePlate = plat.precio 
@@ -147,7 +163,7 @@ export class MenuRestaurantComponent implements OnInit {
     ).subscribe(
       success=>{
         success.status ? this.successMessageModal("Se ha creado el nuevo platillo correctamente.") : this.failedMessageModal(success.data)
-        this.updateMenu()
+        this.update()
       }
     )
   }
@@ -155,9 +171,9 @@ export class MenuRestaurantComponent implements OnInit {
   onFileChange(event) {
     let reader = new FileReader();
     if(event.target.files && event.target.files.length > 0) {
-      let file = event.target.files[0];
-      reader.readAsDataURL(file);
-      reader.onload = () => { this.imagePlate = reader.result };
+      let file = event.target.files[0]
+      reader.readAsDataURL(file)
+      reader.onload = () => { this.imagePlate = reader.result }
     }
   }
   /* updates platillo */
@@ -172,32 +188,33 @@ export class MenuRestaurantComponent implements OnInit {
     ).subscribe(
       success=>{
         success.status ? this.updateImage() : this.failedMessageModal(success.data)
-        this.updateMenu()
+        this.update()
       }
     )
-    console.log("alfo")
   }
   /* updates platillo image*/
   updateImage(){
-    console.log(this.imagePlate)
-    console.log(this.currentPlate.id)
-    
-    if(this.imgOpt){//if upload image
-      this._managerService.uploadBase64Image(this.currentPlate.id,this.imagePlate)
-      .subscribe(
-        success=>{
-          success.status ? this.successMessageModal("Se ha actualizado el platillo correctamente.") : this.failedMessageModal(success.data)
-          this.updateMenu()
-        }
-      )
-    } else {//image url
-      this._managerService.uploadUrlImage(this.currentPlate.id,this.imagePlate)
-      .subscribe(
-        success=>{
-          success.status ? this.successMessageModal("Se ha actualizado el platillo correctamente.") : this.failedMessageModal(success.data)
-          this.updateMenu()
-        }
-      )
+    console.log(this.isCollapsed)
+    if(!this.isCollapsed){
+      if(this.imgOpt){//if upload image
+        this._managerService.uploadBase64Image(this.currentPlate.id,this.imagePlate)
+        .subscribe(
+          success=>{
+            success.status ? this.successMessageModal("Se ha actualizado el platillo correctamente.") : this.failedMessageModal(success.data)
+            this.update()
+          }
+        )
+      } else {//image url
+        this._managerService.uploadUrlImage(this.currentPlate.id,this.imagePlate)
+        .subscribe(
+          success=>{
+            success.status ? this.successMessageModal("Se ha actualizado el platillo correctamente.") : this.failedMessageModal(success.data)
+            this.update()
+          }
+        )
+      }
+    } else {
+      this.successMessageModal("Se ha actualizado el platillo correctamente.")
     }
   }
   /* deletes platiilo */
@@ -206,7 +223,7 @@ export class MenuRestaurantComponent implements OnInit {
     .subscribe(
       success=>{
         success.status ? this.successMessageModal("Se ha eliminado el platillo correctamente.") : this.failedMessageModal(success.data)
-        this.updateMenu()
+        this.update()
       }
     )
   }

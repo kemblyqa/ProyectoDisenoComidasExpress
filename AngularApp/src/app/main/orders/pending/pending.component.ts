@@ -18,7 +18,7 @@ export class PendingComponent {
   private declineOrderId:any
   /* restaurante id y nombre */ 
   private restName:string = "Soda El Mercadito" 
-  private restId:string = "rest4" 
+  private restId:string = "NYJdrAl83G9dNWpF6z4J" 
   /* decline reasons */
   private declineReason:string
   /* headers */
