@@ -1,7 +1,6 @@
 <main role="main">
     <!-- show categories -->
   <section class="jumbotron order" style="margin: 0%; padding: 16px 8px 32px">
-    
     <div ngbDropdown class="d-inline-block">
       <i ngbDropdownToggle class="material-icons menu-tool">
         more_vert
@@ -27,154 +26,134 @@
       </div>
     </div>
   </section>
-  <router-outlet></router-outlet>
-</main>
-<!-- confirmation modal -->
-<div class="modal" id="modalSuccess" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Transacción exitosa</h5>
-      </div>
-      <div class="modal-body">
-        <p>{{successMessage}}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- failed modal -->
-<div class="modal" id="modalFailed" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Transacción fallida</h5>
-      </div>
-      <div class="modal-body">
-        <p>{{failedMessage}}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+  <!-- confirmation modal -->
+  <div class="modal" id="modalSuccess" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Transacción exitosa</h5>
+        </div>
+        <div class="modal-body">
+          <p>{{successMessage}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!-- open map modal -->
-<div class="modal" id="modalMap" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Ubicación del cliente</h5>
-      </div>
-      <div class="modal-body">
-        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15">
-          <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
-        </agm-map>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Volver</button>
+  <!-- failed modal -->
+  <div class="modal" id="modalFailed" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Transacción fallida</h5>
+        </div>
+        <div class="modal-body">
+          <p>{{failedMessage}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!-- expired modal -->
-<div class="modal" id="modalExpired" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Pedidos expirados</h5>
-      </div>
-      <div class="modal-body">
-        <h5 *ngIf="expiredOrders?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
-        <div *ngIf="expiredOrders?.length > 0" class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th *ngFor="let head of expiredHeaders" scope="col">{{head}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let order of expiredOrders" scope="row">
-                <td style="text-align: center">{{order.cantidad}}</td>
-                <td>{{order.nombre}}</td>
-                <td>{{order.descripcion}}</td>
-                <td>{{order.fecha | date: 'dd/MM/yyyy'}}</td>
-                <td>{{order.fecha | date:'shortTime'}}</td>
-                <td>{{order.email}}</td>
-                <td>{{order.precio}}</td>
-                <td>{{order.categoria}}</td>
-                <td *ngIf="order.ubicacion._latitude == undefined && order.ubicacion._longitude == undefined">
-                  Recoger aquí</td>
-                <td *ngIf="order.ubicacion._latitude != undefined && order.ubicacion._longitude != undefined">
+  <!-- expired modal -->
+  <div class="modal" id="modalExpired" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Pedidos expirados</h5>
+        </div>
+        <div class="modal-body">
+          <h5 *ngIf="expiredOrders?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
+          <div *ngIf="expiredOrders?.length > 0" class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th *ngFor="let head of expiredHeaders" scope="col">{{head}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let order of expiredOrders" scope="row">
+                  <td style="text-align: center">{{order.cantidad}}</td>
+                  <td>{{order.nombre}}</td>
+                  <td>{{order.descripcion}}</td>
+                  <td>{{order.fecha | date: 'dd/MM/yyyy'}}</td>
+                  <td>{{order.fecha | date:'shortTime'}}</td>
+                  <td>{{order.email}}</td>
+                  <td>{{order.precio}}</td>
+                  <td>{{order.categoria}}</td>
+                  <td *ngIf="order.ubicacion._latitude == undefined && order.ubicacion._longitude == undefined">
+                    Recoger aquí</td>
+                  <td *ngIf="order.ubicacion._latitude != undefined && order.ubicacion._longitude != undefined">
                     <button (click)="openMapModal(order.ubicacion._latitude, order.ubicacion._longitude)"
                     class="btn-open-map" ngbTooltip="Abrir en mapa"><i class="material-icons">
                       open_in_new
                       </i></button>  
-                  </td>
-              </tr>
-            </tbody>
-          </table>
+                    </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <ngb-pagination *ngIf="expiredOrders?.length > 0" (click)="updateExpiredPagination($event)" class="" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
+        <div class="modal-footer">
+          <ngb-pagination *ngIf="expiredOrders?.length > 0" (click)="updateExpiredPagination($event)" class="" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!-- declined modal -->
-<div style="width:100%"  class="modal" id="modalDeclined" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div  class="modal-header">
-        <h5 class="modal-title">Pedidos rechazados</h5>
-      </div>
-      <div class="modal-body">
-        <h5 *ngIf="declinedOrders?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
-        <div *ngIf="declinedOrders?.length > 0" class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th *ngFor="let head of declinedHeaders" scope="col">{{head}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let order of declinedOrders" scope="row">
-                <td style="text-align: center">{{order.cantidad}}</td>
-                <td>{{order.nombre}}</td>
-                <td>{{order.descripcion}}</td>
-                <td>{{order.fecha | date: 'dd/MM/yyyy'}}</td>
-                <td>{{order.fecha | date:'shortTime'}}</td>
-                <td>{{order.email}}</td>
-                <td>{{order.precio}}</td>
-                <td>{{order.categoria}}</td>
-                <td *ngIf="order.ubicacion._latitude == undefined && order.ubicacion._longitude == undefined">
-                  Recoger aquí</td>
-                <td *ngIf="order.ubicacion._latitude != undefined && order.ubicacion._longitude != undefined">
-                    <button (click)="openMapModal(order.ubicacion._latitude, order.ubicacion._longitude)"
-                    class="btn-open-map" ngbTooltip="Abrir en mapa"><i class="material-icons">
-                      open_in_new
-                      </i></button>  
-                  </td>
-                <td>{{order.estado.razon}}</td>
-              </tr>
-            </tbody>
-          </table>
+  <!-- declined modal -->
+  <div style="width:100%"  class="modal" id="modalDeclined" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div  class="modal-header">
+          <h5 class="modal-title">Pedidos rechazados</h5>
         </div>
-      </div>
-      <div class="modal-footer">
-        <ngb-pagination *ngIf="declinedOrders?.length > 0" (click)="updateDeclinedPagination($event)" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
+        <div class="modal-body">
+          <h5 *ngIf="declinedOrders?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
+          <div *ngIf="declinedOrders?.length > 0" class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th *ngFor="let head of declinedHeaders" scope="col">{{head}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let order of declinedOrders" scope="row">
+                  <td style="text-align: center">{{order.cantidad}}</td>
+                  <td>{{order.nombre}}</td>
+                  <td>{{order.descripcion}}</td>
+                  <td>{{order.fecha | date: 'dd/MM/yyyy'}}</td>
+                  <td>{{order.fecha | date:'shortTime'}}</td>
+                  <td>{{order.email}}</td>
+                  <td>{{order.precio}}</td>
+                  <td>{{order.categoria}}</td>
+                  <td *ngIf="order.ubicacion._latitude == undefined && order.ubicacion._longitude == undefined">
+                    Recoger aquí</td>
+                  <td *ngIf="order.ubicacion._latitude != undefined && order.ubicacion._longitude != undefined">
+                      <button (click)="openMapModal(order.ubicacion._latitude, order.ubicacion._longitude)"
+                      class="btn-open-map" ngbTooltip="Abrir en mapa"><i class="material-icons">
+                        open_in_new
+                        </i></button>  
+                    </td>
+                  <td>{{order.estado.razon}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <ngb-pagination *ngIf="declinedOrders?.length > 0" (click)="updateDeclinedPagination($event)" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!-- order all records modal -->
-<div class="modal" id="modalHistory" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+  <!-- order all records modal -->
+  <div class="modal" id="modalHistory" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div  class="modal-header">
           <h5 style="width:85%" class="modal-title">Historial</h5>
@@ -218,3 +197,23 @@
       </div>
     </div>
   </div>
+  <!-- open map modal -->
+  <div class="modal" id="modalMap" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Ubicación del cliente</h5>
+        </div>
+        <div class="modal-body">
+          <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15">
+            <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+          </agm-map>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Volver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</main>

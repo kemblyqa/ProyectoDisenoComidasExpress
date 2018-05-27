@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ManagerService } from './../../services/manager/manager.service';
 import { Component, OnInit } from '@angular/core';
 import { Pedido } from '../../models/manager';
+import { AgmMap } from '@agm/core';
 declare var jquery:any;
 declare var $ :any;
 
@@ -58,7 +59,6 @@ export class OrdersComponent {
   openMapModal(lat:any, lng:any){
     this.lat = lat
     this.lng = lng
-    console.log(lat)
     $("#modalMap").modal({
       backdrop: 'static',
       keyboard: false,

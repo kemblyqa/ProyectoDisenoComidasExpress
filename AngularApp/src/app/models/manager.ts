@@ -28,8 +28,8 @@ export interface Restaurante {
 
 export interface Pedido {
     ubicacion: {
-        latitude: number,
-        longitude: number
+        _latitude: number,
+        _longitude: number
     }
     email: string
     fecha: Date
