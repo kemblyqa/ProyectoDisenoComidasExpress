@@ -33,6 +33,7 @@
       {"source":"/api/setTarjeta", "function":"setTarjeta"},
       {"source":"/api/addRestaurante", "function":"addRestaurante"},
       {"source":"/api/modRestaurante", "function":"modRestaurante"},
+      {"source":"/api/subirImagenRest", "function":"subirImagenRest"},
       {"source": "**","destination": "/index.html"}
     ]
   },

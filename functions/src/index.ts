@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import { request } from 'https';
 import { isUndefined } from 'util';
+import { GeoPoint } from '@google-cloud/firestore';
 
 const async = require('async')
 const admin = require('firebase-admin');
@@ -17,9 +18,10 @@ let dias=[ 'd','l', 'k', 'm', 'j', 'v', 's' ]
 
 //comprueba que todos los datos de la lista están definidos
 function allDefined(list){
-    for (let x = 0;x<list.lenght;x++)
+    for (let x = 0;x<list.lenght;x++){
         if(list[x]==undefined)
             return false
+    }
     return true
 }
 
@@ -77,6 +79,50 @@ function enHorario(pedido:Date,horario:Object) : boolean{
     })
     return aceptado
 }
+
+function genGeopoint(tupla:Array<number>) : GeoPoint{
+    try{
+        if(tupla[0]==0 && tupla[1]==0)
+            return undefined
+        return new GeoPoint(tupla[0],tupla[1])
+    }
+    catch(e){
+        return undefined
+    }
+}
+function distancia(a:GeoPoint,b:GeoPoint) : number{
+    var R = 6371e3; // metres
+    var φ1 = a.latitude
+    var φ2 = b.longitude
+    var Δφ = (b.latitude-a.latitude)
+    var Δλ = (b.longitude-b.longitude)
+    
+    var x = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    var c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1-x));
+    return R * c;
+}
+function filtroUbicacion(platillos,ubicacion:GeoPoint,rests,kilometros:number) : Array<Object>{
+    let response = []
+    for(let y=0;platillos[y]!=undefined;y++){
+        if(JSON.stringify(rests[platillos[y].data().restaurante])!="[0,0]" && distancia(rests[platillos[y].data().restaurante],ubicacion)
+            <=kilometros*1000)
+            response.push(platillos[y])
+    }
+    return response
+}
+function decodeFile(img:string) : {mime:string,file:Buffer}{
+    let temp = img.split(',')
+    let ret
+    ret.mime = base64MimeType(temp[0])
+    ret.file = new Buffer(temp[1], 'base64')
+    if(ret.mime==undefined || ret.file==undefined)
+        return undefined
+    ret.type = ret.mime.split('/')[0];
+    ret.extension = ret.mime.split('/')[1];
+    return ret
+}
 export const categoria = functions.https.onRequest((req, res) => {
     if (req.method=="GET"){
         let query = platillos
@@ -107,6 +153,16 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
         let categoria = req.query.categoria
         let keyRest = req.query.keyRest
         let nombre = req.query.nombre
+        let ubicacion
+        if(req.query.ubicacion!=undefined)
+        try{
+            ubicacion = genGeopoint(JSON.parse(req.query.ubicacion))
+        }
+        catch(e){
+            res.send({status:false,data:"Error interpretando la ubicacion"})
+            return
+        }
+        let rango = parseInt(req.query.rango)
         let pagina = parseInt(req.query.pagina)
         if (pagina<1 || isNaN(pagina))
             pagina=1
@@ -121,30 +177,51 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
             query=query.orderBy('nombre')
         query.get()
         .then((snapshot) => {
-            if (snapshot.docs.length<=(pagina-1)*12)
-                res.send({status:true,data:[[],0]})
-            let platRich = []
-            let len = (snapshot.docs.length-((pagina-1)*12))>12?12:(snapshot.docs.length-((pagina-1)*12))
-            let cont = 0;
-            for (let x=(pagina-1)*12;x<len+(pagina-1)*12;x++){
-                restaurantes.doc(snapshot.docs[x].data().restaurante).get().then((Restaurante) => {
-                    var rest;
-                    if(!Restaurante.exists)
-                        rest="Desconocido"
-                    else
-                        rest={nombre:Restaurante.data().nombre,id:Restaurante.id};
-                    platRich[x%12] = {
-                        imagen:snapshot.docs[x].data().imagen,
-                        descripcion:snapshot.docs[x].data().descripcion,
-                        nombre:snapshot.docs[x].data().nombre,
-                        Restaurante:rest,
-                        precio:snapshot.docs[x].data().precio,
-                        id: snapshot.docs[x].id}
-                    cont++;
-                    if(cont==len)
-                        res.send({status:true,data:[platRich,Math.floor(snapshot.docs.length/12)+(snapshot.docs.length%12!=0?1:0)]});
-                }).catch((err) => {
-                    res.send({status:false,data:'Error obteniendo restaurante'})});
+            let raw = snapshot.docs
+            let rests={}
+            raw.forEach(e=>{
+                rests[e.data().restaurante]=[0,0]
+            })
+            let unicos = Object.keys(rests)
+            let c=0
+            for(let x=0;x<unicos.length;x++){
+                restaurantes.doc(unicos[x]).get().then(r=>{
+                    if(r.exists)
+                        rests[unicos[x]]=<GeoPoint>r.data().ubicacion
+                    c++
+                    if(c==unicos.length)
+                    {
+                        if(!isUndefined(ubicacion) && !isNaN(rango)){
+                            raw=filtroUbicacion(raw,ubicacion,rests,rango) 
+                        }
+                        if (raw.length<=(pagina-1)*12)
+                            res.send({status:true,data:[[],0]})
+                        let platRich = []
+                        let len = (raw.length-((pagina-1)*12))>12?12:(raw.length-((pagina-1)*12))
+                        let cont = 0;
+                        for (let x=(pagina-1)*12;x<len+(pagina-1)*12;x++){
+                            restaurantes.doc(raw[x].data().restaurante).get().then((Restaurante) => {
+                                var rest;
+                                if(!Restaurante.exists)
+                                    rest="Desconocido"
+                                else
+                                    rest={nombre:Restaurante.data().nombre,id:Restaurante.id};
+                                platRich[x%12] = {
+                                    imagen:raw[x].data().imagen,
+                                    descripcion:raw[x].data().descripcion,
+                                    nombre:raw[x].data().nombre,
+                                    Restaurante:rest,
+                                    precio:raw[x].data().precio,
+                                    id: raw[x].id}
+                                cont++;
+                                if(cont==len)
+                                    res.send({status:true,data:[platRich,Math.floor(raw.length/12)+(raw.length%12!=0?1:0)]});
+                            }).catch((err) => {
+                                res.send({status:false,data:'Error obteniendo restaurante'})});
+                        }
+                    }
+                }).catch(e=>{
+                    res.send({status:false,data:JSON.stringify(e)})})
             }
         }).catch((err) => {
             console.log(err)
@@ -173,7 +250,14 @@ export const addPlatillo = functions.https.onRequest((req, res) => {
                 if(!snapshot2.exists)
                     res.send({status:false,data:"El restaurante no existe"})
                 else
-                platillos.add({restaurante:keyRest,categoria:categoria,descripcion:descripcion,nombre:nombre,precio:precio}).then(ref =>{
+                platillos.add({
+                    restaurante:keyRest,
+                    categoria:categoria,
+                    descripcion:descripcion,
+                    nombre:nombre,
+                    precio:precio,
+                    imagen:"https://firebasestorage.googleapis.com/v0/b/designexpresstec.appspot.com/o/depositphotos_119480056-stock-illustration-platter-chef-food-icon-vector.jpg?alt=media&token=8b2d5cb5-543a-4702-b7da-a4e1f042c30e"})
+                    .then(ref =>{
                     res.send({status:true,data:ref.id})
                 }).catch(err=>{res.send({status:false,data:"Error inesperado en la base de datos"})})
             }).catch(err=>{res.send({status:false,data:"Error insertando platillo"})})
@@ -247,8 +331,7 @@ export const delPlatillo = functions.https.onRequest((req, res) => {
 export const itemCarro = functions.https.onRequest((req, res) => {
     if (req.method='POST'){
         let ubicacion
-        try{ubicacion = JSON.parse(req.body.ubicacion)
-            ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])}
+        try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion))}
         catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
         let fecha;
         try{
@@ -392,7 +475,6 @@ export const filtroPedidos = functions.https.onRequest((req, res) => {
         let pagina = parseInt(req.query.pagina)
         if (pagina<1 || isNaN(pagina))
             pagina=1
-
         let query = pedidos
         if(restaurante!=undefined)
             query=query.where('restaurante','==',restaurante)
@@ -477,7 +559,7 @@ export const setEstado = functions.https.onRequest((req, res) => {
                         res.send({status:false,data:"No se puede modificar el estado \"rechazado\" ni \"finalizado\""})
                     else{
                         pedidos.doc(keyPedido).set({estado:{proceso:proceso,razon:razon==undefined?"":razon}},{merge:true})
-                        res.send({status:true,data:"El pedido " + keyPedido + " ha sido " + proceso})
+                        res.send({status:true,data:"El pedido ha sido " + proceso})
                     }
                 }
                 else
@@ -506,12 +588,13 @@ export const subirImagenPlat = functions.https.onRequest((req, res) => {
                     res.send({status:false,data:"El platillo solicitado no existe"})
                 }
                 else{
+                    platillos.doc(keyPlat).set({imagen:url},{merge:true})
                     res.send({status:true,data:`La URL del platillo ${keyPlat} ha sido modificada a ${url}`})
                 }
             }).catch(err =>{res.send({status:false,data:"Error obteniendo el platillo"})})
         }
-        else if(img==undefined || !Buffer.from(img, 'base64').toString('base64')===img){
-            res.send({status:false,data:"Platillo o imagen no valido"})
+        else if(img==undefined){
+            res.send({status:false,data:"Imagen no valida"})
             return;
         }
         else{
@@ -520,41 +603,77 @@ export const subirImagenPlat = functions.https.onRequest((req, res) => {
                     res.send({status:false,data:"El platillo solicitado no existe"})
                     return
                 }
-                img = img.split(',')
-                var mimeType = base64MimeType(img[0]);
-                if(mimeType==undefined){
-                    res.send({status:false,data:"La imagen enviada es invalida"})
+                img = decodeFile(img)
+                if(img==undefined){
+                    res.send({status:false,data:"Archivo invalido"})
                     return
                 }
-                var tag = mimeType.split('/');
-                if(tag[0]!='image'){
-                    res.send({status:false,data:"La imagen enviada es invalida"})
+                else if(img.type!='image'){
+                    res.send({status:false,data:"El archivo enviado no es una imagen valida"})
                     return
                 }
-                var fileName = keyPlat+'.'+tag[1]
-                var imageBuffer = new Buffer(img[1], 'base64');
-                var file = bucket.file('platillos/' + fileName);
-                file.save(imageBuffer,{
-                    metadata: {contentType: mimeType}}, 
-                    error => {
-                        console.log(file)
-                    if (error) {
-                        res.send({status:false,data:'No se pudo subir la imagen.'});
-                    }
-                    file.acl.add({
-                        entity: 'allUsers',
-                        role: gcs.acl.READER_ROLE //gcs ->'@google-cloud/storage'
-                        },
-                        function(err, aclObject) {
-                            if (!err){
+                else{
+                    var fileName = keyPlat+'.'+img.extension
+                    var file = bucket.file('platillos/' + fileName);
+                    file.save(
+                        img.file,
+                        {metadata: {contentType: img.mime}},
+                        error => {
+                            if (error)
+                                res.send({status:false,data:'No se pudo subir la imagen.'});
+                            else{
                                 let URL = file.metadata.mediaLink
                                 platillos.doc(keyPlat).set({imagen:URL},{merge:true})
                                 res.send({status:true,data:`La URL del platillo ${keyPlat} ahora es ${URL}`});
                             }
-                            else
-                                res.send({status:false,data:"No se pudieron establecer los servicios: " + err});
-                        });
-                });
+                        }
+                    );
+                }
+            }).catch(err =>{res.send({status:false,data:"Error obteniendo el platillo"})})
+        }
+    } else  res.send({status:false,data:"Solo se admite POST"});
+})
+
+export const subirImagenRest = functions.https.onRequest((req, res) => {
+    if (req.method === 'POST') {
+        let keyRest=req.body.keyRest //clave de platillo
+        var img = req.body.img //base64
+        if(!allDefined([img,keyRest])){
+            res.send({status:false,data:"Se requiere la imagen y clave de restaurante"})
+            return
+        }
+        else{
+            restaurantes.doc(keyRest).get().then(snapshot =>{
+                if(!snapshot.exists){
+                    res.send({status:false,data:"El restaurante solicitado no existe"})
+                    return
+                }
+                img = decodeFile(img)
+                if(img==undefined){
+                    res.send({status:false,data:"Archivo invalido"})
+                    return
+                }
+                else if(img.type!='image'){
+                    res.send({status:false,data:"El archivo enviado no es una imagen valida"})
+                    return
+                }
+                else{
+                    var fileName = keyRest+'.'+img.extension
+                    var file = bucket.file('restaurantes/' + fileName);
+                    file.save(
+                        img.file,
+                        {metadata: {contentType: img.mime}},
+                        error => {
+                            if (error)
+                                res.send({status:false,data:'No se pudo subir la imagen.'});
+                            else{
+                                let URL = file.metadata.mediaLink
+                                restaurantes.doc(keyRest).set({imagen:URL},{merge:true})
+                                res.send({status:true,data:`La URL del restaurante ${keyRest} ahora es ${URL}`});
+                            }
+                        }
+                    );
+                }
             }).catch(err =>{res.send({status:false,data:"Error obteniendo el platillo"})})
         }
     } else  res.send({status:false,data:"Solo se admite POST"});
@@ -566,8 +685,7 @@ export const setUsuario = functions.https.onRequest((req, res) => {
             res.send({status:false,data:"Faltan datos"})
         else{
             let ubicacion
-            try{ubicacion = JSON.parse(req.body.ubicacion)
-                ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])}
+            try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion))}
             catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
             let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if(!re.test(String(req.body.email).toLowerCase()))
@@ -578,14 +696,13 @@ export const setUsuario = functions.https.onRequest((req, res) => {
                         res.send({status:false,data:"Este correo electronico ya está registrado"})
                     else{
                         try{
-                            console.log(`Bienvenido, ${req.body.nombre}`)
                             usuarios.doc(req.body.email).set({
                                 nombre:req.body.nombre,
                                 telefono:req.body.telefono,
                                 ubicacion:ubicacion,
                                 carrito:{}})
                             res.send({status:true,data:`Bienvenido, ${req.body.nombre}` })
-                        }catch(e){res.send({status:false,data:"Error insertando usuario: " e})}
+                        }catch(e){res.send({status:false,data:`Error insertando usuario: ${JSON.stringify(e)}`})}
                     }
                 }).catch(err => {res.send({status:false,data:"Error obteniendo datos de servidor"})})
             }
@@ -628,8 +745,7 @@ export const addRestaurante = functions.https.onRequest((req, res) => {
             return
         }
         else{
-            try{ubicacion = JSON.parse(req.body.ubicacion)
-                ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])}
+            try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion))}
             catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
             if(horario==undefined)
                 res.send({status:false,data:"Formato de horario no valido, debe ser una lista de 7 (lista de tuplas numericas)"})
@@ -674,8 +790,7 @@ export const modRestaurante = functions.https.onRequest((req, res) => {
         if(!allDefined([nombre,empresa,descripcion,ubicacion[0],ubicacion[1],horario,keyRest]))
             res.send({status:false,data:"Faltan Datos"})
         else{
-            try{ubicacion = JSON.parse(req.body.ubicacion)
-                ubicacion = new admin.firestore.GeoPoint(ubicacion[0],ubicacion[1])}
+            try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion))}
             catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
             if(horario==null)
                 res.send({status:false,data:"Formato de horario no valido, debe ser una lista de 7 (lista de tuplas numericas)"})
