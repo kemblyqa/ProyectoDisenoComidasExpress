@@ -44,19 +44,19 @@ export class ManagerModel {
         ]
         this.headersApprovedTable = [
             "Cantidad", "Platillo", "Descripcion",
-            "Fecha","Hora", "Email", "Precio", "Estado", "Categoria", "Ubicación", "Entrega","Finalizar"
+            "Fecha","Hora", "Email", "Precio", "Categoria", "Entrega","Finalizar"
         ]
         this.headersPendingTable = [
             "Cantidad", "Platillo", "Descripcion",
-            "Fecha","Hora", "Email", "Precio", "Estado", "Categoria", "Ubicación", "Entrega", "Verificar"
+            "Fecha","Hora", "Email", "Precio", "Categoria", "Entrega", "Verificar"
         ]
         this.headersDeclinedTable = [
             "Cantidad", "Platillo", "Descripcion",
-            "Fecha","Hora", "Email", "Precio", "Estado", "Categoria", "Ubicación", "Entrega", "Motivo"
+            "Fecha","Hora", "Email", "Precio", "Categoria", "Entrega", "Motivo"
         ]
         this.headersExpiredTable = [
             "Cantidad", "Platillo", "Descripcion",
-            "Fecha","Hora", "Email", "Precio", "Estado", "Categoria", "Ubicación", "Entrega"
+            "Fecha","Hora", "Email", "Precio", "Categoria", "Entrega"
         ]
     }
     getNavItems(){

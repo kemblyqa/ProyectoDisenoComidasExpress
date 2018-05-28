@@ -1,5 +1,5 @@
 import { ManagerService } from './../../../services/manager/manager.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ManagerModel } from '../../../models/manager.model';
 import { Pedido } from '../../../models/manager';
 
@@ -17,7 +17,7 @@ export class ApprovedComponent {
   private failedMessage:any
   /* restaurante id y nombre */ 
   private restName:string = "Soda El Mercadito" 
-  private restId:string = "rest4" 
+  private restId:string = "NYJdrAl83G9dNWpF6z4J" 
   /* headers */
   private manage:ManagerModel
   private headers:Array<any>
@@ -28,6 +28,7 @@ export class ApprovedComponent {
   /* gmaps api */
   lat: number = 10.362167730785652
   lng: number = -84.51030575767209
+  
   constructor(private _managerService:ManagerService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getApprovedTableHeaders()
@@ -81,15 +82,11 @@ export class ApprovedComponent {
   }
   /* finish orders */
   isFinished(id:any){
-    this._managerService.changeStatus(id, "finalizado")
+    this._managerService.approveStatus(id, "finalizado")
     .subscribe(
       success => {
-        if(success.status){
-          this.successMessageModal(success.data)
-          this.getOrders()
-        } else {
-          this.failedMessageModal(success.data)
-        }
+        success.status ? this.successMessageModal(success.data) : this.failedMessageModal(success.data)
+        this.getOrders()
       }
     )
   }

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ManagerService } from './../../services/manager/manager.service';
 import { Component, OnInit } from '@angular/core';
 import { Pedido } from '../../models/manager';
+import { AgmMap } from '@agm/core';
 declare var jquery:any;
 declare var $ :any;
 
@@ -29,6 +30,10 @@ export class OrdersComponent {
   private page:number = 1
   private totalPages:number = 0
   private restName:string = "Soda el Mercadito"
+  /* gmaps api */
+  lat: number = 10.362167730785652
+  lng: number = -84.51030575767209
+  
   constructor(private _managerService: ManagerService, private _router: Router) {
     this.manage = new ManagerModel()
     this.orderItems = this.manage.getOrderItems()
@@ -49,6 +54,16 @@ export class OrdersComponent {
   updateHistoryPagination(e){
     this.page = e
     this.getHistoryOrders()
+  }
+  /* open map modal */
+  openMapModal(lat:any, lng:any){
+    this.lat = lat
+    this.lng = lng
+    $("#modalMap").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
   }
   /* failed success! */
   failedMessageModal(message:any){

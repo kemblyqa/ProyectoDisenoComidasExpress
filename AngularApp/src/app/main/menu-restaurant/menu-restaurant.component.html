@@ -50,7 +50,7 @@
         <div class="modal-header">
           <img class="card-img-top" src="{{imagePlate}}" width="100px" data-holder-rendered="true"> 
         </div>
-        <div class="modal-body">
+        <div class="modal-body offset-md-1">
           <div class="form-group row"> 
             <label class="col-sm-3 col-form-label">Nombre: </label> 
             <div class="col-sm-8"> 
@@ -77,52 +77,64 @@
               </div> 
             </div> 
           </div> 
-          <div class="form-group row"> 
-            <label class="col-sm-3 col-form-label">Categoría: </label> 
-            <div class="col-sm-8"> 
+          <div class="form-group row">
+            <div class="col-sm-3">
+              <label class="col-form-label">Categoría: </label> 
+              <div class="form-group row">
+                <div class="form-check">
+                  <input class="form-check-input" (change)="switchCat()" type="checkbox" [value]="false" [(ngModel)]="modCat" id="lblMCat">
+                  <h6 class="form-check-label" for="lblMCat">
+                    Nueva categoría
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!modCat" class="col-sm-8"> 
               <select [(ngModel)]="categoryPlate" class="form-control opacity">
                 <option *ngFor="let cat of allCategories"
                   [value]="cat">{{cat}}</option> 
                 </select>
             </div> 
+            <div *ngIf="modCat" class="col-sm-8">
+              <input type="text" [(ngModel)]="categoryPlate" class="form-control" id="nameCat" placeholder="Nueva categoría..."> 
+            </div>
           </div>
           <div style="margin-top: 3%" class="form-group justify-content-center">
-            <h6>Agregar imagen a platillo</h6> 
+            <button type="button" class="btn btn-outline-danger" (click)="isCollapsed = !isCollapsed"
+              [attr.aria-expanded]="isCollapsed" aria-controls="collapseExample">
+              Agregar imagen al platillo
+            </button>
           </div>
-          <div class="form-group justify-content-center">
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" [(ngModel)]="imgOpt" name="imageOpts" id="upImg" [value]="true">
-              <label class="form-check-label" for="upImg">Subir imagen</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" [(ngModel)]="imgOpt" name="imageOpts" id="lnkImg" [value]="false">
-              <label class="form-check-label" for="lnkImg">Link a imagen</label>
-            </div>
-          </div> 
-          <div *ngIf="!imgOpt" class="form-group row"> 
-            <div class="input-group col-sm-12">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Link </span>
+          <div id="collapseExample" [ngbCollapse]="isCollapsed">
+            <div class="form-group justify-content-center">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" (change)="switchImg()" [(ngModel)]="imgOpt" name="imageOpts" id="upImg" [value]="true">
+                <label class="form-check-label" for="upImg">Subir imagen</label>
               </div>
-              <input type="text" [(ngModel)]="imagePlate" class="form-control" id="imageP" placeholder="Link nueva imagen..." required> 
-              <div class="invalid-tooltip">
-                Please provide a valid zip.
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" (change)="switchImg()" [(ngModel)]="imgOpt" name="imageOpts" id="lnkImg" [value]="false">
+                <label class="form-check-label" for="lnkImg">Link a imagen</label>
               </div>
             </div>
+            <div *ngIf="!imgOpt" class="form-group row"> 
+              <div class="input-group col-sm-11">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Link </span>
+                </div>
+                <input type="text" [(ngModel)]="imagePlate" class="form-control" id="imageP" placeholder="Link nueva imagen..." required> 
+              </div>
+            </div> 
+            <div *ngIf="imgOpt" class="form-group row">
+              <div class="input-group col-sm-11">
+                <label for="imagenC">Elija una imagen de la computadora</label>
+                <input (change)="onFileChange($event)" type="file" accept=".jpg, .jpeg" class="form-control-file" id="imagenC" required>
+              </div>
+            </div>
           </div> 
-          <div *ngIf="imgOpt" class="form-group row">
-            <div class="input-group col-sm-12">
-              <label for="imagenC">Elija una imagen de la computadora</label>
-              <input (change)="onFileChange($event)" type="file" accept=".jpg, .jpeg" class="form-control-file" id="imagenC" required>
-            </div>
-            <div class="invalid-tooltip">
-              Please provide a valid zip.
-            </div>
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
-          <button type="submit" (click)="updatePlat()" class="btn btn-danger">Guardar</button> 
+          <button type="submit" (click)="updatePlat()" data-dismiss="modal" class="btn btn-danger">Guardar</button> 
         </div>
       </div>
     </div>
@@ -137,19 +149,19 @@
         </div>
         <div class="modal-body">
           <div class="form-group row"> 
-            <label class="col-sm-3 col-form-label">Nombre: </label> 
+            <label class="col-sm-4 col-form-label">Nombre: </label> 
             <div class="col-sm-8"> 
               <input type="text" [(ngModel)]="namePlate" class="form-control" id="nameP" placeholder="Nombre..."> 
             </div> 
           </div> 
           <div class="form-group row"> 
-            <label class="col-sm-3 col-form-label">Descripción: </label> 
+            <label class="col-sm-4 col-form-label">Descripción: </label> 
             <div class="col-sm-8"> 
               <textarea class="form-control" maxlength="150" [(ngModel)]="descriptionPlate" rows="4" placeholder="Pequeña descripción..."></textarea> 
             </div> 
           </div> 
           <div class="form-group row"> 
-            <label class="col-sm-3 col-form-label">Precio: </label> 
+            <label class="col-sm-4 col-form-label">Precio: </label> 
             <div class="col-sm-8"> 
               <div class="input-group"> 
                 <div class="input-group-prepend"> 
@@ -162,14 +174,27 @@
               </div> 
             </div> 
           </div> 
-          <div class="form-group row"> 
-            <label class="col-sm-3 col-form-label">Categoría: </label> 
-            <div class="col-sm-8"> 
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label class="col-form-label">Categoría: </label> 
+              <div class="form-group row">
+                <div class="form-check">
+                  <input class="form-check-input" (change)="switchCat()" type="checkbox" [value]="false" [(ngModel)]="newCat" id="lblCat">
+                  <h6 class="form-check-label" for="lblCat">
+                    Nueva categoría
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!newCat" class="col-sm-8"> 
               <select [(ngModel)]="categoryPlate" class="form-control opacity">
                 <option *ngFor="let cat of allCategories"
                   [value]="cat">{{cat}}</option> 
                 </select>
             </div> 
+            <div *ngIf="newCat" class="col-sm-8">
+              <input type="text" [(ngModel)]="categoryPlate" class="form-control" id="nameCat" placeholder="Nueva categoría..."> 
+            </div>
           </div> 
         </div>
         <div class="modal-footer">
