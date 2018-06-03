@@ -2,7 +2,7 @@ import { ManagerService } from './../../../services/manager/manager.service';
 import { Component, ViewChild } from '@angular/core';
 import { ManagerModel } from '../../../models/manager.model';
 import { Pedido } from '../../../models/manager';
-
+import { AgmMap } from '@agm/core';
 declare var jquery:any;
 declare var $ :any;
 

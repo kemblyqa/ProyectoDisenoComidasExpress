@@ -6,7 +6,7 @@ export class ManagerModel {
     headersApprovedTable:Array<any>
     headersPendingTable:Array<any>
     headersDeclinedTable:Array<any>
-    headersExpiredTable:Array<any>
+    headersFinishedTable:Array<any>
     constructor(){
         this.navItems = [
             {
@@ -30,16 +30,12 @@ export class ManagerModel {
         ]
         this.orderOptions = [
             {
-                item:"Ver pedidos expirados",
+                item: "Ver pedidos finalizados",
                 opt:1
             },
             {
                 item: "Ver pedidos rechazados",
                 opt:2
-            },
-            {
-                item: "Historial de pedidos",
-                opt:3
             }
         ]
         this.headersApprovedTable = [
@@ -54,7 +50,7 @@ export class ManagerModel {
             "Cantidad", "Platillo", "Descripcion",
             "Fecha","Hora", "Email", "Precio", "Categoria", "Entrega", "Motivo"
         ]
-        this.headersExpiredTable = [
+        this.headersFinishedTable = [
             "Cantidad", "Platillo", "Descripcion",
             "Fecha","Hora", "Email", "Precio", "Categoria", "Entrega"
         ]
@@ -68,8 +64,8 @@ export class ManagerModel {
     getOrderOptions(){
         return this.orderOptions
     }
-    getExpiredTableHeaders(){
-        return this.headersExpiredTable
+    getFinishedTableHeaders(){
+        return this.headersFinishedTable
     }
     getApprovedTableHeaders(){
         return this.headersApprovedTable

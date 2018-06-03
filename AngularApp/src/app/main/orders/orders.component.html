@@ -58,52 +58,6 @@
       </div>
     </div>
   </div>
-  <!-- expired modal -->
-  <div class="modal" id="modalExpired" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Pedidos expirados</h5>
-        </div>
-        <div class="modal-body">
-          <h5 *ngIf="expiredOrders?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
-          <div *ngIf="expiredOrders?.length > 0" class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th *ngFor="let head of expiredHeaders" scope="col">{{head}}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let order of expiredOrders" scope="row">
-                  <td style="text-align: center">{{order.cantidad}}</td>
-                  <td>{{order.nombre}}</td>
-                  <td>{{order.descripcion}}</td>
-                  <td>{{order.fecha | date: 'dd/MM/yyyy'}}</td>
-                  <td>{{order.fecha | date:'shortTime'}}</td>
-                  <td>{{order.email}}</td>
-                  <td>{{order.precio}}</td>
-                  <td>{{order.categoria}}</td>
-                  <td *ngIf="order.ubicacion._latitude == undefined && order.ubicacion._longitude == undefined">
-                    Recoger aquí</td>
-                  <td *ngIf="order.ubicacion._latitude != undefined && order.ubicacion._longitude != undefined">
-                    <button (click)="openMapModal(order.ubicacion._latitude, order.ubicacion._longitude)"
-                    class="btn-open-map" ngbTooltip="Abrir en mapa"><i class="material-icons">
-                      open_in_new
-                      </i></button>  
-                    </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <ngb-pagination *ngIf="expiredOrders?.length > 0" (click)="updateExpiredPagination($event)" class="" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
-        </div>
-      </div>
-    </div>
-  </div>
   <!-- declined modal -->
   <div style="width:100%"  class="modal" id="modalDeclined" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -151,24 +105,24 @@
       </div>
     </div>
   </div>
-  <!-- order all records modal -->
-  <div class="modal" id="modalHistory" tabindex="-1" role="dialog">
+  <!-- finished orders modal -->
+  <div style="width:100%" class="modal" id="modalFinished" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div  class="modal-header">
-          <h5 style="width:85%" class="modal-title">Historial</h5>
+          <h5 style="width:85%" class="modal-title">Finalizados</h5>
         </div>
         <div class="modal-body">
-          <h5 *ngIf="historyOrders?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
-          <div *ngIf="historyOrders?.length > 0" class="table-responsive">
+          <h5 *ngIf="finishedOrders?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
+          <div *ngIf="finishedOrders?.length > 0" class="table-responsive">
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th *ngFor="let head of expiredHeaders" scope="col">{{head}}</th>
+                  <th *ngFor="let head of finishedHeaders" scope="col">{{head}}</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let order of historyOrders" scope="row">
+                <tr *ngFor="let order of finishedOrders" scope="row">
                   <td style="text-align: center">{{order.cantidad}}</td>
                   <td>{{order.nombre}}</td>
                   <td>{{order.descripcion}}</td>
@@ -191,14 +145,14 @@
           </div>
         </div>
         <div class="modal-footer">
-          <ngb-pagination *ngIf="historyOrders?.length > 0" (click)="updateHistoryPagination($event)" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+          <ngb-pagination *ngIf="finishedOrders?.length > 0" (click)="updateFinishedPagination($event)" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Atras</button>
         </div>
       </div>
     </div>
   </div>
   <!-- open map modal -->
-  <div class="modal" id="modalMap" tabindex="-1" role="dialog">
+  <div class="modal" id="orderModalMap" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
