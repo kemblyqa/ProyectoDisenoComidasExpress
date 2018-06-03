@@ -1,6 +1,6 @@
 <main role="main">
     <!-- show categories -->
-  <section class="jumbotron order" style="margin: 0%; padding: 16px 8px 32px">
+  <section class="jumbotron order" style="margin: 0%; padding: 10px 8px 12px">
     <div ngbDropdown class="d-inline-block">
       <i ngbDropdownToggle class="material-icons menu-tool">
         more_vert
@@ -16,14 +16,17 @@
       <h6 class="card-title font-title">{{restName}}</h6>
       <label style="margin-top: 6%" class="col col-form-label font-normal-sub">Tipos de pedidos</label>  
       <div class="centerDiv">
-        <div class="bar-content">
-          <ul class="nav mb-3 justify-content-center" role="tablist">
-            <li style="margin: 0% 1%" *ngFor="let item of orderItems">
-              <button class="btn btn-info" data-toggle="pill" (click)="goTo(item.href)" role="tab">{{item.item}}</button>
-            </li>
-          </ul>
-        </div>
+        <ul class="nav justify-content-center" role="tablist">
+          <li style="margin: 0% 1%" *ngFor="let item of orderItems">
+            <button class="btn btn-info" data-toggle="pill" (click)="goTo(item.href)" role="tab">{{item.item}}</button>
+          </li>
+        </ul>
       </div>
+    </div>
+    <div style="text-align: right;">
+      <button class="center-icon-btn btn btn-warning" ngbTooltip="Eliminar expirados"><i class="material-icons icon">
+        delete_forever
+      </i></button>
     </div>
   </section>
   <!-- confirmation modal -->
