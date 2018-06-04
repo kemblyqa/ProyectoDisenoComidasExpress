@@ -194,7 +194,6 @@ export class MenuRestaurantComponent implements OnInit {
   }
   /* updates platillo image*/
   updateImage(){
-    console.log(this.isCollapsed)
     if(!this.isCollapsed){
       if(this.imgOpt){//if upload image
         this._managerService.uploadBase64Image(this.currentPlate.id,this.imagePlate)

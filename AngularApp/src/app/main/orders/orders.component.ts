@@ -1,7 +1,9 @@
+import { ApprovedComponent } from './approved/approved.component';
+import { PendingComponent } from './pending/pending.component';
 import { ManagerModel } from './../../models/manager.model';
 import { Router } from '@angular/router';
 import { ManagerService } from './../../services/manager/manager.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Pedido } from '../../models/manager';
 import { AgmMap } from '@agm/core';
 declare var jquery:any;
@@ -13,6 +15,10 @@ declare var $ :any;
   styleUrls: ['./orders.component.css']
 })
 export class OrdersComponent {
+  /* children for orders */
+  @ViewChild(PendingComponent) pendingOrders: PendingComponent
+  @ViewChild(ApprovedComponent) approvedOrders: ApprovedComponent
+  private currentOrders:boolean //true:active, false:pending
   /* models */
   private manage:ManagerModel
   /* modal messages */
@@ -126,7 +132,13 @@ export class OrdersComponent {
       }
     )
   }
+  /* routing nav */
   goTo(path:any){
+    path == "/actuales" ? this.currentOrders = true : this.currentOrders = false
     this._router.navigate([`dashboard/pedidos${path}`])
+  }
+  /* delete expired orders */
+  deleteExpiredOrders(){
+    this.currentOrders ? this.approvedOrders.deleteExpiredApprovedOrders() : this.pendingOrders.deleteExpiredPendingOrders()
   }
 }

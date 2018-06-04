@@ -123,4 +123,9 @@ export class PendingComponent {
       }
     )
   }
+  /* delete expired orders */
+  deleteExpiredPendingOrders(){
+    this._managerService.deleteExpiredOrder()
+    // updates pending orders
+  }
 }

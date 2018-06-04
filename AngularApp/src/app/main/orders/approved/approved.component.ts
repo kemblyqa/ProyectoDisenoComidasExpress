@@ -90,4 +90,9 @@ export class ApprovedComponent {
       }
     )
   }
+   /* delete expired orders */
+   deleteExpiredApprovedOrders(){
+    this._managerService.deleteExpiredOrder()
+    // updates approved orders
+  }
 }
