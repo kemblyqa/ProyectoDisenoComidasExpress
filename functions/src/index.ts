@@ -437,29 +437,34 @@ export const caja = functions.https.onRequest((req, res) => {
                 if(usuario.exists){
                     let carrito = usuario.data().carrito
                     let save = (email,carrito)=>{usuarios.doc(email).set({carrito:carrito},{merge:true})}
-                    for(var item in carrito){
-                        platillos.doc(item).get().then(platillo=>{
-                            if(platillo.exists){
-                                pedidos.add({email:email,
-                                    restaurante:platillo.data().restaurante,
-                                    ubicacion:carrito[item].ubicacion,
-                                    categoria:platillo.data().categoria,
-                                    descripcion:platillo.data().descripcion,
-                                    nombre:platillo.data().nombre,
-                                    precio:platillo.data().precio,
-                                    fecha:carrito[item].fecha,
-                                    cantidad:carrito[item].cantidad
-                                    ,estado:{proceso:"pendiente"}}).then(ref=>{
-                                    delete carrito[item]
-                                    if(Object.keys(carrito).length==0){
-                                        save(email,carrito)
-                                        res.send({status:true,data:"Carrito procesado"})
-                                    }
-                                }).catch(err => {save(email,carrito);res.send({status:false,data:"Error procesando un pedido"})})
-                            }
-                            else {save(email,carrito);res.send({status:false,data:"Uno de los platillos del carrito no existe"})}
-                        }).catch(err => {save(email,carrito);res.send({status:false,data:"Error procesando un pedido"})})
-                    }
+                    let keys = Object.keys(carrito)
+                    if(keys.length==0)
+                      res.send({status:true,data:"Tu carrito ya estaba vacío"})
+                    else
+                      keys.forEach(item=>{
+                          platillos.doc(item).get().then(platillo=>{
+                              if(platillo.exists){
+                                  pedidos.add({email:email,
+                                      restaurante:platillo.data().restaurante,
+                                      ubicacion:carrito[item].ubicacion,
+                                      categoria:platillo.data().categoria,
+                                      descripcion:platillo.data().descripcion,
+                                      nombre:platillo.data().nombre,
+                                      precio:platillo.data().precio,
+                                      fecha:carrito[item].fecha,
+                                      cantidad:carrito[item].cantidad
+                                      ,estado:{proceso:"pendiente"}}).then(ref=>{
+                                      delete carrito[item]
+                                      if(Object.keys(carrito).length==0){
+                                          save(email,carrito)
+                                          res.send({status:true,data:"Carrito procesado"})
+                                          return
+                                      }
+                                  }).catch(err => {save(email,carrito);res.send({status:false,data:"Error procesando un pedido"});return})
+                              }
+                              else {save(email,carrito);res.send({status:false,data:"Uno de los platillos del carrito no existe"})}
+                          }).catch(err => {save(email,carrito);res.send({status:false,data:"Error procesando un pedido"})})
+                      })
                 }
                 else
                     res.send({status:false,data:"El usuario solicitado no existe"})
@@ -637,51 +642,6 @@ export const subirImagenPlat = functions.https.onRequest((req, res) => {
     } else  res.send({status:false,data:"Solo se admite POST"});
 })
 
-export const subirImagenRest = functions.https.onRequest((req, res) => {
-    if (req.method === 'POST') {
-        let keyRest=req.body.keyRest //clave de platillo
-        var img = req.body.img //base64
-        if(!allDefined([img,keyRest])){
-            res.send({status:false,data:"Se requiere la imagen y clave de restaurante"})
-            return
-        }
-        else{
-            restaurantes.doc(keyRest).get().then(snapshot =>{
-                if(!snapshot.exists){
-                    res.send({status:false,data:"El restaurante solicitado no existe"})
-                    return
-                }
-                img = decodeFile(img)
-                if(img==undefined){
-                    res.send({status:false,data:"Archivo invalido"})
-                    return
-                }
-                else if(img.type!='image'){
-                    res.send({status:false,data:"El archivo enviado no es una imagen valida"})
-                    return
-                }
-                else{
-                    var fileName = keyRest+'.'+img.extension
-                    var file = bucket.file('restaurantes/' + fileName);
-                    file.save(
-                        img.file,
-                        {metadata: {contentType: img.mime}},
-                        error => {
-                            if (error)
-                                res.send({status:false,data:'No se pudo subir la imagen.'});
-                            else{
-                                let URL = file.metadata.mediaLink
-                                restaurantes.doc(keyRest).set({imagen:URL},{merge:true})
-                                res.send({status:true,data:`La URL del restaurante ${keyRest} ahora es ${URL}`});
-                            }
-                        }
-                    );
-                }
-            }).catch(err =>{res.send({status:false,data:"Error obteniendo el platillo"})})
-        }
-    } else  res.send({status:false,data:"Solo se admite POST"});
-})
-
 export const setUsuario = functions.https.onRequest((req, res) => {
     if (req.method == 'POST')
         if(isUndefined(req.body.nombre) || isUndefined(req.body.email) || isUndefined(req.body.telefono))
@@ -814,4 +774,78 @@ export const modRestaurante = functions.https.onRequest((req, res) => {
     else{
         res.send({status:false,data:"Este metodo solo admite POST"})
     }
+})
+
+export const subirImagenRest = functions.https.onRequest((req, res) => {
+    if (req.method === 'POST') {
+        let keyRest=req.body.keyRest //clave de platillo
+        var img = req.body.img //base64
+        if(!allDefined([img,keyRest])){
+            res.send({status:false,data:"Se requiere la imagen y clave de restaurante"})
+            return
+        }
+        else{
+            restaurantes.doc(keyRest).get().then(snapshot =>{
+                if(!snapshot.exists){
+                    res.send({status:false,data:"El restaurante solicitado no existe"})
+                    return
+                }
+                img = decodeFile(img)
+                if(img==undefined){
+                    res.send({status:false,data:"Archivo invalido"})
+                    return
+                }
+                else if(img.type!='image'){
+                    res.send({status:false,data:"El archivo enviado no es una imagen valida"})
+                    return
+                }
+                else{
+                    var fileName = keyRest+'.'+img.extension
+                    var file = bucket.file('restaurantes/' + fileName);
+                    file.save(
+                        img.file,
+                        {metadata: {contentType: img.mime}},
+                        error => {
+                            if (error)
+                                res.send({status:false,data:'No se pudo subir la imagen.'});
+                            else{
+                                let URL = file.metadata.mediaLink
+                                restaurantes.doc(keyRest).set({imagen:URL},{merge:true})
+                                res.send({status:true,data:`La URL del restaurante ${keyRest} ahora es ${URL}`});
+                            }
+                        }
+                    );
+                }
+            }).catch(err =>{res.send({status:false,data:"Error obteniendo el platillo"})})
+        }
+    } else  res.send({status:false,data:"Solo se admite POST"});
+})
+
+export const calificar = functions.https.onRequest((req,res) => {
+  if (req.method == "POST"){
+    let keyPlat = req.body.keyPlat;
+    let stars = parseInt(req.body.stars)
+    let comentario = req.body.comentario
+    let email = req.body.email
+    if(keyPlat!=undefined && email!=undefined && !isNaN(stars)){
+      platillos.doc(keyPlat).get().then(plat => {
+        if(plat.exists)
+          usuarios.doc(email).get().then(user =>{
+            if(user.exists){
+              let update = {}
+              update[`calificaciones.${email}`] = {stars:stars,review:comentario==undefined?"":comentario}
+              platillos.doc(keyPlat).update(update)
+            }
+            else
+              res.send({status:false,data:"El usuario solicitado no existe"})
+          }).catch(error =>res.send({statu:false,data:"Error obteniendo el usuario"}))
+        else
+          res.send({status:false,data:"El platillo solicitado no existe"})
+      }).catch(e =>res.send({status:false,data:"Error obteniendo platillo" + JSON.stringify(e)}))
+    }
+    else
+      res.send({status:false,data:"No se han recibido los valores necesarios"})
+  }
+  else
+    res.send({status:false,data:"Este endPoint solo acepta POST"})
 })
