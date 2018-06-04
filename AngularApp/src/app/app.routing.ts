@@ -1,3 +1,5 @@
+import { AccountComponent } from './main/account/account.component';
+import { RestaurantsComponent } from './main/restaurants/restaurants.component';
 import { PendingComponent } from './main/orders/pending/pending.component';
 import { ApprovedComponent } from './main/orders/approved/approved.component';
 import { OrdersComponent } from './main/orders/orders.component';
@@ -31,6 +33,12 @@ export const ROUTES: Routes = [
                         path: 'pendientes', component: PendingComponent
                     }
                 ]
+            },
+            {
+                path: "restaurantes", component: RestaurantsComponent
+            },
+            {
+                path: "cuenta", component: AccountComponent
             }
         ]
     },

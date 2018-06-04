@@ -17,6 +17,8 @@ import { ApprovedComponent } from './main/orders/approved/approved.component';
 import { PendingComponent } from './main/orders/pending/pending.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AgmCoreModule } from '@agm/core';
+import { RestaurantsComponent } from './main/restaurants/restaurants.component';
+import { AccountComponent } from './main/account/account.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { AgmCoreModule } from '@agm/core';
     MainPageComponent,
     OrdersComponent,
     ApprovedComponent,
-    PendingComponent
+    PendingComponent,
+    RestaurantsComponent,
+    AccountComponent
   ],
   imports: [
     BrowserModule,

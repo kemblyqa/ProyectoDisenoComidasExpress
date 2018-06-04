@@ -16,6 +16,14 @@ export class ManagerModel {
             {
                 item: "Pedidos",
                 href: '/pedidos'
+            },
+            {
+                item: "Restaurantes",
+                href: "/restaurantes"
+            },
+            {
+                item: "Mi cuenta",
+                href: "/cuenta"
             }
         ]
         this.orderItems = [

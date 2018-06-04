@@ -8,11 +8,12 @@ import { ManagerModel } from '../../models/manager.model';
   styleUrls: ['./main-page.component.css']
 })
 export class MainPageComponent implements OnInit{
+  /* user */
+  private user:string = "Kembly Quirós"
+  /* models and nav items */
   manage:ManagerModel
   navItems:Array<any>
-  ngOnInit() {
-    
-  }
+  ngOnInit() {}
 
   constructor(private router: Router) { 
     this.manage = new ManagerModel()
