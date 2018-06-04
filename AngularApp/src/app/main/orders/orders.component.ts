@@ -1,7 +1,9 @@
+import { ApprovedComponent } from './approved/approved.component';
+import { PendingComponent } from './pending/pending.component';
 import { ManagerModel } from './../../models/manager.model';
 import { Router } from '@angular/router';
 import { ManagerService } from './../../services/manager/manager.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Pedido } from '../../models/manager';
 import { AgmMap } from '@agm/core';
 declare var jquery:any;
@@ -13,6 +15,10 @@ declare var $ :any;
   styleUrls: ['./orders.component.css']
 })
 export class OrdersComponent {
+  /* children for orders */
+  @ViewChild(PendingComponent) pendingOrders: PendingComponent
+  @ViewChild(ApprovedComponent) approvedOrders: ApprovedComponent
+  private currentOrders:boolean //true:active, false:pending
   /* models */
   private manage:ManagerModel
   /* modal messages */
@@ -21,11 +27,10 @@ export class OrdersComponent {
   private orderItems:Array<any>
   private orderOpts:Array<any>
   private declinedHeaders:Array<any>
-  private expiredHeaders:Array<any>
+  private finishedHeaders:Array<any>
   /* row lists */
-  private expiredOrders:Pedido
   private declinedOrders:Pedido
-  private historyOrders:Pedido
+  private finishedOrders:Pedido
   /* pagination */
   private page:number = 1
   private totalPages:number = 0
@@ -40,26 +45,22 @@ export class OrdersComponent {
     this.orderOpts = this.manage.getOrderOptions()
     //table headers
     this.declinedHeaders = this.manage.getDeclinedTableHeaders()
-    this.expiredHeaders = this.manage.getExpiredTableHeaders()
+    this.finishedHeaders = this.manage.getFinishedTableHeaders()
   }
   /* pagination */
-  updateExpiredPagination(e){
-    this.page = e
-    this.getExpiredOrders()
-  }
   updateDeclinedPagination(e){
     this.page = e
     this.getDeclinedOrders()
   }
-  updateHistoryPagination(e){
+  updateFinishedPagination(e){
     this.page = e
-    this.getHistoryOrders()
+    this.getFinishedOrders()
   }
   /* open map modal */
   openMapModal(lat:any, lng:any){
     this.lat = lat
     this.lng = lng
-    $("#modalMap").modal({
+    $("#orderModalMap").modal({
       backdrop: 'static',
       keyboard: false,
       show: true
@@ -74,16 +75,7 @@ export class OrdersComponent {
       show: true
     })
   }
-  /* expired orders modal */
-  expiredOrdersModal(){
-    this.getExpiredOrders()
-    $("#modalExpired").modal({
-      backdrop: 'static',
-      keyboard: false,
-      show: true
-    })
-  }
-  /* expired orders modal */
+  /* deleted orders modal */
   declinedOrdersModal(){
     this.getDeclinedOrders()
     $("#modalDeclined").modal({
@@ -92,10 +84,10 @@ export class OrdersComponent {
       show: true
     })
   }
-  /* expired orders modal */
-  historyOrdersModal(){
-    this.getHistoryOrders()
-    $("#modalHistory").modal({
+  /* finished orders modal */
+  finishedOrdersModal(){
+    this.getFinishedOrders()
+    $("#modalFinished").modal({
       backdrop: 'static',
       keyboard: false,
       show: true
@@ -105,29 +97,12 @@ export class OrdersComponent {
   otherOptions(opt:number){
     switch(opt){
       case 1:
-        this.expiredOrdersModal()
+        this.finishedOrdersModal()
         break
       case 2:
         this.declinedOrdersModal()
         break
-      case 3:
-        this.historyOrdersModal()
-        break
     }
-  }
-  /* get expired orders */
-  getExpiredOrders(){
-    this._managerService.getCustomOrders("keyAuto","expirado")
-    .subscribe(
-      success => {
-        if(success.status){
-          this.expiredOrders = success.data[0]
-          this.totalPages = success.data[1] * 10
-        } else {
-          this.failedMessageModal(success.data)
-        }
-      }
-    )
   }
   /* get declined orders */
   getDeclinedOrders(){
@@ -144,12 +119,12 @@ export class OrdersComponent {
     )
   }
   /* get expired orders */
-  getHistoryOrders(){
+  getFinishedOrders(){
     this._managerService.getCustomOrders("keyAuto","finalizado")
     .subscribe(
       success => {
         if(success.status){
-          this.historyOrders = success.data[0]
+          this.finishedOrders = success.data[0]
           this.totalPages = success.data[1] * 10
         } else {
           this.failedMessageModal(success.data)
@@ -157,7 +132,13 @@ export class OrdersComponent {
       }
     )
   }
+  /* routing nav */
   goTo(path:any){
+    path == "/actuales" ? this.currentOrders = true : this.currentOrders = false
     this._router.navigate([`dashboard/pedidos${path}`])
+  }
+  /* delete expired orders */
+  deleteExpiredOrders(){
+    this.currentOrders ? this.approvedOrders.deleteExpiredApprovedOrders() : this.pendingOrders.deleteExpiredPendingOrders()
   }
 }
