@@ -1,43 +1,91 @@
 {
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "functions": {
-    "predeploy": [
-      "npm --prefix \"$RESOURCE_DIR\" run lint",
-      "npm --prefix \"$RESOURCE_DIR\" run build"
-    ]
-  },
-  "hosting": {
-    "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {"source":"/api/categoria", "function":"categoria"},
-      {"source":"/api/filtroPlat", "function":"filtroPlat"},
-      {"source":"/api/addPlatillo", "function":"addPlatillo"},
-      {"source":"/api/modPlatillo", "function":"modPlatillo"},
-      {"source":"/api/delPlatillo", "function":"delPlatillo"},
-      {"source":"/api/itemCarro", "function":"itemCarro"},
-      {"source":"/api/delCarro", "function":"delCarro"},
-      {"source":"/api/caja", "function":"caja"},
-      {"source":"/api/filtroPedidos", "function":"filtroPedidos"},
-      {"source":"/api/verCarrito", "function":"verCarrito"},
-      {"source":"/api/setEstado", "function":"setEstado"},
-      {"source":"/api/subirImagenPlat", "function":"subirImagenPlat"},
-      {"source":"/api/setUsuario", "function":"setUsuario"},
-      {"source":"/api/setTarjeta", "function":"setTarjeta"},
-      {"source":"/api/addRestaurante", "function":"addRestaurante"},
-      {"source":"/api/modRestaurante", "function":"modRestaurante"},
-      {"source":"/api/subirImagenRest", "function":"subirImagenRest"},
-      {"source": "**","destination": "/index.html"}
-    ]
-  },
-  "storage": {
-    "rules": "storage.rules"
-  }
+	"firestore": {
+		"rules": "firestore.rules",
+		"indexes": "firestore.indexes.json"
+	},
+	"functions": {
+		"predeploy": ["npm --prefix \"$RESOURCE_DIR\" run lint",
+		"npm --prefix \"$RESOURCE_DIR\" run build"]
+	},
+	"hosting": {
+		"public": "public",
+		"ignore": ["firebase.json",
+		"**/.*",
+		"**/node_modules/**"],
+		"rewrites": [{
+			"source": "/api/categoria",
+			"function": "categoria"
+		},
+		{
+			"source": "/api/filtroPlat",
+			"function": "filtroPlat"
+		},
+		{
+			"source": "/api/addPlatillo",
+			"function": "addPlatillo"
+		},
+		{
+			"source": "/api/modPlatillo",
+			"function": "modPlatillo"
+		},
+		{
+			"source": "/api/delPlatillo",
+			"function": "delPlatillo"
+		},
+		{
+			"source": "/api/itemCarro",
+			"function": "itemCarro"
+		},
+		{
+			"source": "/api/delCarro",
+			"function": "delCarro"
+		},
+		{
+			"source": "/api/caja",
+			"function": "caja"
+		},
+		{
+			"source": "/api/filtroPedidos",
+			"function": "filtroPedidos"
+		},
+		{
+			"source": "/api/verCarrito",
+			"function": "verCarrito"
+		},
+		{
+			"source": "/api/setEstado",
+			"function": "setEstado"
+		},
+		{
+			"source": "/api/subirImagenPlat",
+			"function": "subirImagenPlat"
+		},
+		{
+			"source": "/api/setUsuario",
+			"function": "setUsuario"
+		},
+		{
+			"source": "/api/setTarjeta",
+			"function": "setTarjeta"
+		},
+		{
+			"source": "/api/addRestaurante",
+			"function": "addRestaurante"
+		},
+		{
+			"source": "/api/modRestaurante",
+			"function": "modRestaurante"
+		},
+		{
+			"source": "/api/subirImagenRest",
+			"function": "subirImagenRest"
+		},
+		{
+			"source": "**",
+			"destination": "/index.html"
+		}]
+	},
+	"storage": {
+		"rules": "storage.rules"
+	}
 }

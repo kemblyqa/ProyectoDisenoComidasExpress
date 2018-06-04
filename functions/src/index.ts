@@ -17,6 +17,7 @@ var pedidos = db.collection("Pedido");
 let dias=[ 'd','l', 'k', 'm', 'j', 'v', 's' ]
 
 //comprueba que todos los datos de la lista están definidos
+
 function allDefined(list){
     for (let x = 0;x<list.lenght;x++){
         if(list[x]==undefined)
@@ -27,16 +28,15 @@ function allDefined(list){
 
 function base64MimeType(encoded){
     var result = null;
-  
+
     if (typeof encoded !== 'string') {
       return result;
     }
-  
+
     var mime = encoded.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*/);
     if (mime && mime.length) {
       result = mime[1];
     }
-  
     return result;
 }
 
@@ -51,9 +51,9 @@ function getHorario(h:string){
             }
             for(let y = 0; horario[x][y]!=undefined; y++){
                 if(
-                    horario[x][y].init==undefined || 
-                    horario[x][y].end==undefined || 
-                    horario[x][y].init>horario[x][y].end || 
+                    horario[x][y].init==undefined ||
+                    horario[x][y].end==undefined ||
+                    horario[x][y].init>horario[x][y].end ||
                     horario[x][y].init<0 ||
                     horario[x][y].end>1440){
                         bien=false
@@ -72,7 +72,7 @@ function enHorario(pedido:Date,horario:Object) : boolean{
     let dia = pedido.getDay()
     let min = (pedido.getHours()*60) + pedido.getMinutes()
     let atencion:Array<{init:number,end:number}> = horario[dias[dia]]
-    let aceptado:boolean = false 
+    let aceptado:boolean = false
     atencion.forEach(e =>{
         if(e.init<=min && e.end>=min)
             aceptado=true
@@ -80,9 +80,9 @@ function enHorario(pedido:Date,horario:Object) : boolean{
     return aceptado
 }
 
-function genGeopoint(tupla:Array<number>) : GeoPoint{
+function genGeopoint(tupla:Array<number>,all:boolean) : GeoPoint{
     try{
-        if(tupla[0]==0 && tupla[1]==0)
+        if(tupla[0]==0 && tupla[1]==0 && !all)
             return undefined
         return new GeoPoint(tupla[0],tupla[1])
     }
@@ -96,7 +96,7 @@ function distancia(a:GeoPoint,b:GeoPoint) : number{
     var φ2 = b.longitude
     var Δφ = (b.latitude-a.latitude)
     var Δλ = (b.longitude-b.longitude)
-    
+
     var x = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
             Math.cos(φ1) * Math.cos(φ2) *
             Math.sin(Δλ/2) * Math.sin(Δλ/2);
@@ -130,15 +130,11 @@ export const categoria = functions.https.onRequest((req, res) => {
             query=query.where('restaurante','==',req.query.keyRest)
         query.get()
         .then((snapshot) => {
-            let categorias = [];
             let temp = {}
             snapshot.forEach((doc) => {
                 temp[doc.data().categoria]=doc.data().categoria;
             });
-            for (var cat in temp){
-                categorias.push(cat)
-            }
-            res.status(200).send({status:true,data:categorias});
+            res.status(200).send({status:true,data:Object.keys(temp)});
         })
         .catch((err) => {
             res.send({status:false,data:'Error obteniendo documentos'});
@@ -156,7 +152,7 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
         let ubicacion
         if(req.query.ubicacion!=undefined)
         try{
-            ubicacion = genGeopoint(JSON.parse(req.query.ubicacion))
+            ubicacion = genGeopoint(JSON.parse(req.query.ubicacion),false)
         }
         catch(e){
             res.send({status:false,data:"Error interpretando la ubicacion"})
@@ -192,7 +188,7 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
                     if(c==unicos.length)
                     {
                         if(!isUndefined(ubicacion) && !isNaN(rango)){
-                            raw=filtroUbicacion(raw,ubicacion,rests,rango) 
+                            raw=filtroUbicacion(raw,ubicacion,rests,rango)
                         }
                         if (raw.length<=(pagina-1)*12)
                             res.send({status:true,data:[[],0]})
@@ -331,7 +327,7 @@ export const delPlatillo = functions.https.onRequest((req, res) => {
 export const itemCarro = functions.https.onRequest((req, res) => {
     if (req.method='POST'){
         let ubicacion
-        try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion))}
+        try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),true)}
         catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
         let fecha;
         try{
@@ -344,22 +340,27 @@ export const itemCarro = functions.https.onRequest((req, res) => {
         }
         catch(e){res.send({status:false,data:"Error interpretando la fecha"});return}
         if (
-            typeof(req.body.keyRest)!='string' || 
+            typeof(req.body.keyRest)!='string' ||
             typeof(req.body.nombre)!='string' ||
             isNaN(parseInt(req.body.cantidad,10))||
             req.body.fecha==undefined || req.body.email==undefined)
             {
             res.send({status:false,data:"No se recibieron los parametros correctos"})
             return}
+        else if(ubicacion ==undefined){
+          res.send({status:false,data:"La ubicación especificada es invalida"})
+        }
         let keyRest = req.body.keyRest
         let nombre = req.body.nombre
         let cantidad = parseInt(req.body.cantidad,10)
         let email = req.body.email
         let override = req.body.override == 'true'
+
         platillos.where('nombre','==',nombre).where('restaurante','==',keyRest).get().then((snapshot) => {
             if(snapshot.empty)
                 res.send({status:false,data:"Este platillo no existe"})
             else{
+              let platillo = snapshot.docs[0];
                 usuarios.doc(email).get()
                 .then(usuario =>
                     {
@@ -370,21 +371,23 @@ export const itemCarro = functions.https.onRequest((req, res) => {
                                 return
                             }
                             let carrito = usuario.data().carrito
-                            if(carrito[snapshot.docs[0].id]!=undefined && !override){
-                                res.send({status:false,data:"El platillo a insertar ya se encuentra en tu carrito, puedes editarlo"})
-                                return
+                            if(carrito[platillo.id]!=undefined && !override){
+                              res.send({status:false,data:"El platillo a insertar ya se encuentra en tu carrito, puedes editarlo"})
                             }
-                            carrito[snapshot.docs[0].id]={
-                                platillo:snapshot.docs[0].id,cantidad:cantidad,ubicacion:ubicacion,fecha:fecha
+                            else{
+                              carrito[platillo.id]={
+                                  cantidad:cantidad,ubicacion:ubicacion,fecha:fecha
+                              }
+                              usuarios.doc(email).update({carrito:carrito})
+                              .then(function() {
+                                  res.send({status:true,data:"Añadido"})
+                              })
+                              .catch(function(error)
+                              {res.send({status:false,data:"Error de conexión en la base de datos"})})
                             }
-                            usuarios.doc(email).update({carrito:carrito})
-                            .then(function() {
-                                res.send({status:true,data:"Añadido"})
-                            })
-                            .catch(function(error) 
-                            {res.send({status:false,data:"Error de conexión en la base de datos"})})
-                        
+
                         }).catch(err=> {
+                            console.log(err)
                             res.send({status:false,data:`Error obteniendo restaurante: ${JSON.stringify(err)}`})})
                         }
                     else
@@ -435,7 +438,7 @@ export const caja = functions.https.onRequest((req, res) => {
                     let carrito = usuario.data().carrito
                     let save = (email,carrito)=>{usuarios.doc(email).set({carrito:carrito},{merge:true})}
                     for(var item in carrito){
-                        platillos.doc(carrito[item].platillo).get().then(platillo=>{
+                        platillos.doc(item).get().then(platillo=>{
                             if(platillo.exists){
                                 pedidos.add({email:email,
                                     restaurante:platillo.data().restaurante,
@@ -685,11 +688,13 @@ export const setUsuario = functions.https.onRequest((req, res) => {
             res.send({status:false,data:"Faltan datos"})
         else{
             let ubicacion
-            try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion))}
+            try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),false)}
             catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
             let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if(!re.test(String(req.body.email).toLowerCase()))
-                res.send({status:false,data:"Correo no valido"})
+              res.send({status:false,data:"Correo no valido"})
+            else if(ubicacion==undefined)
+              res.send({status:false,data:"ubicación invalida"})
             else{
                 usuarios.doc(req.body.email).get().then(snapshot => {
                     if(snapshot.exists && !(req.body.override== 'true'))
@@ -745,10 +750,12 @@ export const addRestaurante = functions.https.onRequest((req, res) => {
             return
         }
         else{
-            try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion))}
+            try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),false)}
             catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
             if(horario==undefined)
-                res.send({status:false,data:"Formato de horario no valido, debe ser una lista de 7 (lista de tuplas numericas)"})
+              res.send({status:false,data:"Formato de horario no valido, debe tener este formato {d:[{init:minutos,end:minutos}],l:[{init:minutos,end:minutos}],k:[{init:minutos,end:minutos}],m:[{init:minutos,end:minutos}],j:[{init:minutos,end:minutos}],v:[{init:minutos,end:minutos}],s:[{init:minutos,end:minutos}]}"})
+            else if(ubicacion==undefined)
+              res.send({status:false,data:"Ubicacion no valida"})
             else{
                 usuarios.doc(email).get().then(user =>{
                     if(user.exists){
@@ -768,7 +775,7 @@ export const addRestaurante = functions.https.onRequest((req, res) => {
                     else{
                         res.send({status:false,data:"Este usuario no existe"})
                     }
-                    
+
                 }).catch(e => {res.send({status:false,data:"Error obteniendo usuario: ",e});return})
             }
         }
@@ -790,14 +797,16 @@ export const modRestaurante = functions.https.onRequest((req, res) => {
         if(!allDefined([nombre,empresa,descripcion,ubicacion[0],ubicacion[1],horario,keyRest]))
             res.send({status:false,data:"Faltan Datos"})
         else{
-            try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion))}
+            try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),false)}
             catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
-            if(horario==null)
-                res.send({status:false,data:"Formato de horario no valido, debe ser una lista de 7 (lista de tuplas numericas)"})
+            if(horario==undefined)
+              res.send({status:false,data:"Formato de horario no valido, debe tener este formato {d:[{init:minutos,end:minutos}],l:[{init:minutos,end:minutos}],k:[{init:minutos,end:minutos}],m:[{init:minutos,end:minutos}],j:[{init:minutos,end:minutos}],v:[{init:minutos,end:minutos}],s:[{init:minutos,end:minutos}]}"})
+            else if(ubicacion==undefined)
+              res.send({status:false,data:"Ubicacion no valida"})
             else{
                 restaurantes.doc(keyRest).update({nombre: nombre,empresa:empresa,descripcion:descripcion,horario:horario,ubicacion:ubicacion}).then(ref =>{
                 res.send({status:true,data:"Restaurante modificado"})
-                    
+
                 }).catch(e => {res.send({status:false,data:"Error modificando restaurante: ",e});return})
             }
         }
