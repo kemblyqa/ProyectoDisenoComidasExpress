@@ -16,13 +16,14 @@ declare var $ :any;
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.css']
 })
-export class OrdersComponent implements OnDestroy {
+export class OrdersComponent {
 
-  private currentOrders:boolean //true:active, false:pending
+  private currentOrders:boolean = true //true:active, false:pending
   /* models */
   private manage:ManagerModel
   /* modal messages */
   private failedMessage:any
+  private successMessage:any
   /* headers */
   private orderItems:Array<any>
   private orderOpts:Array<any>
@@ -40,7 +41,6 @@ export class OrdersComponent implements OnDestroy {
   lng: number = -84.51030575767209
 
   /* subscription to orders */
-  private pendingOrdersSubscription: Subscription
 
   constructor(private _managerService: ManagerService, private _router: Router, private _pendingOrders: ExpireOrderService) {
     this.manage = new ManagerModel()
@@ -49,9 +49,6 @@ export class OrdersComponent implements OnDestroy {
     //table headers
     this.declinedHeaders = this.manage.getDeclinedTableHeaders()
     this.finishedHeaders = this.manage.getFinishedTableHeaders()
-  }
-  ngOnDestroy(){
-    this.pendingOrdersSubscription.unsubscribe()
   }
   /* pagination */
   updateDeclinedPagination(e){
@@ -67,6 +64,15 @@ export class OrdersComponent implements OnDestroy {
     this.lat = lat
     this.lng = lng
     $("#orderModalMap").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
+  }
+  /* modal success! */
+  successMessageModal(message:any){
+    this.successMessage = message
+    $("#modalSuccess").modal({
       backdrop: 'static',
       keyboard: false,
       show: true
@@ -145,6 +151,11 @@ export class OrdersComponent implements OnDestroy {
   }
   /* delete expired orders */
   deleteExpiredOrders(){
-    //endpoint
+    this._managerService.deleteExpiredOrder("keyAuto")
+    .subscribe(
+      success => {
+        success.status ? this.successMessageModal(success.data) : this.failedMessageModal(success.data)
+      }
+    )
   }
 }
