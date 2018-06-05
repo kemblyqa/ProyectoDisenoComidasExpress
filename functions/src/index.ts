@@ -150,6 +150,7 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
         let keyRest = req.query.keyRest
         let nombre = req.query.nombre
         let ubicacion
+        let rating = parseInt(req.query.rating)
         if(req.query.ubicacion!=undefined)
         try{
             ubicacion = genGeopoint(JSON.parse(req.query.ubicacion),false)
@@ -173,6 +174,9 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
             query=query.orderBy('nombre')
         query.get()
         .then((snapshot) => {
+          if(snapshot.empty)
+            res.send({status:true,data:[]})
+          else{
             let raw = snapshot.docs
             let rests={}
             raw.forEach(e=>{
@@ -190,35 +194,59 @@ export const filtroPlat = functions.https.onRequest((req, res) => {
                         if(!isUndefined(ubicacion) && !isNaN(rango)){
                             raw=filtroUbicacion(raw,ubicacion,rests,rango)
                         }
-                        if (raw.length<=(pagina-1)*12)
+                        let refined = []
+                        for(let y=0;raw[y]!=undefined;y++){
+                          refined[y] = raw[y].data()
+                          refined[y].id = raw[y].id
+                          let calificaciones = raw[y].data().calificaciones==undefined?{}:raw[y].data().calificaciones
+                          refined[y].calificaciones = calificaciones
+                          let c = 1
+                          let t = 4
+                          for(let u in calificaciones){
+                            t+=calificaciones[u].stars
+                            c++
+                          }
+                          refined[y].rating = t/c
+                        }
+                        if(!isNaN(rating)){
+                          for(let y = refined.length-1;y!=-1;y--){
+                            if(refined[y].rating<rating)
+                              refined.splice(y,1)
+                          }
+                        }
+                        if (refined.length<=(pagina-1)*12)
                             res.send({status:true,data:[[],0]})
                         let platRich = []
-                        let len = (raw.length-((pagina-1)*12))>12?12:(raw.length-((pagina-1)*12))
+                        let len = (refined.length-((pagina-1)*12))>12?12:(refined.length-((pagina-1)*12))
                         let cont = 0;
                         for (let x=(pagina-1)*12;x<len+(pagina-1)*12;x++){
-                            restaurantes.doc(raw[x].data().restaurante).get().then((Restaurante) => {
+                            restaurantes.doc(refined[x].restaurante).get().then((Restaurante) => {
                                 var rest;
                                 if(!Restaurante.exists)
                                     rest="Desconocido"
                                 else
                                     rest={nombre:Restaurante.data().nombre,id:Restaurante.id};
                                 platRich[x%12] = {
-                                    imagen:raw[x].data().imagen,
-                                    descripcion:raw[x].data().descripcion,
-                                    nombre:raw[x].data().nombre,
+                                    imagen:refined[x].imagen,
+                                    descripcion:refined[x].descripcion,
+                                    nombre:refined[x].nombre,
                                     Restaurante:rest,
-                                    precio:raw[x].data().precio,
-                                    id: raw[x].id}
+                                    precio:refined[x].precio,
+                                    rating:refined[x].rating,
+                                    calificaciones:refined[x].calificaciones,
+                                    id: refined[x].id}
                                 cont++;
                                 if(cont==len)
-                                    res.send({status:true,data:[platRich,Math.floor(raw.length/12)+(raw.length%12!=0?1:0)]});
+                                    res.send({status:true,data:[platRich,Math.floor(refined.length/12)+(refined.length%12!=0?1:0)]});
                             }).catch((err) => {
                                 res.send({status:false,data:'Error obteniendo restaurante'})});
                         }
                     }
                 }).catch(e=>{
-                    res.send({status:false,data:JSON.stringify(e)})})
+                  console.log(e)
+                  res.send({status:false,data:"Error procesando restaurantes"})})
             }
+          }
         }).catch((err) => {
             console.log(err)
             res.send({status:false,data:`Error obteniendo documentos ${err}`})});
@@ -252,6 +280,7 @@ export const addPlatillo = functions.https.onRequest((req, res) => {
                     descripcion:descripcion,
                     nombre:nombre,
                     precio:precio,
+                    calificaciones:{},
                     imagen:"https://firebasestorage.googleapis.com/v0/b/designexpresstec.appspot.com/o/depositphotos_119480056-stock-illustration-platter-chef-food-icon-vector.jpg?alt=media&token=8b2d5cb5-543a-4702-b7da-a4e1f042c30e"})
                     .then(ref =>{
                     res.send({status:true,data:ref.id})
@@ -284,7 +313,8 @@ export const modPlatillo = functions.https.onRequest((req, res) => {
                             nombre:nombre,
                             precio:precio,
                             categoria:categoria,
-                            descripcion:descripcion
+                            descripcion:descripcion,
+                            calificaciones : {}
                         },  {merge:true})
                         res.send({status:true,data:keyPlat})
                     }
@@ -825,20 +855,36 @@ export const calificar = functions.https.onRequest((req,res) => {
   if (req.method == "POST"){
     let keyPlat = req.body.keyPlat;
     let stars = parseInt(req.body.stars)
-    let comentario = req.body.comentario
-    let email = req.body.email
-    if(keyPlat!=undefined && email!=undefined && !isNaN(stars)){
+    let review = req.body.review==undefined?"":req.body.review
+    let email = <String> req.body.email
+    if (stars<0 || stars>5)
+      res.send({status:false,data:"Solo puedes calificar de 0 a 5 estrellas"})
+    else if(keyPlat!=undefined && email!=undefined && !isNaN(stars)){
       platillos.doc(keyPlat).get().then(plat => {
         if(plat.exists)
           usuarios.doc(email).get().then(user =>{
             if(user.exists){
-              let update = {}
-              update[`calificaciones.${email}`] = {stars:stars,review:comentario==undefined?"":comentario}
-              platillos.doc(keyPlat).update(update)
+              pedidos
+              .where("email","==",email)
+              .where("nombre","==",plat.data().nombre)
+              .where("restaurante","==",plat.data().restaurante)
+              .get().then(peds =>{
+                if(!peds.empty){
+                  let update = {}
+                  update[`calificaciones.${email.split(".")[0]}`] = {stars:stars,review:review}
+                  platillos.doc(keyPlat).update(update)
+                  res.send({status:true,data:`Has calificado ${plat.data().nombre} con ${stars} estrellas
+                  Comentario: "${review}"`})
+                }
+                else
+                  res.send({status:false,data:"No has comprado este platillo"})
+              })
             }
             else
               res.send({status:false,data:"El usuario solicitado no existe"})
-          }).catch(error =>res.send({statu:false,data:"Error obteniendo el usuario"}))
+          }).catch(error =>{
+            console.log(error);
+            res.send({statu:false,data:"Error obteniendo el usuario"})})
         else
           res.send({status:false,data:"El platillo solicitado no existe"})
       }).catch(e =>res.send({status:false,data:"Error obteniendo platillo" + JSON.stringify(e)}))
