@@ -1,3 +1,4 @@
+import { ExpireOrderService } from './services/orders/orders.service';
 import { ManagerModel } from './models/manager.model';
 import { HttpClientModule } from '@angular/common/http';
 import { ManagerService } from './services/manager/manager.service';
@@ -19,6 +20,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AgmCoreModule } from '@agm/core';
 import { RestaurantsComponent } from './main/restaurants/restaurants.component';
 import { AccountComponent } from './main/account/account.component';
+import { LoginComponent } from './main/login/login.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { AccountComponent } from './main/account/account.component';
     ApprovedComponent,
     PendingComponent,
     RestaurantsComponent,
-    AccountComponent
+    AccountComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +45,8 @@ import { AccountComponent } from './main/account/account.component';
     })
   ],
   providers: [
-    ManagerService  
+    ManagerService,
+    ExpireOrderService  
   ],
   bootstrap: [AppComponent]
 })

@@ -24,7 +24,7 @@
       </div>
     </div>
     <div style="text-align: right;">
-      <button (click)="deleteExpiredOrders()" class="center-icon-btn btn btn-warning" ngbTooltip="Eliminar expirados"><i class="material-icons icon">
+      <button (click)="deleteExpiredOrders()" [disabled]="currentOrders" class="center-icon-btn btn btn-warning" ngbTooltip="Eliminar expirados"><i class="material-icons icon">
         delete_forever
       </i></button>
     </div>

@@ -1,11 +1,13 @@
+import { ExpireOrderService } from './../../services/orders/orders.service';
 import { ApprovedComponent } from './approved/approved.component';
 import { PendingComponent } from './pending/pending.component';
 import { ManagerModel } from './../../models/manager.model';
 import { Router } from '@angular/router';
 import { ManagerService } from './../../services/manager/manager.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { Pedido } from '../../models/manager';
 import { AgmMap } from '@agm/core';
+import { Subscription } from 'rxjs';
 declare var jquery:any;
 declare var $ :any;
 
@@ -14,10 +16,8 @@ declare var $ :any;
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.css']
 })
-export class OrdersComponent {
-  /* children for orders */
-  @ViewChild(PendingComponent) pendingOrders: PendingComponent
-  @ViewChild(ApprovedComponent) approvedOrders: ApprovedComponent
+export class OrdersComponent implements OnDestroy {
+
   private currentOrders:boolean //true:active, false:pending
   /* models */
   private manage:ManagerModel
@@ -38,14 +38,20 @@ export class OrdersComponent {
   /* gmaps api */
   lat: number = 10.362167730785652
   lng: number = -84.51030575767209
-  
-  constructor(private _managerService: ManagerService, private _router: Router) {
+
+  /* subscription to orders */
+  private pendingOrdersSubscription: Subscription
+
+  constructor(private _managerService: ManagerService, private _router: Router, private _pendingOrders: ExpireOrderService) {
     this.manage = new ManagerModel()
     this.orderItems = this.manage.getOrderItems()
     this.orderOpts = this.manage.getOrderOptions()
     //table headers
     this.declinedHeaders = this.manage.getDeclinedTableHeaders()
     this.finishedHeaders = this.manage.getFinishedTableHeaders()
+  }
+  ngOnDestroy(){
+    this.pendingOrdersSubscription.unsubscribe()
   }
   /* pagination */
   updateDeclinedPagination(e){
@@ -139,6 +145,6 @@ export class OrdersComponent {
   }
   /* delete expired orders */
   deleteExpiredOrders(){
-    this.currentOrders ? this.approvedOrders.deleteExpiredApprovedOrders() : this.pendingOrders.deleteExpiredPendingOrders()
+    //endpoint
   }
 }

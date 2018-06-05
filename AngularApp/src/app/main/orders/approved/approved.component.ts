@@ -1,5 +1,5 @@
 import { ManagerService } from './../../../services/manager/manager.service';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { ManagerModel } from '../../../models/manager.model';
 import { Pedido } from '../../../models/manager';
 import { AgmMap } from '@agm/core';
@@ -11,7 +11,8 @@ declare var $ :any;
   templateUrl: './approved.component.html',
   styleUrls: ['./approved.component.css']
 })
-export class ApprovedComponent {
+export class ApprovedComponent implements OnInit, OnDestroy{
+  private ordersInterval:any
   /* modal messages */
   private successMessage:any
   private failedMessage:any
@@ -33,6 +34,14 @@ export class ApprovedComponent {
     this.manage = new ManagerModel()
     this.headers = this.manage.getApprovedTableHeaders()
     this.getOrders()
+  }
+  ngOnInit(){
+    this.ordersInterval = setInterval(()=>{
+      this.getOrders()
+    },3000)
+  }
+  ngOnDestroy(){
+    clearInterval(this.ordersInterval)
   }
   updateApprovedPagination(e){
     this.page = e
@@ -89,10 +98,5 @@ export class ApprovedComponent {
         this.getOrders()
       }
     )
-  }
-   /* delete expired orders */
-   deleteExpiredApprovedOrders(){
-    this._managerService.deleteExpiredOrder()
-    // updates approved orders
   }
 }

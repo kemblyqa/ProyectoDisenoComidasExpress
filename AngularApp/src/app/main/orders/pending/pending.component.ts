@@ -1,3 +1,4 @@
+import { ExpireOrderService } from './../../../services/orders/orders.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ManagerModel } from '../../../models/manager.model';
 import { Pedido } from '../../../models/manager';
@@ -24,7 +25,7 @@ export class PendingComponent {
   /* headers */
   private manage:ManagerModel
   private headers:Array<any>
-  private orders:Pedido
+  private orders:Pedido[]
   /* pagination */
   private page:number = 1
   private totalPages:number = 0
@@ -33,7 +34,7 @@ export class PendingComponent {
   lng: number = -84.51030575767209
   /* interval */
   private ordersInterval:any
-  constructor(private _managerService:ManagerService) {
+  constructor(private _managerService:ManagerService, private _pendingOrders: ExpireOrderService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getPendingTableHeaders()
     this.getOrders()
@@ -122,10 +123,5 @@ export class PendingComponent {
         this.getOrders()
       }
     )
-  }
-  /* delete expired orders */
-  deleteExpiredPendingOrders(){
-    this._managerService.deleteExpiredOrder()
-    // updates pending orders
   }
 }

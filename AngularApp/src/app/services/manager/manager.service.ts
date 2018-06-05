@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { StatusData } from './../../models/manager';
-import { Subject } from 'rxjs/Subject';
+
 //manager and restaurant endpoints
 const ENDPOINT_GETCATEGORIES = "categoria"
 const ENDPOINT_GETPLATILLOS = "GetPlatillosC"
