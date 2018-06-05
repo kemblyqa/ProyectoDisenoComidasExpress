@@ -81,6 +81,14 @@
 			"function": "subirImagenRest"
 		},
 		{
+			"source": "/api/calificar",
+			"function": "calificar"
+		},
+		{
+			"source": "/api/limpiarPedidos",
+			"function": "limpiarPedidos"
+		},
+		{
 			"source": "**",
 			"destination": "/index.html"
 		}]
