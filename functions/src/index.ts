@@ -895,3 +895,28 @@ export const calificar = functions.https.onRequest((req,res) => {
   else
     res.send({status:false,data:"Este endPoint solo acepta POST"})
 })
+
+export const limpiarPedidos = functions.https.onRequest((req,res) => {
+  if (req.method == "POST"){
+    let keyRest = req.body.keyRest
+    pedidos
+    .where("restaurante","==",keyRest)
+    .where("estado.proceso","==","pendiente")
+    .where("fecha","<",new Date())
+    .get()
+    .then(exp =>{
+      let c = 0;
+      exp.forEach(p=>{
+        c++
+        pedidos.doc(p.id).update({estado:{proceso:"rechazado",razon:"El pedido no fué procesado y ha expirado"}})
+      })
+      res.send({status:true,data:`Se han limpiado ${c} pedidos expirados`})
+    })
+    .catch(error =>{
+      console.log(error)
+      res.send({status:false,data:"Error de consulta"})
+    })
+  }
+  else
+    res.send({status:false,data:"Este endPoint solo acepta POST"})
+})
