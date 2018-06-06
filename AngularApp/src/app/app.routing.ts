@@ -5,11 +5,15 @@ import { ApprovedComponent } from './main/orders/approved/approved.component';
 import { OrdersComponent } from './main/orders/orders.component';
 import { MainPageComponent } from './main/main-page/main-page.component';
 import { MenuRestaurantComponent } from './main/menu-restaurant/menu-restaurant.component';
+import { LoginComponent } from './main/login/login.component';
 import { Routes } from "@angular/router";
 
 export const ROUTES: Routes = [
     {
-        path: '', redirectTo: 'dashboard', pathMatch: 'full'
+        path: '', redirectTo: 'login', pathMatch: 'full'
+    },
+    {
+        path: 'login', component: LoginComponent
     },
     {
         path: 'dashboard', component: MainPageComponent,
@@ -43,6 +47,6 @@ export const ROUTES: Routes = [
         ]
     },
     {
-        path: '**', redirectTo: 'dashboard', pathMatch: 'full'
+        path: '**', redirectTo: 'login', pathMatch: 'full'
     }
 ]

@@ -526,10 +526,12 @@ export const filtroPedidos = functions.https.onRequest((req, res) => {
                 res.send({status:true,data:[[],0]})
             let pedRich = []
             let len = (items.docs.length-((pagina-1)*10))>10?10:(items.docs.length-((pagina-1)*10))
+            let c = 0;
             for (let x=(pagina-1)*10;x<items.docs.length;x++){
-                pedRich.push(items.docs[x].data())
-                pedRich[pedRich.length-1]["id"]=items.docs[x].id
-                if (pedRich.length==len){
+                pedRich[c]= items.docs[x].data()
+                pedRich[c]["id"]=items.docs[x].id
+                c++;
+                if (c==len){
                     res.send({status:true,data:[pedRich,Math.floor(items.docs.length/10)+(items.docs.length%10!=0?1:0)]})
                 }
             }
