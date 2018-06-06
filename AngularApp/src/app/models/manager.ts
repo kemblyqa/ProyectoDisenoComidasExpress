@@ -18,12 +18,7 @@ export interface Platillo{
         nombre:string
     } 
     categoria: string 
-    calificaciones: {
-        name: {
-            review: string
-            starts: string
-        }
-    }
+    calificaciones: Array<any>
 }
 
 export interface Restaurante {
