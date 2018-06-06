@@ -13,7 +13,7 @@ const ENDPOINT_DELPLATILLO = "delPlatillo"
 const ENDPOINT_ALLORDERS = "filtroPedidos"
 const ENDPOINT_CHANGESTATUS = "setEstado"
 const ENDPOINT_IMAGE = "subirImagenPlat"
-const ENDPOINT_DELETE_EXPIRED = ""
+const ENDPOINT_DELETE_EXPIRED = "limpiarPedidos"
 
 @Injectable()
 export class ManagerService {
@@ -110,9 +110,9 @@ export class ManagerService {
         })
     }
     /* deletes a expired order */
-    public deleteExpiredOrder(){
+    public deleteExpiredOrder(restId:any){
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_DELETE_EXPIRED}`,{
-            
+            keyRest: restId
         })
     }
 }

@@ -7,6 +7,7 @@ export class ManagerModel {
     headersPendingTable:Array<any>
     headersDeclinedTable:Array<any>
     headersFinishedTable:Array<any>
+    headersRating:Array<any>
     constructor(){
         this.navItems = [
             {
@@ -62,6 +63,10 @@ export class ManagerModel {
             "Cantidad", "Platillo", "Descripcion",
             "Fecha","Hora", "Email", "Precio", "Categoria", "Entrega"
         ]
+        this.headersRating = [
+            "Cliente", "Comentario", "Estrellas"
+        ]
+        
     }
     getNavItems(){
         return this.navItems
@@ -83,5 +88,8 @@ export class ManagerModel {
     }
     getDeclinedTableHeaders(){
         return this.headersDeclinedTable
+    }
+    getRatingTableHeaders(){
+        return this.headersRating
     }
 }

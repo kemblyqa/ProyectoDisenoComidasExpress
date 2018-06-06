@@ -31,18 +31,25 @@ export class MenuRestaurantComponent implements OnInit {
   private namePlate:any 
   private imagePlate:any 
   private allCategories:Array<any>
-  private categoryPlate:any 
+  private categoryPlate:any
+  /* rating */
+  private ratingList:any
+  private revClient:any
+  private starsClient:any 
   /* platillos observable */
   private platillos:Platillo[] = []
   private currentPlate:Platillo
+  private manage:ManagerModel
+  private headers:Array<any>
   /* pagination */
-  private totalPages:number
+  private totalPages:number = 0 
   private page:number = 1
   /* image */
   imgOpt:boolean = true
   isCollapsed:boolean = true
   constructor(private _router:Router, private _managerService:ManagerService) {
-    this.totalPages = 0 
+    this.manage = new ManagerModel()
+    this.headers = this.manage.getRatingTableHeaders()
   }
   ngOnInit(){
     this.initCustomCategories() 
@@ -143,7 +150,7 @@ export class MenuRestaurantComponent implements OnInit {
       show: true
     })
   }
-
+/* deletes plate */
   delPlatModal(plat:Platillo){
     this.currentPlate = plat
     $("#modalDelFood").modal({
@@ -152,7 +159,16 @@ export class MenuRestaurantComponent implements OnInit {
       show: true
     })
   }
-
+  /* see the review */
+  ratePlateModal(plat:Platillo){
+    this.ratingList = plat.calificaciones
+    $("#modalRating").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
+  }
+ /* creates plate */
   createPlat(){
     this._managerService.addPlatillo(
       this.namePlate,

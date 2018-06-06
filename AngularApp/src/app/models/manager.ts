@@ -18,6 +18,12 @@ export interface Platillo{
         nombre:string
     } 
     categoria: string 
+    calificaciones: {
+        name: {
+            review: string
+            starts: string
+        }
+    }
 }
 
 export interface Restaurante {

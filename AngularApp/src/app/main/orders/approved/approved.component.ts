@@ -11,8 +11,7 @@ declare var $ :any;
   templateUrl: './approved.component.html',
   styleUrls: ['./approved.component.css']
 })
-export class ApprovedComponent implements OnInit, OnDestroy{
-  private ordersInterval:any
+export class ApprovedComponent {
   /* modal messages */
   private successMessage:any
   private failedMessage:any
@@ -34,14 +33,6 @@ export class ApprovedComponent implements OnInit, OnDestroy{
     this.manage = new ManagerModel()
     this.headers = this.manage.getApprovedTableHeaders()
     this.getOrders()
-  }
-  ngOnInit(){
-    this.ordersInterval = setInterval(()=>{
-      this.getOrders()
-    },3000)
-  }
-  ngOnDestroy(){
-    clearInterval(this.ordersInterval)
   }
   updateApprovedPagination(e){
     this.page = e

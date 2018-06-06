@@ -25,3 +25,7 @@ ngb-pagination /deep/ .page-item .page-link {
 ngb-pagination /deep/ .page-item.disabled .page-link {
     color: gray;   
 }
+
+.material-icons{
+    width: 24px;
+}

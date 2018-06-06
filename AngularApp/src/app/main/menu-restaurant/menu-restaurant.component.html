@@ -26,10 +26,23 @@
               <h5 class="card-title">{{plat.nombre}}</h5>
               <p class="card-text">{{plat.descripcion}}</p>
               <p class="card-text">Precio: ₡{{plat.precio}}</p> 
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" (click)="editPlatModal(plat)" class="btn btn-sm btn-danger">Editar</button>
-                  <button type="button" (click)="delPlatModal(plat)" class="btn btn-sm btn-danger">Eliminar</button>
+              <div class="d-flex">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button type="button" (click)="editPlatModal(plat)" class="btn btn-sm btn-danger">
+                    <i class="material-icons" ngbTooltip="Editar platillo">
+                      edit
+                      </i>
+                  </button>
+                  <button type="button" (click)="delPlatModal(plat)" class="btn btn-sm btn-danger">
+                    <i class="material-icons" ngbTooltip="Eliminar pedido">
+                      delete
+                      </i>
+                  </button>
+                  <button type="button" (click)="ratePlateModal(plat)" class="btn btn-sm btn-danger">
+                    <i class="material-icons" ngbTooltip="Ver calificaciones">
+                      star_rate
+                      </i>
+                  </button>
                 </div>
               </div>
             </div>
@@ -42,7 +55,6 @@
   <h5 *ngIf="platillos?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
   <ngb-pagination *ngIf="platillos?.length > 0" (pageChange)="updatePlatesPagination($event)" class="col-md-12 justify-content-center" 
     [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
-
   <!-- modify food -->
   <div class="modal fade bd-example-modal-lg" id="modalEditFood" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -139,8 +151,7 @@
       </div>
     </div>
   </div>
-
-  <!-- add new plate -->
+  <!-- add new plate modal -->
   <div class="modal" id="modalCreateFood" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -204,7 +215,39 @@
       </div>
     </div>
   </div>
-  
+  <!-- rate plates modal -->
+  <div style="width:100%"  class="modal" id="modalRating" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div  class="modal-header">
+          <h5 class="modal-title">Votaciones</h5>
+        </div>
+        <div class="modal-body">
+          <h5 *ngIf="ratingList?.length == 0" style="margin-top:3%; text-align: center">No hay nada para mostrar</h5> 
+          <div *ngIf="ratingList?.length > 0" class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th *ngFor="let head of headers" scope="col">{{head}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let plat of ratingList" scope="row">
+                  <td>plat.name</td>
+                  <td>plat.name.review</td>
+                  <td>plat.name.stars</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <ngb-pagination *ngIf="ratingList?.length > 0" (click)="updatePlatesPagination($event)" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Atrás</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- MODALS ABOUT INFORMATION -->
   <!-- confirmation modal -->
   <div class="modal" id="modalSuccess" tabindex="-1" role="dialog">
@@ -217,7 +260,7 @@
           <p>{{successMessage}}</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+          <button type="button" class="btn btn-dark" data-dismiss="modal">Aceptar</button>
         </div>
       </div>
     </div>
@@ -233,7 +276,7 @@
           <p>{{failedMessage}}</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+          <button type="button" class="btn btn-warning" data-dismiss="modal">Aceptar</button>
         </div>
       </div>
     </div>
@@ -255,6 +298,7 @@
       </div>
     </div>
   </div>
+  <!-- add plate -->
   <div style="text-align: right;">
     <button type="button" (click)="addPlatModal()" class="btn btn-danger btn-add float"><i class="material-icons">
       add</i></button>
