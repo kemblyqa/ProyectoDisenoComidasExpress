@@ -143,7 +143,7 @@ export class MenuRestaurantComponent implements OnInit {
       show: true
     })
   }
-
+/* deletes plate */
   delPlatModal(plat:Platillo){
     this.currentPlate = plat
     $("#modalDelFood").modal({
@@ -152,7 +152,11 @@ export class MenuRestaurantComponent implements OnInit {
       show: true
     })
   }
-
+  /* see the review */
+  ratePlateModal(plat:Platillo){
+    
+  }
+ /* creates plate */
   createPlat(){
     this._managerService.addPlatillo(
       this.namePlate,
