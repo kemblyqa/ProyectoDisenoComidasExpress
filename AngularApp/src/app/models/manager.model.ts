@@ -19,10 +19,6 @@ export class ManagerModel {
                 href: '/pedidos'
             },
             {
-                item: "Restaurantes",
-                href: "/restaurantes"
-            },
-            {
                 item: "Mi cuenta",
                 href: "/cuenta"
             }

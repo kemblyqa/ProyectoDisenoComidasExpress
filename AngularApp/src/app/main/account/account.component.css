@@ -1,0 +1,12 @@
+.menu {
+    background-image: url("/../assets/icons/wallpaper_restaurant_3.jpg");
+}
+
+.username {
+    color: white;
+}
+
+.img-user{
+    border-radius: 50%;
+    height: 35px;
+}
