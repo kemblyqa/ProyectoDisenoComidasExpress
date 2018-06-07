@@ -16,9 +16,9 @@ declare var $ :any;
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.css']
 })
-export class OrdersComponent {
+export class OrdersComponent implements OnInit {
 
-  private currentOrders:boolean = true //true:active, false:pending
+  private currentOrders:boolean//true:active, false:pending
   /* models */
   private manage:ManagerModel
   /* modal messages */
@@ -49,6 +49,9 @@ export class OrdersComponent {
     //table headers
     this.declinedHeaders = this.manage.getDeclinedTableHeaders()
     this.finishedHeaders = this.manage.getFinishedTableHeaders()
+  }
+  ngOnInit(){
+    this.currentOrders = true 
   }
   /* pagination */
   updateDeclinedPagination(e){
