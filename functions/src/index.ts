@@ -599,7 +599,7 @@ const setEstado = functions.https.onRequest((req, res) => {
         const keyPedido = req.body.pedido
         const proceso = req.body.proceso
         const razon = req.body.razon
-        if(keyPedido===undefined || proceso==="pendiente" || (proceso==="rechazado" && razon === undefined) || proceso===undefined || (proceso!=="aprobado" && proceso!=="rechazado"&&proceso[0]!=="finalizado"))
+        if(keyPedido===undefined || proceso==="pendiente" || (proceso==="rechazado" && razon === undefined) || proceso===undefined || (proceso!=="aprobado" && proceso!=="rechazado"&&proceso!=="finalizado"))
             res.send({status:false,data:"Datos no validos"})
         else{
             pedidos.doc(keyPedido).get().then(pedido => {

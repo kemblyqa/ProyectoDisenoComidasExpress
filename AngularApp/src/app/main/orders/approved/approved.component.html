@@ -37,7 +37,7 @@
 </div>
 <ngb-pagination *ngIf="orders?.length > 0" (click)="updateApprovedPagination($event)" class="col-md-12 justify-content-center" [collectionSize]="totalPages" [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
 <!-- confirmation modal -->
-<div class="modal" id="modalSuccess" tabindex="-1" role="dialog">
+<div class="modal" id="modalApprovedSuccess" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -53,7 +53,7 @@
   </div>
 </div>
 <!-- failed modal -->
-<div class="modal" id="modalFailed" tabindex="-1" role="dialog">
+<div class="modal" id="modalApprovedFailed" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -69,7 +69,7 @@
   </div>
 </div>
 <!-- open map modal -->
-<div class="modal" id="modalMap" tabindex="-1" role="dialog">
+<div class="modal" id="modalApprovedMap" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">

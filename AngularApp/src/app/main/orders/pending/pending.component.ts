@@ -1,4 +1,3 @@
-import { ExpireOrderService } from './../../../services/orders/orders.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ManagerModel } from '../../../models/manager.model';
 import { Pedido } from '../../../models/manager';
@@ -14,8 +13,8 @@ declare var $ :any;
 })
 export class PendingComponent {
   /* modal messages */
-  private successMessage:any
-  private failedMessage:any
+  private successMessage:string
+  private failedMessage:string
   private declineOrderId:any
   /* restaurante id y nombre */ 
   private restName:string = "Soda El Mercadito" 
@@ -34,7 +33,7 @@ export class PendingComponent {
   lng: number = -84.51030575767209
   /* interval */
   private ordersInterval:any
-  constructor(private _managerService:ManagerService, private _pendingOrders: ExpireOrderService) {
+  constructor(private _managerService:ManagerService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getPendingTableHeaders()
     this.getOrders()
@@ -51,7 +50,7 @@ export class PendingComponent {
   openMapModal(lat:any, lng:any){
     this.lat = lat
     this.lng = lng
-    $("#modalMap").modal({
+    $("#modalPendingMap").modal({
       backdrop: 'static',
       keyboard: false,
       show: true
@@ -65,7 +64,7 @@ export class PendingComponent {
   /* modal success! */
   successMessageModal(message:any){
     this.successMessage = message
-    $("#modalSuccess").modal({
+    $("#modalPendingSuccess").modal({
       backdrop: 'static',
       keyboard: false,
       show: true
@@ -74,7 +73,7 @@ export class PendingComponent {
   /* failed success! */
   failedMessageModal(message:any){
     this.failedMessage = message
-    $("#modalFailed").modal({
+    $("#modalPendingFailed").modal({
       backdrop: 'static',
       keyboard: false,
       show: true
@@ -115,7 +114,6 @@ export class PendingComponent {
   }
   /* approves order */
   approveOrder(id:any){
-    console.log(id)
     this._managerService.approveStatus(id, "aprobado")
     .subscribe(
       success => {

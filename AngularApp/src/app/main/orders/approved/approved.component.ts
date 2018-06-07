@@ -41,7 +41,7 @@ export class ApprovedComponent {
   /* modal success! */
   successMessageModal(message:any){
     this.successMessage = message
-    $("#modalSuccess").modal({
+    $("#modalApprovedSuccess").modal({
       backdrop: 'static',
       keyboard: false,
       show: true
@@ -50,7 +50,7 @@ export class ApprovedComponent {
   /* failed success! */
   failedMessageModal(message:any){
     this.failedMessage = message
-    $("#modalFailed").modal({
+    $("#modalApprovedFailed").modal({
       backdrop: 'static',
       keyboard: false,
       show: true
@@ -60,7 +60,7 @@ export class ApprovedComponent {
   openMapModal(lat:any, lng:any){
     this.lat = lat
     this.lng = lng
-    $("#modalMap").modal({
+    $("#modalApprovedMap").modal({
       backdrop: 'static',
       keyboard: false,
       show: true
