@@ -19,6 +19,7 @@ export interface Platillo{
     } 
     categoria: string 
     calificaciones: Array<any>
+    rating:number
 }
 
 export interface Restaurante {
