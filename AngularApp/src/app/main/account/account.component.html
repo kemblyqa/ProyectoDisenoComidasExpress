@@ -1,11 +1,37 @@
 <main role="main">
   <section class="jumbotron menu" style="margin: 0%; padding: 16px 8px 32px">
     <div class="container text-center">
-      <h5 style="margin-bottom: 6%"  class="card-title font-subtitle">Restaurantes asociados a mi cuenta</h5>
-      <div style="text-align: left">
-        <img class="img-user" src="/../assets/icons/orders_1.jpg" width="40px" alt="foto usuario">
-        <h6 class="card-title username">Kembly Quirós</h6>
-      </div> 
+      <h5 style="margin-bottom: 6%" class="card-title font-subtitle">Restaurantes asociados a mi cuenta</h5> 
     </div>
+    <button [disabled]="true" type="button" class="btn btn-dark">
+      <img class="img-user" src="/../assets/icons/noprofile.jpg" width="60px" alt="foto usuario">  Kembly Quiros
+    </button>
+    <button type="button" class="center-icon-btn btn btn-info">
+      <i class="material-icons icon" ngbTooltip="Actualizar perfil">
+        edit
+      </i>
+    </button> 
   </section>
+  <!-- restaurants list -->
+  <h5 *ngIf="restaurants?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
+  <div *ngIf="restaurants?.length > 0" class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th *ngFor="let head of headers" scope="col">{{head}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rest of restaurants" scope="row" >
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ngb-pagination *ngIf="restaurants?.length > 0" (click)="updateRestaurantsPagination($event)" class="col-md-12 justify-content-center" [collectionSize]="totalPages" [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+  <!-- add plate -->
+  <div style="text-align: right;">
+      <button type="button" (click)="editProfileModal()" class="btn btn-info btn-add float"><i class="material-icons">
+        add</i></button>
+    </div>
 </main>
