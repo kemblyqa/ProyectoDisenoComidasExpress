@@ -150,7 +150,7 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Horario del restaurante {{restName}}</h5>
+          <h5 class="modal-title">Seleccione los días y las horas disponibles</h5>
         </div>
         <div class="modal-body">
           <ul class="list-group" *ngFor="let day of week">
@@ -160,6 +160,9 @@
               <div class="form-group row">
                 <div class="col-sm-5 offset-md-1">
                   <ngb-timepicker [(ngModel)]="day.timeInit" [meridian]="day.meridianInit" [disabled]="!day.checked"></ngb-timepicker>
+                  <div class="small form-text text-danger" *ngIf="!ctrl.valid">
+                    <div *ngIf="ctrl.errors['tooLate']">Oh no, it's way too late</div>
+                  </div>
                 </div>
                 <label style="display: table-cell;display: inline-block;vertical-align: middle" class="col-sm-1 col-form-label"></label>
                 <div class="col-sm-5">
