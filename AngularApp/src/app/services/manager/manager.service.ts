@@ -15,6 +15,7 @@ const ENDPOINT_CHANGESTATUS = "setEstado"
 const ENDPOINT_IMAGE = "subirImagenPlat"
 const ENDPOINT_DELETE_EXPIRED = "limpiarPedidos"
 const ENDPOINT_GET_USER = "getUser"
+const ENDPOINT_ADDRESTAURANT = "addRestaurante"
 
 @Injectable()
 export class ManagerService {
@@ -123,6 +124,17 @@ export class ManagerService {
             params: {
                 email: email
             }
+        })
+    }
+    /* add restaurant */
+    public addRestaurant(name:string, company:string, description:string, location:any, schedule:any, email:string){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_ADDRESTAURANT}`,{
+            nombre: name,
+            empresa: company,
+            descripcion: description,
+            ubicacion: location,
+            horario: schedule,
+            email: email
         })
     }
 }
