@@ -1,3 +1,67 @@
-<p>
-  login works!
-</p>
+<body class="body">
+  <div class="container justify-content-center">
+    <div class="card cardlogin col-sm-6">
+        <div class="centerDiv">
+            <img src={{user.photoURL}} id="imgPerfil" alt="Imagen de Perfil" style="margin-top: 10% ; width: 40%">
+              <h6 class="card-title" id = "txtEmail" style="float:none"> </h6>
+        </div>
+        <div class="card-body">
+          <div class="centerDiv">
+            <button type="button" class="btn btn-primary" (click)="login()" id="LoginBtn">Iniciar Sesión</button>
+          </div>
+          <div class="centerDiv">
+            <button type="button" class="btn btn-success" (click)="enter()" hidden id="EnterBtn"  style="white-space: pre;">Iniciar sesión como
+{{user.displayName}}</button>
+          </div>
+          <div class="centerDiv">
+            <button type="button" class="btn btn-link" hidden (click)="logout()" hidden id="LogoutBtn">Cerrar sesión</button>
+          </div>
+        </div>
+      </div>
+  </div>
+</body>
+<!-- failed modal -->
+<div class="modal" id="modalFailed" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Transacción fallida</h5>
+      </div>
+      <div class="modal-body">
+        <p>{{failedMessage}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE JUGADOR</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <label for="nSize" class="col-sm-6 col-form-label">Nickname</label>
+          <div class="col-sm-6">
+            <input type="text" [(ngModel)]="nickname" class="form-control" id="idNickName" placeholder="....">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="rSize" class="col-sm-6 col-form-label">Detalles</label>
+          <div class="col-sm-6">
+            <input type="text" [(ngModel)]="details" class="form-control" id="idDetails" placeholder="....">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="registerUser()" data-dismiss="modal" class="acceptButton">Aceptar</button>
+        <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
