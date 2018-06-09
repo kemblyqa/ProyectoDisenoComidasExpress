@@ -368,14 +368,17 @@ const itemCarro = functions.https.onRequest((req, res) => {
         catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
         let fecha;
         try{
-            fecha = new Date(req.body.fecha)
+            fecha = new Date(isNaN(req.body.fecha)?req.body.fecha:parseInt(req.body.fecha))
+            console.log(`fecha: ${fecha}`)
             if(isNaN(fecha.getTime())){res.send({status:false,data:"Error interpretando la fecha"});return}
             if((fecha.getTime()-Date.now())<10800000){
-                res.send({status:false,data:"La fecha del pedido debe estar 3 horas delante de la fecha actual"})
+                res.send({status:false,data:"La fechas del pedido debe estar 3 horas delante de la fecha actual"})
                 return
             }
         }
-        catch(e){res.send({status:false,data:"Error interpretando la fecha"});return}
+        catch(e){
+          console.log(e);
+          res.send({status:false,data:"Error interpretando la fecha"});return}
         if (
             typeof(req.body.keyRest)!=='string' ||
             typeof(req.body.nombre)!=='string' ||
@@ -599,7 +602,7 @@ const setEstado = functions.https.onRequest((req, res) => {
         const keyPedido = req.body.pedido
         const proceso = req.body.proceso
         const razon = req.body.razon
-        if(keyPedido===undefined || proceso==="pendiente" || (proceso==="rechazado" && razon === undefined) || proceso===undefined || (proceso!=="aprobado" && proceso!=="rechazado"&&proceso[0]!=="finalizado"))
+        if(keyPedido===undefined || proceso==="pendiente" || (proceso==="rechazado" && razon === undefined) || proceso===undefined || (proceso!=="aprobado" && proceso!=="rechazado"&&proceso!=="finalizado"))
             res.send({status:false,data:"Datos no validos"})
         else{
             pedidos.doc(keyPedido).get().then(pedido => {
@@ -709,7 +712,8 @@ const setUsuario = functions.https.onRequest((req, res) => {
                                 nombre:req.body.nombre,
                                 telefono:req.body.telefono,
                                 ubicacion:ubicacion,
-                                carrito:{}})
+                                carrito:{},
+                                restaurantes:[]})
                             res.send({status:true,data:`Bienvenido, ${req.body.nombre}` })
                         }catch(e){res.send({status:false,data:`Error insertando usuario: ${JSON.stringify(e)}`})}
                     }
@@ -934,6 +938,32 @@ const limpiarPedidos = functions.https.onRequest((req,res) => {
   else
     res.send({status:false,data:"Este endPoint solo acepta POST"})
 })
+
+const getUser = functions.https.onRequest((req,res) => {
+  if (req.method === "GET"){
+    const email = req.query.email
+    if(email === "" || isUndefined(email))
+      res.send({status:false,data:'Email invalido'});
+    else
+      usuarios.doc(email)
+      .get()
+      .then(user =>{
+        if(user.exists){
+          const userData = user.data();
+          user.exists = true;
+          res.send({status:true,data:userData});
+        }
+        else
+          res.send({status:true,data:{}});
+      })
+      .catch(error =>{
+        console.log(error)
+        res.send({status:false,data:"Error de consulta"})
+      })
+  }
+  else
+    res.send({status:false,data:"Este endPoint solo acepta GET"})
+})
 app.get('/api/filtroPlat', filtroPlat);
 app.get('/api/categoria', categoria);
 app.post('/api/addPlatillo', addPlatillo);
@@ -952,5 +982,6 @@ app.post('/api/addRestaurante', addRestaurante);
 app.post('/api/modRestaurante', modRestaurante);
 app.post('/api/subirImagenRest', subirImagenRest);
 app.post('/api/calificar', calificar);
-app.post('/api/limpiarPedidos', limpiarPedidos)
+app.post('/api/limpiarPedidos', limpiarPedidos);
+app.get('/api/getUser', getUser);
 export const api = functions.https.onRequest(app);
