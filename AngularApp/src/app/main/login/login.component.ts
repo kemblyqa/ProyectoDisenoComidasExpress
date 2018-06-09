@@ -9,7 +9,7 @@ import '@firebase/auth';
 
 const app = firebase.initializeApp(environment.firebase);
 const provider = new firebase.auth.GoogleAuthProvider();
-
+import { AgmMap } from '@agm/core';
 declare var jquery: any;
 declare var $: any;
 @Component({
