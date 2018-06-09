@@ -84,11 +84,12 @@ export class LoginComponent implements OnInit {
             this.user.restaurantes = res.data.restaurantes;
             this.user.telefono = res.data.telefono;
           } else {
-              $('#register').modal({
-                backdrop: 'static',
-                keyboard: false,
-                show: true
-              });
+            this.user.nombre = this.user.displayName;
+            $('#register').modal({
+              backdrop: 'static',
+              keyboard: false,
+              show: true
+            });
           }
         } else {
           this.failedMessageModal(res.data);

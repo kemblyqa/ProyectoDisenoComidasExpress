@@ -950,7 +950,7 @@ const getUser = functions.https.onRequest((req,res) => {
       .then(user =>{
         if(user.exists){
           const userData = user.data();
-          user.exists = true;
+          userData.exists = true;
           res.send({status:true,data:userData});
         }
         else
