@@ -5,7 +5,7 @@ import { OrdersComponent } from './main/orders/orders.component';
 import { MainPageComponent } from './main/main-page/main-page.component';
 import { MenuRestaurantComponent } from './main/menu-restaurant/menu-restaurant.component';
 import { LoginComponent } from './main/login/login.component';
-import { Routes } from "@angular/router";
+import { Routes } from '@angular/router';
 
 export const ROUTES: Routes = [
     {
