@@ -8,6 +8,7 @@ export class ManagerModel {
     headersDeclinedTable:Array<any>
     headersFinishedTable:Array<any>
     headersRating:Array<any>
+    headersRestaurants:Array<any>
     constructor(){
         this.navItems = [
             {
@@ -17,10 +18,6 @@ export class ManagerModel {
             {
                 item: "Pedidos",
                 href: '/pedidos'
-            },
-            {
-                item: "Restaurantes",
-                href: "/restaurantes"
             },
             {
                 item: "Mi cuenta",
@@ -66,7 +63,9 @@ export class ManagerModel {
         this.headersRating = [
             "Cliente", "Comentario", "Estrellas"
         ]
-        
+        this.headersRestaurants = [
+            "Nombre", "Empresa", "Descripción", "Ubicación", "Ver horario", "Más acciones"
+        ]
     }
     getNavItems(){
         return this.navItems
@@ -91,5 +90,8 @@ export class ManagerModel {
     }
     getRatingTableHeaders(){
         return this.headersRating
+    }
+    getRestaurantsTableHeaders(){
+        return this.headersRestaurants
     }
 }

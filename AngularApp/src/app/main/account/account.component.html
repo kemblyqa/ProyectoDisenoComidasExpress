@@ -1,3 +1,158 @@
-<p>
-  account works!
-</p>
+<main role="main">
+  <section class="jumbotron menu" style="margin: 0%; padding: 16px 8px 32px">
+    <div class="container text-center">
+      <h5 style="margin-bottom: 6%" class="card-title font-subtitle">Restaurantes asociados a mi cuenta</h5> 
+    </div>
+    <button [disabled]="true" type="button" class="btn btn-dark">
+      <img class="img-user" src="/../assets/icons/noprofile.jpg" width="60px" alt="foto usuario">  Kembly Quiros
+    </button>
+    <button type="button" class="center-icon-btn btn btn-info">
+      <i class="material-icons icon" ngbTooltip="Actualizar perfil">
+        edit
+      </i>
+    </button> 
+  </section>
+  <!-- restaurants list -->
+  <h5 *ngIf="restaurants?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
+  <div *ngIf="restaurants?.length > 0" class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th *ngFor="let head of headers" scope="col">{{head}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rest of restaurants" scope="row">
+
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- add restaurant modal -->
+  <div class="modal fade bd-example-modal-lg" id="modalAddRest" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- <img class="card-img-top" src="{{currentRest?.nombre}}" width="100px" data-holder-rendered="true">  -->
+        </div>
+        <div class="modal-body offset-md-1">
+          <div class="form-group row"> 
+            <label class="col-sm-3 col-form-label">Nombre: </label> 
+            <div class="col-sm-8"> 
+              <input type="text" [(ngModel)]="restName" class="form-control" placeholder="Nombre..."> 
+            </div> 
+          </div> 
+          <div class="form-group row"> 
+            <label class="col-sm-3 col-form-label">Descripción: </label> 
+            <div class="col-sm-8"> 
+              <textarea class="form-control" maxlength="150" [(ngModel)]="restDescription" placeholder="Descripción..." rows="4"></textarea> 
+            </div> 
+          </div>
+          <div class="form-group row"> 
+            <label class="col-sm-3 col-form-label">Empresa: </label> 
+            <div class="col-sm-8"> 
+              <input type="text" [(ngModel)]="restName" class="form-control" placeholder="Empresa..."> 
+            </div> 
+          </div>
+          <div class="form-group row"> 
+            <div class="col-sm-12 offset-md-4"> 
+              <button style="margin: 2%" (click)="openMapModal(restLat, restLng)"
+                class="center-icon-btn btn btn-danger" ngbTooltip="Escoger ubicación"><i class="material-icons icon">
+                  add_location
+                </i>
+              </button>  
+              <button style="margin: 2%" (click)="openScheduleModal()"
+                class="center-icon-btn btn btn-success" ngbTooltip="Escoger horario"><i class="material-icons icon">
+                  schedule
+                </i>
+              </button>  
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
+          <button type="submit" (click)="updatePlat()" data-dismiss="modal" class="btn btn-info">Guardar</button> 
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MODALS ABOUT INFORMATION -->
+  <!-- confirmation modal -->
+  <div class="modal" id="modalSuccess" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Transacción exitosa</h5>
+        </div>
+        <div class="modal-body">
+          <p>{{successMessage}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark" data-dismiss="modal">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- failed modal -->
+  <div class="modal" id="modalFailed" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Transacción fallida</h5>
+        </div>
+        <div class="modal-body">
+          <p>{{failedMessage}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning" data-dismiss="modal">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- open map modal -->
+  <div class="modal" id="modalRestMap" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Ubicación del restaurante {{restName}}</h5>
+        </div>
+        <div class="modal-body">
+          <agm-map class="map"  [latitude]="restLocation[0]" id="delP" 
+            [longitude]="restLocation[1]" (mapClick)="markPosition($event)">
+              <agm-marker [latitude]="restLocation[0]" [longitude]="restLocation[1]"></agm-marker>
+          </agm-map>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
+          <button type="submit" (click)="savePosition()" data-dismiss="modal" class="btn btn-info">Guardar</button> 
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- open schedule modal -->
+  <div class="modal" id="modalAddSchedule" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Horario del restaurante {{restName}}</h5>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
+          <button type="submit" (click)="saveSchedule()" data-dismiss="modal" class="btn btn-info">Guardar</button> 
+        </div>
+      </div>
+    </div>
+  </div>
+  <ngb-pagination *ngIf="restaurants?.length > 0" (click)="updateRestaurantsPagination($event)" class="col-md-12 justify-content-center" [collectionSize]="totalPages" [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+  <!-- add restaurant -->
+  <div style="text-align: right;">
+    <button type="button" (click)="addRestaurantModal()" class="btn btn-info btn-add float">
+      <i class="material-icons">
+      add</i>
+    </button>
+  </div>
+</main>

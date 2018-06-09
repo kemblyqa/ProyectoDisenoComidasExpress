@@ -34,14 +34,14 @@
                       </i>
                   </button>
                   <button type="button" (click)="delPlatModal(plat)" class="btn btn-sm btn-danger">
-                    <i class="material-icons" ngbTooltip="Eliminar pedido">
+                    <i class="material-icons" ngbTooltip="Eliminar platillo">
                       delete
                       </i>
                   </button>
                   <button type="button" (click)="ratePlateModal(plat)" class="btn btn-sm btn-danger">
                     <i class="material-icons" ngbTooltip="Ver calificaciones">
                       star_rate
-                      </i>
+                      </i><span class="badge badge-pill badge-light">{{plat.rating}}</span>
                   </button>
                 </div>
               </div>
@@ -223,8 +223,8 @@
           <h5 class="modal-title">Votaciones</h5>
         </div>
         <div class="modal-body">
-          <h5 *ngIf="ratingList?.length == 0" style="margin-top:3%; text-align: center">No hay nada para mostrar</h5> 
-          <div *ngIf="ratingList?.length > 0" class="table-responsive">
+          <h5 *ngIf="keyUsersRatingList.length == 0" style="margin-top:3%; text-align: center">No hay nada para mostrar</h5> 
+          <div *ngIf="keyUsersRatingList.length > 0" class="table-responsive">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -232,17 +232,21 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let plat of ratingList" scope="row">
-                  <td>plat.name</td>
-                  <td>plat.name.review</td>
-                  <td>plat.name.stars</td>
+                <tr *ngFor="let keyUser of keyUsersRatingList" scope="row">  
+                  <td>{{keyUser}}</td>
+                  <td>{{ratingList[keyUser].review}}</td>
+                  <td *ngIf="setStars(ratingList[keyUser].stars)">
+                    <a *ngFor="let item of starsList">  
+                      <i class="fa" style="color: darkgoldenrod;" [ngClass]="{'fa-star-o':item,'fa-star':!item}"></i>   
+                    </a>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
         <div class="modal-footer">
-          <ngb-pagination *ngIf="ratingList?.length > 0" (click)="updatePlatesPagination($event)" [collectionSize]="totalPages" [(page)]="page" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+          <!-- <ngb-pagination *ngIf="keyUsersRatingList.length > 0" (click)="updatePlatesPagination($event)" [collectionSize]="totalPagesRate" [(page)]="pageRate" [maxSize]="3" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination> -->
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Atrás</button>
         </div>
       </div>
@@ -300,7 +304,9 @@
   </div>
   <!-- add plate -->
   <div style="text-align: right;">
-    <button type="button" (click)="addPlatModal()" class="btn btn-danger btn-add float"><i class="material-icons">
-      add</i></button>
+    <button type="button" (click)="addPlatModal()" class="btn btn-danger btn-add float">
+      <i class="material-icons">
+      add</i>
+    </button>
   </div>
 </main>

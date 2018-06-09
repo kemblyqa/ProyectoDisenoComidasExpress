@@ -1,0 +1,22 @@
+.menu {
+    background-image: url("/../assets/icons/wallpaper_restaurant_3.jpg");
+}
+
+.username {
+    color: white;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 16px;
+}
+
+.img-user{
+    border-radius: 50%;
+    height: 55px;
+    margin: 1%;
+}
+
+.container-user {
+    justify-content: left;
+    border: 0;
+}

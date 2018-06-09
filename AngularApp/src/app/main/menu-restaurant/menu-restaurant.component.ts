@@ -33,9 +33,13 @@ export class MenuRestaurantComponent implements OnInit {
   private allCategories:Array<any>
   private categoryPlate:any
   /* rating */
-  private ratingList:any
+  private starsList:Boolean[]
+  private keyUsersRatingList:Array<any> =[]
+  private ratingList:Array<any>
   private revClient:any
-  private starsClient:any
+  private starsClient:any 
+  // private pageRate:number
+  // private totalPagesRate:number
   /* platillos observable */
   private platillos:Platillo[] = []
   private currentPlate:Platillo
@@ -50,6 +54,7 @@ export class MenuRestaurantComponent implements OnInit {
   constructor(private _router:Router, private _managerService:ManagerService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getRatingTableHeaders()
+    this.starsList = [true, true, true, true, true]
   }
   ngOnInit(){
     this.initCustomCategories()
@@ -162,6 +167,7 @@ export class MenuRestaurantComponent implements OnInit {
   /* see the review */
   ratePlateModal(plat:Platillo){
     this.ratingList = plat.calificaciones
+    this.keyUsersRatingList = Object.keys(plat.calificaciones)
     $("#modalRating").modal({
       backdrop: 'static',
       keyboard: false,
@@ -183,7 +189,7 @@ export class MenuRestaurantComponent implements OnInit {
       }
     )
   }
-
+/* to get the base 64 encoded image*/
   onFileChange(event) {
     let reader = new FileReader();
     if(event.target.files && event.target.files.length > 0) {
@@ -191,6 +197,13 @@ export class MenuRestaurantComponent implements OnInit {
       reader.readAsDataURL(file)
       reader.onload = () => { this.imagePlate = reader.result }
     }
+  }
+  /* stars rating list */
+  setStars(stars: number){
+    for(var i=0;i<=4;i++){
+      stars <= i ? this.starsList[i] = true : this.starsList[i] = false;
+    }
+    return true;
   }
   /* updates platillo */
   updatePlat(){

@@ -18,7 +18,6 @@ import { ApprovedComponent } from './main/orders/approved/approved.component';
 import { PendingComponent } from './main/orders/pending/pending.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AgmCoreModule } from '@agm/core';
-import { RestaurantsComponent } from './main/restaurants/restaurants.component';
 import { AccountComponent } from './main/account/account.component';
 import { LoginComponent } from './main/login/login.component';
 
@@ -30,7 +29,6 @@ import { LoginComponent } from './main/login/login.component';
     OrdersComponent,
     ApprovedComponent,
     PendingComponent,
-    RestaurantsComponent,
     AccountComponent,
     LoginComponent
   ],

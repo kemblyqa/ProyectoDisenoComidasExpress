@@ -18,18 +18,20 @@ export interface Platillo{
         nombre:string
     } 
     categoria: string 
-    calificaciones: {
-        name: {
-            review: string
-            starts: string
-        }
-    }
+    calificaciones: Array<any>
+    rating:number
 }
 
 export interface Restaurante {
-    id: string
-    descripcion: string
-    nombre: string
+    keyRest?: string
+    descripcion?: string
+    nombre?: string
+    empresa?:string
+    ubicacion?: {
+        _latitude?: number,
+        _longitude?: number
+    }
+    horario?:any
 }
 
 export interface Pedido {
