@@ -432,9 +432,13 @@ const itemCarro = functions.https.onRequest((req, res) => {
                         }
                     else
                         res.send({status:false,data:"El usuario solicitado no existe"})
-                }).catch(err=> {res.send({status:false,data:"Error de conexión en la base de datos"})})
+                }).catch(err=> {
+                  console.log(err);
+                  res.send({status:false,data:"Error de conexión en la base de datos"})})
             }
-        }).catch(err=>{res.send({status:false,data:"Error insertando platillo"})})
+        }).catch(err=>{
+          console.log(err);
+          res.send({status:false,data:"Error insertando platillo"})})
     }
     else
         res.send({status:false,data:'Metodo no encontrado'})
