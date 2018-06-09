@@ -979,6 +979,49 @@ const getUser = functions.https.onRequest((req,res) => {
     res.send({status:false,data:"Este endPoint solo acepta GET"})
 })
 
+const getRests = functions.https.onRequest((req,res) => {
+  if (req.method === "GET"){
+    const email = req.query.email
+    if(email === "" || isUndefined(email))
+      res.send({status:false,data:'Email invalido'});
+    else
+      usuarios.doc(email)
+      .get()
+      .then(user =>{
+        if(user.exists){
+          const rests = user.data().restaurantes;
+          const restsRich = {};
+          let c = 0;
+          for(let x = 0; rests[x]!==undefined;x++) {
+            c++;
+            restaurantes.doc(rests[x]).get()
+            .then(restInfo => {
+              if (restInfo.exists){
+                restsRich[rests[x]] = restInfo.data();
+              } else {
+                restsRich[rests[x]] = {}
+              }
+              if(c===Object.keys(restsRich).length){
+                res.send({status:true,data:restsRich})
+              }
+            })
+            .catch(err => {
+              console.log(err);res.send({status:false,data:`Error procesando restaurante ${rests[x]}`});return;
+            })
+          }
+        }
+        else
+          res.send({status:true,data:{}});
+      })
+      .catch(error =>{
+        console.log(error)
+        res.send({status:false,data:"Error de consulta"})
+      })
+  }
+  else
+    res.send({status:false,data:"Este endPoint solo acepta GET"})
+})
+
 app.get('/api/filtroPlat', filtroPlat);
 app.get('/api/categoria', categoria);
 app.post('/api/addPlatillo', addPlatillo);
@@ -999,5 +1042,6 @@ app.post('/api/subirImagenRest', subirImagenRest);
 app.post('/api/calificar', calificar);
 app.post('/api/limpiarPedidos', limpiarPedidos);
 app.get('/api/getUser', getUser);
+app.get('/api/getRests', getRests);
 app.get('/api/genGeopoint', (req,res) => {res.send({status:true,data:genGeopoint([parseInt(req.query.lat),parseInt(req.query.lng)],true)})});
 export const api = functions.https.onRequest(app);

@@ -26,8 +26,8 @@ export class LoginComponent implements OnInit {
       nombre: '',
       telefono: ''};
   private failedMessage: String;
-  private restLocation: Array<any> = [10.362167730785652,-84.51030575767209]
-  constructor(private ref: ChangeDetectorRef, private _managerService: ManagerService) {
+  private restLocation: Array<any> = [10.362167730785652, -84.51030575767209];
+  constructor(private ref: ChangeDetectorRef, private _router: Router, private _managerService: ManagerService) {
   }
 
   ngOnInit() {
