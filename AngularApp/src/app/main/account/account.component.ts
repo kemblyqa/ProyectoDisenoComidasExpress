@@ -78,7 +78,7 @@ export class AccountComponent implements OnInit {
     this.restLocation[0] = rest.ubicacion._latitude
     this.restLocation[1] = rest.ubicacion._longitude
     this.restSchedule = rest.horario
-    $("#modalEditRest").modal({
+    $("#modalModRest").modal({
       backdrop: 'static',
       keyboard: false,
       show: true
@@ -88,14 +88,7 @@ export class AccountComponent implements OnInit {
   getRestaurants(){
 
   }
-  /* schedule modal */
-  openScheduleModal(){
-    $("#modalAddSchedule").modal({
-      backdrop: 'static',
-      keyboard: false,
-      show: true
-    })
-  }
+  /* check start hour be less than finish hour */
   verifyHours(day:any){
     if(day.checked){
       ((day.timeInit.hour * 60) + day.timeInit.minute) >= ((day.timeEnd.hour * 60) +  day.timeEnd.minute) 
@@ -112,7 +105,9 @@ export class AccountComponent implements OnInit {
       }
     }
   }
+  /* add restaurant to server */
   addRestaurant(){
+    this.saveSchedule()
     this._managerService.addRestaurant(this.restName, this.restCompany, this.restDescription, 
     this.restLocation, this.restSchedule, "alberthsalascalero@gmail.com")
     .subscribe(

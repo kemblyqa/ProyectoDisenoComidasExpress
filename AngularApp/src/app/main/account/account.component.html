@@ -105,6 +105,82 @@
       </div>
     </div>
   </div>
+  <!-- modify restaurant -->
+  <div class="modal fade bd-example-modal-lg" id="modalModRest" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img class="card-img-top" src="{{currentRest?.nombre}}" width="100px" data-holder-rendered="true"> 
+        </div>
+        <div class="modal-body">
+          <div class="form-group offset-md-1">
+            <div class="form-group row"> 
+              <label class="col-sm-2 col-form-label">Nombre: </label> 
+              <div class="col-sm-9"> 
+                <input type="text" [(ngModel)]="restName" class="form-control" placeholder="Nombre..."> 
+              </div> 
+            </div> 
+            <div class="form-group row"> 
+              <label class="col-sm-2 col-form-label">Descripción: </label> 
+              <div class="col-sm-9"> 
+                <textarea class="form-control" maxlength="150" [(ngModel)]="restDescription" placeholder="Descripción..." rows="4"></textarea> 
+              </div> 
+            </div>
+            <div class="form-group row"> 
+              <label class="col-sm-2 col-form-label">Empresa: </label> 
+              <div class="col-sm-9"> 
+                <input type="text" [(ngModel)]="restCompany" class="form-control" placeholder="Empresa..."> 
+              </div> 
+            </div>
+          </div>
+          <div class="form-group">
+            <ngb-accordion #acc="ngbAccordion">
+              <ngb-panel title="Ubicación">
+                <ng-template ngbPanelContent>
+                  <label>Escoja la ubicación de su restaurante</label> 
+                  <div class="form-group">
+                    <agm-map class="map" [latitude]="restLocation[0]"
+                      [longitude]="restLocation[1]" (mapClick)="markPosition($event)" [zoom]="15">
+                        <agm-marker [latitude]="restLocation[0]" [longitude]="restLocation[1]"></agm-marker>
+                    </agm-map>
+                  </div>
+                </ng-template>
+              </ngb-panel>
+              <ngb-panel title="Horario">
+                <ng-template ngbPanelContent>
+                  <label>Seleccione los días y las horas disponibles</label>
+                  <div class="form-group">
+                    <ul class="list-group" *ngFor="let day of week">
+                      <li class="list-group-item">
+                        <input class="form-check-input" (change)="$event.target.checked ? day.checked = true : day.checked = false" type="checkbox" [value]="day.checked">
+                        <label class="form-check-label" for="dayIdLbl">{{day.day}}</label>
+                        <div class="form-group row">
+                          <div class="col-sm-5 offset-md-1">
+                            <ngb-timepicker [(ngModel)]="day.timeInit" [meridian]="day.meridianInit" (click)="verifyHours(day)" [disabled]="!day.checked"></ngb-timepicker>
+                            <div style="color: crimson" *ngIf="!day.valid && day.checked">
+                              La hora de inicio debe ser menor a la hora final
+                            </div>
+                          </div>
+                          <label style="display: table-cell;display: inline-block;vertical-align: middle" class="col-sm-1 col-form-label"></label>
+                          <div class="col-sm-5">
+                            <ngb-timepicker [(ngModel)]="day.timeEnd" [meridian]="day.meridianEnd" (click)="verifyHours(day)" [disabled]="!day.checked"></ngb-timepicker>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </ng-template>
+              </ngb-panel>
+            </ngb-accordion>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
+          <button type="button" (click)="addRestaurant()" data-dismiss="modal" class="btn btn-info">Guardar</button> 
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- MODALS ABOUT INFORMATION -->
   <!-- confirmation modal -->
   <div class="modal" id="modalSuccess" tabindex="-1" role="dialog">
@@ -137,61 +213,7 @@
         </div>
       </div>
     </div>
-  </div>
-  <!-- open map modal -->
-  <!-- <div class="modal" id="modalRestMap" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Ubicación del restaurante {{restName}}</h5>
-        </div>
-        <div class="modal-body">
-          <agm-map class="map"  [latitude]="restLocation[0]"
-            [longitude]="restLocation[1]" (mapClick)="markPosition($event)">
-              <agm-marker [latitude]="restLocation[0]" [longitude]="restLocation[1]"></agm-marker>
-          </agm-map>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" data-dismiss="modal" class="btn btn-dark">Aceptar</button> 
-        </div>
-      </div>
-    </div>
-  </div> -->
-  <!-- open schedule modal -->
-  <div class="modal" id="modalAddSchedule" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Seleccione los días y las horas disponibles</h5>
-        </div>
-        <div class="modal-body">
-          <ul class="list-group" *ngFor="let day of week">
-            <li class="list-group-item">
-              <input class="form-check-input" (change)="$event.target.checked ? day.checked = true : day.checked = false" type="checkbox" [value]="day.checked">
-              <label class="form-check-label" for="dayIdLbl">{{day.day}}</label>
-              <div class="form-group row">
-                <div class="col-sm-5 offset-md-1">
-                  <ngb-timepicker [(ngModel)]="day.timeInit" [meridian]="day.meridianInit" (click)="verifyHours(day)" [disabled]="!day.checked"></ngb-timepicker>
-                  <div style="color: crimson" *ngIf="!day.valid && day.checked">
-                    La hora de inicio debe ser menor a la hora final
-                  </div>
-                </div>
-                <label style="display: table-cell;display: inline-block;vertical-align: middle" class="col-sm-1 col-form-label"></label>
-                <div class="col-sm-5">
-                  <ngb-timepicker [(ngModel)]="day.timeEnd" [meridian]="day.meridianEnd" (click)="verifyHours(day)" [disabled]="!day.checked"></ngb-timepicker>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
-          <button type="button" (click)="saveSchedule()" data-dismiss="modal" class="btn btn-info">Guardar</button> 
-        </div>
-      </div>
-    </div>
-  </div>
-  <ngb-pagination *ngIf="restaurants?.length > 0" (click)="updateRestaurantsPagination($event)" class="col-md-12 justify-content-center" [collectionSize]="totalPages" [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+  </div>  
   <!-- add restaurant -->
   <div style="text-align: right;">
     <button type="button" (click)="addRestaurantModal()" class="btn btn-info btn-add float">
