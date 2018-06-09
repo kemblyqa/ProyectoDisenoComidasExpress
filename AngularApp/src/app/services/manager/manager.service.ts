@@ -47,6 +47,7 @@ export class ManagerService {
             }
         })
     }
+    
     /* add a new plate */
     public addPlatillo(name:any, description:any, price:number, category: any, rest:string){
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_ADDPLATILLO}`,{
