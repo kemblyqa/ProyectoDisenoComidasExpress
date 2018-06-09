@@ -7,13 +7,14 @@ import { StatusData } from './../../models/manager';
 const ENDPOINT_GETCATEGORIES = "categoria"
 const ENDPOINT_GETPLATILLOS = "GetPlatillosC"
 const ENDPOINT_PLATILLOS_REST = "filtroPlat"
-const ENDPOINT_ADDPLATILLO = "addPlatillo" 
-const ENDPOINT_MODPLATILLO = "modPlatillo" 
-const ENDPOINT_DELPLATILLO = "delPlatillo" 
+const ENDPOINT_ADDPLATILLO = "addPlatillo"
+const ENDPOINT_MODPLATILLO = "modPlatillo"
+const ENDPOINT_DELPLATILLO = "delPlatillo"
 const ENDPOINT_ALLORDERS = "filtroPedidos"
 const ENDPOINT_CHANGESTATUS = "setEstado"
 const ENDPOINT_IMAGE = "subirImagenPlat"
 const ENDPOINT_DELETE_EXPIRED = "limpiarPedidos"
+const ENDPOINT_GET_USER = "getUser"
 
 @Injectable()
 export class ManagerService {
@@ -34,43 +35,43 @@ export class ManagerService {
         return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_GETCATEGORIES}`)
     }
     /* get plates by category selected */
-    public getPlatillosByCategory(cat:any, page:any, restId: any) { 
-        return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_PLATILLOS_REST}`,  
-        { 
-            params: { 
+    public getPlatillosByCategory(cat:any, page:any, restId: any) {
+        return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_PLATILLOS_REST}`,
+        {
+            params: {
                 categoria:cat,
-                pagina:page, 
-                keyRest: restId 
-            } 
-        }) 
-    } 
+                pagina:page,
+                keyRest: restId
+            }
+        })
+    }
     /* add a new plate */
-    public addPlatillo(name:any, description:any, price:number, category: any, rest:string){ 
-        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_ADDPLATILLO}`,{ 
-            nombre: name, 
-            descripcion: description, 
+    public addPlatillo(name:any, description:any, price:number, category: any, rest:string){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_ADDPLATILLO}`,{
+            nombre: name,
+            descripcion: description,
             precio: price,
-            categoria: category, 
+            categoria: category,
             keyRest: rest
-        }) 
-    } 
+        })
+    }
     /* edits a existing plate */
-    public modPlatillo(name:any, description:any, price:number, category: any, rest:string, id:any){ 
-        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_MODPLATILLO}`,{ 
-            nombre: name, 
-            descripcion: description, 
+    public modPlatillo(name:any, description:any, price:number, category: any, rest:string, id:any){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_MODPLATILLO}`,{
+            nombre: name,
+            descripcion: description,
             precio: price,
-            categoria: category, 
-            keyRest: rest, 
+            categoria: category,
+            keyRest: rest,
             keyPlat: id
-        }) 
-    } 
+        })
+    }
     /* deletes a existing plate */
-    public delPlatillo(name:any, rest:any){ 
-        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_DELPLATILLO}`,{ 
-            keyRest: rest, 
-            nombre: name 
-        }) 
+    public delPlatillo(name:any, rest:any){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_DELPLATILLO}`,{
+            keyRest: rest,
+            nombre: name
+        })
     }
     /* retrieves orders */
     public getCustomOrders(rest:any, status:any){
@@ -113,6 +114,15 @@ export class ManagerService {
     public deleteExpiredOrder(restId:any){
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_DELETE_EXPIRED}`,{
             keyRest: restId
+        })
+    }
+    /* get an user by id */
+    public getUser(email: any){
+        return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_GET_USER}`,
+        {
+            params: {
+                email: email
+            }
         })
     }
 }

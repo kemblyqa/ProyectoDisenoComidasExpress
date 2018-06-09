@@ -17,19 +17,19 @@ export class MenuRestaurantComponent implements OnInit {
   /* modal messages */
   private successMessage:any
   private failedMessage:any
-  /* restaurante id y nombre */ 
-  private restName:string = "Soda El Mercadito" 
-  private restId:string = "NYJdrAl83G9dNWpF6z4J" 
+  /* restaurante id y nombre */
+  private restName:string = "Soda El Mercadito"
+  private restId:string = "NYJdrAl83G9dNWpF6z4J"
   /* categories */
-  private categories:Array<any> 
-  private catSelected:any 
+  private categories:Array<any>
+  private catSelected:any
   private newCat:boolean
   private modCat:boolean
-  /* edit platillo */ 
-  private descriptionPlate:any 
-  private pricePlate:number 
-  private namePlate:any 
-  private imagePlate:any 
+  /* edit platillo */
+  private descriptionPlate:any
+  private pricePlate:number
+  private namePlate:any
+  private imagePlate:any
   private allCategories:Array<any>
   private categoryPlate:any
   /* rating */
@@ -46,7 +46,7 @@ export class MenuRestaurantComponent implements OnInit {
   private manage:ManagerModel
   private headers:Array<any>
   /* pagination */
-  private totalPages:number = 0 
+  private totalPages:number = 0
   private page:number = 1
   /* image */
   imgOpt:boolean = true
@@ -57,7 +57,7 @@ export class MenuRestaurantComponent implements OnInit {
     this.starsList = [true, true, true, true, true]
   }
   ngOnInit(){
-    this.initCustomCategories() 
+    this.initCustomCategories()
     this.initAllCategories()
   }
   /* update all info */
@@ -73,14 +73,14 @@ export class MenuRestaurantComponent implements OnInit {
   switchImg(){
     this.imagePlate = null
   }
-  /* inits categories to show platillos */ 
-  initCustomCategories(){ 
-    this._managerService.getRestCategories(this.restId) 
-    .subscribe( 
-      res => { 
+  /* inits categories to show platillos */
+  initCustomCategories(){
+    this._managerService.getRestCategories(this.restId)
+    .subscribe(
+      res => {
         res.status ? this.categories = res.data : this.failedMessageModal(res.data)
-      } 
-    ) 
+      }
+    )
   }
   /* inits all categories */
   initAllCategories(){
@@ -90,17 +90,17 @@ export class MenuRestaurantComponent implements OnInit {
         res.status ? this.allCategories = res.data : this.failedMessageModal(res.data)
       }
     )
-  } 
+  }
   /* updates menu */
   updateMenu(){
-    this._managerService.getPlatillosByCategory(this.catSelected, this.page, this.restId) 
+    this._managerService.getPlatillosByCategory(this.catSelected, this.page, this.restId)
     .subscribe(
       res => {
         if(res.status){
           this.platillos = res.data[0]
           this.totalPages = res.data[1] * 10
         }
-        else 
+        else
           this.failedMessageModal(res.data)
       }
     )
@@ -122,7 +122,7 @@ export class MenuRestaurantComponent implements OnInit {
   /* failed success! */
   failedMessageModal(message:any){
     this.failedMessage = message
-    $("#modalFailed").modal({
+    $('#modalFailed').modal({
       backdrop: 'static',
       keyboard: false,
       show: true
@@ -130,10 +130,10 @@ export class MenuRestaurantComponent implements OnInit {
   }
   /* modal create new platillo */
   addPlatModal(){
-    this.descriptionPlate = "" 
-    this.namePlate = "" 
-    this.pricePlate = null 
-    this.categoryPlate = this.catSelected 
+    this.descriptionPlate = ""
+    this.namePlate = ""
+    this.pricePlate = null
+    this.categoryPlate = this.catSelected
     $("#modalCreateFood").modal({
       backdrop: 'static',
       keyboard: false,
@@ -142,13 +142,13 @@ export class MenuRestaurantComponent implements OnInit {
   }
   /* modal edit platillo */
   editPlatModal(plat:Platillo){
-    this.isCollapsed = true 
-    this.descriptionPlate = plat.descripcion 
-    this.namePlate = plat.nombre 
-    this.pricePlate = plat.precio 
-    this.imagePlate = plat.imagen 
+    this.isCollapsed = true
+    this.descriptionPlate = plat.descripcion
+    this.namePlate = plat.nombre
+    this.pricePlate = plat.precio
+    this.imagePlate = plat.imagen
     this.categoryPlate = this.catSelected
-    this.currentPlate = this.getIdPlatillo(plat) 
+    this.currentPlate = this.getIdPlatillo(plat)
     $("#modalEditFood").modal({
       backdrop: 'static',
       keyboard: false,
@@ -206,7 +206,7 @@ export class MenuRestaurantComponent implements OnInit {
     return true;
   }
   /* updates platillo */
-  updatePlat(){ 
+  updatePlat(){
     this._managerService.modPlatillo(
       this.namePlate,
       this.descriptionPlate,
