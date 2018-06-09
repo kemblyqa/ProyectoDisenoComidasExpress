@@ -11,12 +11,16 @@ declare var $ :any;
   styleUrls: ['./account.component.css']
 })
 export class AccountComponent implements OnInit {
+  time = {hour: 13, minute: 30};
+  meridian = true;
   /* restaurant properties */
+  show :boolean = false   
   private restId:string
   private restName:string
   private restCompany:string
   private restDescription:string
   private restLocation:Array<any> = [0,0]
+  private week:Array<any>
   private restSchedule:any
   private restImage:any
   private restaurants:Array<any> = []
@@ -33,6 +37,7 @@ export class AccountComponent implements OnInit {
   constructor() {
     this.manage = new ManagerModel()
     this.headers = this.manage.getRestaurantsTableHeaders()
+    this.week = this.manage.getWeek()
   }
   ngOnInit() {}
 
@@ -94,13 +99,8 @@ export class AccountComponent implements OnInit {
       show: true
     })
   }
-  saveSchedule(){
-
-  }
   /* open map modal */
-  openMapModal(lat:any, lng:any){
-    this.restLocation[0] = lat
-    this.restLocation[1] = lng
+  openMapModal(){
     $("#modalRestMap").modal({
       backdrop: 'static',
       keyboard: false,
@@ -110,9 +110,6 @@ export class AccountComponent implements OnInit {
   markPosition(e){
     this.restLocation[0]= e.coords.lat;
     this.restLocation[1]= e.coords.lng;
-    console.log(this.restLocation)
   }
-  savePosition(){
-
-  }
+  savePosition(){}
 }

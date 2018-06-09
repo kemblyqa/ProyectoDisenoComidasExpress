@@ -9,6 +9,7 @@ export class ManagerModel {
     headersFinishedTable:Array<any>
     headersRating:Array<any>
     headersRestaurants:Array<any>
+    weekDays:Array<any>
     constructor(){
         this.navItems = [
             {
@@ -66,6 +67,36 @@ export class ManagerModel {
         this.headersRestaurants = [
             "Nombre", "Empresa", "Descripción", "Ubicación", "Ver horario", "Más acciones"
         ]
+        this.weekDays = [
+            {
+                day:"Lunes",
+                id:"l"
+            },
+            {
+                day:"Martes", 
+                id:"k"
+            },
+            {
+                day:"Miércoles", 
+                id:"m"
+            },
+            {
+                day: "Jueves", 
+                id:"j"
+            },
+            {
+                day:"Viernes", 
+                id:"v"
+            },
+            {
+                day:"Sábado",
+                id:"s"
+            },
+            {
+                day: "Domingo",
+                id:"d"
+            }
+        ]
     }
     getNavItems(){
         return this.navItems
@@ -93,5 +124,8 @@ export class ManagerModel {
     }
     getRestaurantsTableHeaders(){
         return this.headersRestaurants
+    }
+    getWeek(){
+        return this.weekDays
     }
 }

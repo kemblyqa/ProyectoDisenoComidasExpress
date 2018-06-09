@@ -57,7 +57,7 @@
           </div>
           <div class="form-group row"> 
             <div class="col-sm-12 offset-md-4"> 
-              <button style="margin: 2%" (click)="openMapModal(restLat, restLng)"
+              <button style="margin: 2%" (click)="openMapModal()"
                 class="center-icon-btn btn btn-danger" ngbTooltip="Escoger ubicación"><i class="material-icons icon">
                   add_location
                 </i>
@@ -124,8 +124,7 @@
           </agm-map>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
-          <button type="submit" (click)="savePosition()" data-dismiss="modal" class="btn btn-info">Guardar</button> 
+          <button type="submit" data-dismiss="modal" class="btn btn-dark">Aceptar</button> 
         </div>
       </div>
     </div>
@@ -138,7 +137,13 @@
           <h5 class="modal-title">Horario del restaurante {{restName}}</h5>
         </div>
         <div class="modal-body">
-          
+          <ul class="list-group" *ngFor="let day of week">
+            <li class="list-group-item">
+              <input class="form-check-input" (change)="$event.target.checked ? show = true : show = false" type="checkbox" value="" id="dayIdLbl">
+              <label class="form-check-label" for="dayIdLbl">{{day.day}}</label>
+              <ngb-timepicker [(ngModel)]="time" [meridian]="meridian"></ngb-timepicker>
+            </li>
+          </ul>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
