@@ -19,6 +19,8 @@
         </div>
       </div>
   </div>
+
+
 </body>
 <!-- failed modal -->
 <div class="modal" id="modalFailed" tabindex="-1" role="dialog">
@@ -32,25 +34,6 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-warning" data-dismiss="modal">Aceptar</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- map modal -->
-<div class="modal" id="modalUserMap" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Ubicación del usuario {{user.nombre}}</h5>
-      </div>
-      <div class="modal-body">
-        <agm-map class="map" [zoom]="15" [latitude]="restLocation[0]"
-          [longitude]="restLocation[1]" (mapClick)="markPosition($event)">
-            <agm-marker [latitude]="restLocation[0]" [longitude]="restLocation[1]"></agm-marker>
-        </agm-map>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" data-dismiss="modal" class="btn btn-dark">Aceptar</button> 
       </div>
     </div>
   </div>
@@ -76,16 +59,17 @@
           </div>
         </div>
         <div>
-        <label for="rSize" class="col-sm-6 col-form-label">Elige la ubicación de entregas de tu cuenta</label>
-        <button (click)="openMapModal()"
-          class="center-icon-btn btn btn-danger" ngbTooltip="Escoger ubicación"><i class="material-icons icon">
-            add_location
-          </i>
-        </button>
-      </div>
+          <label for="rSize" class="col-sm-6 col-form-label">Elige la ubicación de entregas de tu cuenta</label>
+          <button (click)="openMapModal()"
+            class="center-icon-btn btn btn-danger" ngbTooltip="Escoger ubicación"><i class="material-icons icon">
+              add_location
+            </i>
+          </button>
+        </div>
       <div class="modal-footer">
         <button type="button" (click)="registerUser()" data-dismiss="modal" class="acceptButton">Registrarse</button>
         <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -98,13 +82,13 @@
         <h5 class="modal-title">Ubicación del usuario {{user.nombre}}</h5>
       </div>
       <div class="modal-body">
-        <agm-map class="map"  [latitude]="restLocation[0]"
+        <agm-map class="map" [zoom]="15" [latitude]="restLocation[0]"
           [longitude]="restLocation[1]" (mapClick)="markPosition($event)">
             <agm-marker [latitude]="restLocation[0]" [longitude]="restLocation[1]"></agm-marker>
         </agm-map>
       </div>
       <div class="modal-footer">
-        <button type="submit" data-dismiss="modal" class="btn btn-dark">Aceptar</button>
+        <button type="button" data-dismiss="modal" class="btn btn-dark">Aceptar</button> 
       </div>
     </div>
   </div>
