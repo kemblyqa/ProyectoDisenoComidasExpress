@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
       nombre: '',
       telefono: ''};
   private failedMessage: String;
+  private restLocation: Array<any> = [0,0]
   constructor(private ref: ChangeDetectorRef, private _managerService: ManagerService) {
   }
 
@@ -105,5 +106,17 @@ export class LoginComponent implements OnInit {
       keyboard: false,
       show: true
     });
+  }
+  /* open map modal */
+  openMapModal(){
+    $("#modalUserMap").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
+  }
+  markPosition(e){
+    this.restLocation[0]= e.coords.lat;
+    this.restLocation[1]= e.coords.lng;
   }
 }

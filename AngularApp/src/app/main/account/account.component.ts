@@ -11,10 +11,7 @@ declare var $ :any;
   styleUrls: ['./account.component.css']
 })
 export class AccountComponent implements OnInit {
-  time = {hour: 13, minute: 30};
-  meridian = true;
   /* restaurant properties */
-  show :boolean = false   
   private restId:string
   private restName:string
   private restCompany:string

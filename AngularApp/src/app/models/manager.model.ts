@@ -70,31 +70,122 @@ export class ManagerModel {
         this.weekDays = [
             {
                 day:"Lunes",
-                id:"l"
+                id:"l",
+                checked: false,
+                timeInit: 
+                {
+                    hour: 7,
+                    minute: 0
+                },
+                timeEnd: 
+                {
+                    hour: 19,
+                    minute: 0
+                },
+                meridianInit: true,
+                meridianEnd: true
             },
             {
                 day:"Martes", 
-                id:"k"
+                id:"k",
+                checked: false,
+                timeInit: 
+                {
+                    hour: 7,
+                    minute: 0
+                },
+                timeEnd: 
+                {
+                    hour: 19,
+                    minute: 0
+                },
+                meridianInit: true,
+                meridianEnd: true
             },
             {
                 day:"Miércoles", 
-                id:"m"
+                id:"m",
+                checked: false,
+                timeInit: 
+                {
+                    hour: 7,
+                    minute: 0
+                },
+                timeEnd: 
+                {
+                    hour: 19,
+                    minute: 0
+                },
+                meridianInit: true,
+                meridianEnd: true
             },
             {
                 day: "Jueves", 
-                id:"j"
+                id:"j",
+                checked: false,
+                timeInit: 
+                {
+                    hour: 7,
+                    minute: 0
+                },
+                timeEnd: 
+                {
+                    hour: 19,
+                    minute: 0
+                },
+                meridianInit: true,
+                meridianEnd: true
             },
             {
                 day:"Viernes", 
-                id:"v"
+                id:"v",
+                checked: false,
+                timeInit: 
+                {
+                    hour: 7,
+                    minute: 0
+                },
+                timeEnd: 
+                {
+                    hour: 19,
+                    minute: 0
+                },
+                meridianInit: true,
+                meridianEnd: true
             },
             {
                 day:"Sábado",
-                id:"s"
+                id:"s",
+                checked: false,
+                timeInit: 
+                {
+                    hour: 7,
+                    minute: 0
+                },
+                timeEnd: 
+                {
+                    hour: 19,
+                    minute: 0
+                },
+                meridianInit: true,
+                meridianEnd: true
             },
             {
                 day: "Domingo",
-                id:"d"
+                id:"d",
+                checked: false,
+                timeInit: 
+                {
+                    hour: 7,
+                    minute: 0
+                },
+                timeEnd: 
+                {
+                    hour: 19,
+                    minute: 0
+                },
+                meridianInit: true,
+                meridianEnd: true
             }
         ]
     }
