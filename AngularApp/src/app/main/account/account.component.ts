@@ -11,20 +11,16 @@ declare var $ :any;
   styleUrls: ['./account.component.css']
 })
 export class AccountComponent implements OnInit {
+  /* restaurant properties */
+  private restId:string
+  private restName:string
+  private restCompany:string
+  private restDescription:string
+  private restLocation:Array<any> = [0,0]
+  private restSchedule:any
+  private restImage:any
   private restaurants:Array<any> = []
-  /* init interface */
-  private currentRest : Restaurante = {
-    keyRest: "",
-    descripcion: "",
-    nombre: "fff",
-    empresa:"",
-    ubicacion: {
-        _latitude: 0,
-        _longitude: 0
-    },
-    horario: ""
-  } as Restaurante
-
+  /* model */
   private headers:Array<any>
   private manage:ManagerModel
   /* modal messages */
@@ -58,10 +54,29 @@ export class AccountComponent implements OnInit {
       show: true
     })
   }
-  /* modal edit profile */
-  editProfileModal(rest: Restaurante){
-    this.currentRest = rest
-    $("#modalEdit").modal({
+  /* modal add restaurant */
+  addRestaurantModal(){
+    this.restName = ""
+    this.restDescription = ""
+    this.restCompany = ""
+    this.restLocation[0] = 0
+    this.restLocation[1] = 0
+    this.restSchedule = null
+    $("#modalAddRest").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
+  }
+  /* modal edit restaurant */
+  editRestaurantModal(rest: Restaurante){
+    this.restName = rest.nombre
+    this.restDescription = rest.descripcion
+    this.restCompany = rest.empresa
+    this.restLocation[0] = rest.ubicacion._latitude
+    this.restLocation[1] = rest.ubicacion._longitude
+    this.restSchedule = rest.horario
+    $("#modalEditRest").modal({
       backdrop: 'static',
       keyboard: false,
       show: true
@@ -69,6 +84,35 @@ export class AccountComponent implements OnInit {
   }
 
   getRestaurants(){
+
+  }
+  /* schedule modal */
+  openScheduleModal(){
+    $("#modalAddSchedule").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
+  }
+  saveSchedule(){
+
+  }
+  /* open map modal */
+  openMapModal(lat:any, lng:any){
+    this.restLocation[0] = lat
+    this.restLocation[1] = lng
+    $("#modalRestMap").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
+  }
+  markPosition(e){
+    this.restLocation[0]= e.coords.lat;
+    this.restLocation[1]= e.coords.lng;
+    console.log(this.restLocation)
+  }
+  savePosition(){
 
   }
 }

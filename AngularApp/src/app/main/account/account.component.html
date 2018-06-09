@@ -30,98 +30,49 @@
     </table>
   </div>
   <!-- add restaurant modal -->
-<!-- modify food -->
-  <div class="modal fade bd-example-modal-lg" id="modalEdit" tabindex="-1" role="dialog">
+  <div class="modal fade bd-example-modal-lg" id="modalAddRest" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <img class="card-img-top" src="{{currentRest?.nombre}}" width="100px" data-holder-rendered="true"> 
+          <!-- <img class="card-img-top" src="{{currentRest?.nombre}}" width="100px" data-holder-rendered="true">  -->
         </div>
         <div class="modal-body offset-md-1">
           <div class="form-group row"> 
             <label class="col-sm-3 col-form-label">Nombre: </label> 
             <div class="col-sm-8"> 
-              <input type="text" [(ngModel)]="currentRest.nombre" class="form-control" id="nameP" placeholder="Nuevo nombre..."> 
-            </div> 
-          </div> 
-          <!-- <div class="form-group row"> 
-            <label class="col-sm-3 col-form-label">Descripción: </label> 
-            <div class="col-sm-8"> 
-              <textarea class="form-control" maxlength="150" [(ngModel)]="descriptionPlate" rows="4"></textarea> 
+              <input type="text" [(ngModel)]="restName" class="form-control" placeholder="Nombre..."> 
             </div> 
           </div> 
           <div class="form-group row"> 
-            <label class="col-sm-3 col-form-label">Precio: </label> 
+            <label class="col-sm-3 col-form-label">Descripción: </label> 
             <div class="col-sm-8"> 
-              <div class="input-group"> 
-                <div class="input-group-prepend"> 
-                  <span class="input-group-text">₡</span> 
-                </div> 
-                <input type="text" [(ngModel)]="pricePlate" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Nuevo precio..."> 
-                <div class="input-group-append"> 
-                  <span class="input-group-text">.00</span> 
-                </div> 
-              </div> 
+              <textarea class="form-control" maxlength="150" [(ngModel)]="restDescription" placeholder="Descripción..." rows="4"></textarea> 
             </div> 
-          </div> 
-          <div class="form-group row">
-            <div class="col-sm-3">
-              <label class="col-form-label">Categoría: </label> 
-              <div class="form-group row">
-                <div class="form-check">
-                  <input class="form-check-input" (change)="switchCat()" type="checkbox" [value]="false" [(ngModel)]="modCat" id="lblMCat">
-                  <h6 class="form-check-label" for="lblMCat">
-                    Nueva categoría
-                  </h6>
-                </div>
-              </div>
-            </div>
-            <div *ngIf="!modCat" class="col-sm-8"> 
-              <select [(ngModel)]="categoryPlate" class="form-control opacity">
-                <option *ngFor="let cat of allCategories"
-                  [value]="cat">{{cat}}</option> 
-                </select>
+          </div>
+          <div class="form-group row"> 
+            <label class="col-sm-3 col-form-label">Empresa: </label> 
+            <div class="col-sm-8"> 
+              <input type="text" [(ngModel)]="restName" class="form-control" placeholder="Empresa..."> 
             </div> 
-            <div *ngIf="modCat" class="col-sm-8">
-              <input type="text" [(ngModel)]="categoryPlate" class="form-control" id="nameCat" placeholder="Nueva categoría..."> 
+          </div>
+          <div class="form-group row"> 
+            <div class="col-sm-12 offset-md-4"> 
+              <button style="margin: 2%" (click)="openMapModal(restLat, restLng)"
+                class="center-icon-btn btn btn-danger" ngbTooltip="Escoger ubicación"><i class="material-icons icon">
+                  add_location
+                </i>
+              </button>  
+              <button style="margin: 2%" (click)="openScheduleModal()"
+                class="center-icon-btn btn btn-success" ngbTooltip="Escoger horario"><i class="material-icons icon">
+                  schedule
+                </i>
+              </button>  
             </div>
           </div>
-          <div style="margin-top: 3%" class="form-group justify-content-center">
-            <button type="button" class="btn btn-outline-danger" (click)="isCollapsed = !isCollapsed"
-              [attr.aria-expanded]="isCollapsed" aria-controls="collapseExample">
-              Agregar imagen al platillo
-            </button>
-          </div>
-          <div id="collapseExample" [ngbCollapse]="isCollapsed">
-            <div class="form-group justify-content-center">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" (change)="switchImg()" [(ngModel)]="imgOpt" name="imageOpts" id="upImg" [value]="true">
-                <label class="form-check-label" for="upImg">Subir imagen</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" (change)="switchImg()" [(ngModel)]="imgOpt" name="imageOpts" id="lnkImg" [value]="false">
-                <label class="form-check-label" for="lnkImg">Link a imagen</label>
-              </div>
-            </div>
-            <div *ngIf="!imgOpt" class="form-group row"> 
-              <div class="input-group col-sm-11">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Link </span>
-                </div>
-                <input type="text" [(ngModel)]="imagePlate" class="form-control" id="imageP" placeholder="Link nueva imagen..." required> 
-              </div>
-            </div> 
-            <div *ngIf="imgOpt" class="form-group row">
-              <div class="input-group col-sm-11">
-                <label for="imagenC">Elija una imagen de la computadora</label>
-                <input (change)="onFileChange($event)" type="file" accept=".jpg, .jpeg" class="form-control-file" id="imagenC" required>
-              </div>
-            </div>
-          </div>  -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
-          <button type="submit" (click)="updatePlat()" data-dismiss="modal" class="btn btn-danger">Guardar</button> 
+          <button type="submit" (click)="updatePlat()" data-dismiss="modal" class="btn btn-info">Guardar</button> 
         </div>
       </div>
     </div>
@@ -159,10 +110,47 @@
       </div>
     </div>
   </div>
+  <!-- open map modal -->
+  <div class="modal" id="modalRestMap" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Ubicación del restaurante {{restName}}</h5>
+        </div>
+        <div class="modal-body">
+          <agm-map class="map"  [latitude]="restLocation[0]" id="delP" 
+            [longitude]="restLocation[1]" (mapClick)="markPosition($event)">
+              <agm-marker [latitude]="restLocation[0]" [longitude]="restLocation[1]"></agm-marker>
+          </agm-map>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
+          <button type="submit" (click)="savePosition()" data-dismiss="modal" class="btn btn-info">Guardar</button> 
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- open schedule modal -->
+  <div class="modal" id="modalAddSchedule" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Horario del restaurante {{restName}}</h5>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
+          <button type="submit" (click)="saveSchedule()" data-dismiss="modal" class="btn btn-info">Guardar</button> 
+        </div>
+      </div>
+    </div>
+  </div>
   <ngb-pagination *ngIf="restaurants?.length > 0" (click)="updateRestaurantsPagination($event)" class="col-md-12 justify-content-center" [collectionSize]="totalPages" [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
   <!-- add restaurant -->
   <div style="text-align: right;">
-    <button type="button" (click)="editProfileModal()" class="btn btn-info btn-add float">
+    <button type="button" (click)="addRestaurantModal()" class="btn btn-info btn-add float">
       <i class="material-icons">
       add</i>
     </button>

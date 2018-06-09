@@ -23,15 +23,15 @@ export interface Platillo{
 }
 
 export interface Restaurante {
-    keyRest: string
-    descripcion: string
-    nombre: string
-    empresa:string
-    ubicacion: {
-        _latitude: number,
-        _longitude: number
+    keyRest?: string
+    descripcion?: string
+    nombre?: string
+    empresa?:string
+    ubicacion?: {
+        _latitude?: number,
+        _longitude?: number
     }
-    horario:any
+    horario?:any
 }
 
 export interface Pedido {
