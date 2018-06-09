@@ -978,6 +978,7 @@ const getUser = functions.https.onRequest((req,res) => {
   else
     res.send({status:false,data:"Este endPoint solo acepta GET"})
 })
+
 app.get('/api/filtroPlat', filtroPlat);
 app.get('/api/categoria', categoria);
 app.post('/api/addPlatillo', addPlatillo);

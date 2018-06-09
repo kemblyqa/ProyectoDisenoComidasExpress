@@ -38,11 +38,11 @@ export const ROUTES: Routes = [
                 ]
             },
             {
-                path: "cuenta", component: AccountComponent
+                path: 'cuenta', component: AccountComponent
             }
         ]
     },
     {
         path: '**', redirectTo: 'login', pathMatch: 'full'
     }
-]
+];

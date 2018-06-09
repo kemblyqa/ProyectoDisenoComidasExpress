@@ -7,12 +7,12 @@ import { ManagerModel } from '../../models/manager.model';
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.css']
 })
-export class MainPageComponent implements OnInit{
+export class MainPageComponent implements OnInit {
   /* user */
-  private user:string = "Kembly Quirós"
+  private user = 'Kembly Quirós';
   /* models and nav items */
-  manage: ManagerModel
-  navItems: Array<any>
+  manage: ManagerModel;
+  navItems: Array<any>;
   userInfo: any;
   ngOnInit() {}
   constructor(private router: Router) {
@@ -22,11 +22,11 @@ export class MainPageComponent implements OnInit{
     } else {
       console.log(this.userInfo);
     }
-    this.manage = new ManagerModel()
-    this.navItems = this.manage.getNavItems()
+    this.manage = new ManagerModel();
+    this.navItems = this.manage.getNavItems();
   }
 
-  goTo(path:any){
-    this.router.navigate([`dashboard${path}`])
+  goTo(path: any) {
+    this.router.navigate([`dashboard${path}`]);
   }
 }
