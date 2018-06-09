@@ -696,7 +696,13 @@ const setUsuario = functions.https.onRequest((req, res) => {
         else{
             let ubicacion
             try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),false)}
-            catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
+            catch(e){
+              try{
+                ubicacion = genGeopoint(JSON.parse(JSON.stringify(req.body.ubicacion)),false);
+              } catch(err){
+                console.log(err);
+                res.send({status:false,data:"Error interpretando la ubicación"});return}
+            }
             const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if(!re.test(String(req.body.email).toLowerCase()))
               res.send({status:false,data:"Correo no valido"})

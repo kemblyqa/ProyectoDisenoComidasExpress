@@ -15,6 +15,7 @@ const ENDPOINT_CHANGESTATUS = "setEstado"
 const ENDPOINT_IMAGE = "subirImagenPlat"
 const ENDPOINT_DELETE_EXPIRED = "limpiarPedidos"
 const ENDPOINT_GET_USER = "getUser"
+const ENDPOINT_SET_USER = "setUsuario"
 
 @Injectable()
 export class ManagerService {
@@ -117,12 +118,22 @@ export class ManagerService {
         })
     }
     /* get an user by id */
-    public getUser(email: any){
+    public getUser(email: any) {
         return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_GET_USER}`,
         {
             params: {
                 email: email
             }
-        })
+        });
+    }
+    /* set an user by id */
+    public setUser(email: any, nombre: any, telefono: any, ubicacion: any) {
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_SET_USER}`,
+        {
+          email: email,
+          nombre: nombre,
+          telefono: telefono,
+          ubicacion: ubicacion
+        });
     }
 }

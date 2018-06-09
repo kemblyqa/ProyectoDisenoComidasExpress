@@ -11,11 +11,17 @@ export class MainPageComponent implements OnInit{
   /* user */
   private user:string = "Kembly Quirós"
   /* models and nav items */
-  manage:ManagerModel
-  navItems:Array<any>
+  manage: ManagerModel
+  navItems: Array<any>
+  userInfo: any;
   ngOnInit() {}
-
-  constructor(private router: Router) { 
+  constructor(private router: Router) {
+    this.userInfo = sessionStorage.getItem('user');
+    if (this.userInfo === null) {
+      this.router.navigate(['login']);
+    } else {
+      console.log(this.userInfo);
+    }
     this.manage = new ManagerModel()
     this.navItems = this.manage.getNavItems()
   }

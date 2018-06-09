@@ -36,25 +36,6 @@
     </div>
   </div>
 </div>
-<!-- map modal -->
-<div class="modal" id="modalUserMap" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Ubicación del usuario {{user.nombre}}</h5>
-      </div>
-      <div class="modal-body">
-        <agm-map class="map"  [latitude]="restLocation[0]"
-          [longitude]="restLocation[1]" (mapClick)="markPosition($event)">
-            <agm-marker [latitude]="restLocation[0]" [longitude]="restLocation[1]"></agm-marker>
-        </agm-map>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" data-dismiss="modal" class="btn btn-dark">Aceptar</button> 
-      </div>
-    </div>
-  </div>
-</div>
 <!-- Register Modal -->
 <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -86,6 +67,25 @@
       <div class="modal-footer">
         <button type="button" (click)="registerUser()" data-dismiss="modal" class="acceptButton">Registrarse</button>
         <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- map modal -->
+<div class="modal" id="modalUserMap" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ubicación del usuario {{user.nombre}}</h5>
+      </div>
+      <div class="modal-body">
+        <agm-map class="map"  [latitude]="restLocation[0]"
+          [longitude]="restLocation[1]" (mapClick)="markPosition($event)">
+            <agm-marker [latitude]="restLocation[0]" [longitude]="restLocation[1]"></agm-marker>
+        </agm-map>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" data-dismiss="modal" class="btn btn-dark">Aceptar</button>
       </div>
     </div>
   </div>

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ManagerService } from './../../services/manager/manager.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { environment } from './../../../environments/environment';
 import firebase from '@firebase/app';
 import '@firebase/auth';
+
 const app = firebase.initializeApp(environment.firebase);
 const provider = new firebase.auth.GoogleAuthProvider();
 
@@ -24,8 +26,8 @@ export class LoginComponent implements OnInit {
       nombre: '',
       telefono: ''};
   private failedMessage: String;
-  private restLocation: Array<any> = [0,0]
-  constructor(private ref: ChangeDetectorRef, private _managerService: ManagerService) {
+  private restLocation: Array<any> = [0, 0];
+  constructor(private _router: Router, private ref: ChangeDetectorRef, private _managerService: ManagerService) {
   }
 
   ngOnInit() {
@@ -84,6 +86,8 @@ export class LoginComponent implements OnInit {
             this.user.nombre = res.data.nombre;
             this.user.restaurantes = res.data.restaurantes;
             this.user.telefono = res.data.telefono;
+            sessionStorage.setItem('user', JSON.stringify(this.user));
+            this._router.navigate(['dashboard']);
           } else {
             this.user.nombre = this.user.displayName;
             $('#register').modal({
@@ -98,6 +102,16 @@ export class LoginComponent implements OnInit {
       }
     );
   }
+  registerUser() {
+    this._managerService.setUser(this.user.email, this.user.nombre, this.user.telefono, this.restLocation)
+    .subscribe(res => {
+      if (res.status) {
+        this.enter();
+      } else {
+        this.failedMessageModal(res.data);
+      }
+    });
+  }
   /* failed success! */
   failedMessageModal(message: any) {
     this.failedMessage = message;
@@ -108,15 +122,15 @@ export class LoginComponent implements OnInit {
     });
   }
   /* open map modal */
-  openMapModal(){
-    $("#modalUserMap").modal({
+  openMapModal() {
+    $('#modalUserMap').modal({
       backdrop: 'static',
       keyboard: false,
       show: true
-    })
+    });
   }
-  markPosition(e){
-    this.restLocation[0]= e.coords.lat;
-    this.restLocation[1]= e.coords.lng;
+  markPosition(e) {
+    this.restLocation[0] = e.coords.lat;
+    this.restLocation[1] = e.coords.lng;
   }
 }
