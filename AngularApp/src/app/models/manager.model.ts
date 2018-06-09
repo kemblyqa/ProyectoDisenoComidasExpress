@@ -83,7 +83,8 @@ export class ManagerModel {
                     minute: 0
                 },
                 meridianInit: true,
-                meridianEnd: true
+                meridianEnd: true,
+                valid: true
             },
             {
                 day:"Martes", 
@@ -100,7 +101,8 @@ export class ManagerModel {
                     minute: 0
                 },
                 meridianInit: true,
-                meridianEnd: true
+                meridianEnd: true,
+                valid: true
             },
             {
                 day:"Miércoles", 
@@ -117,7 +119,8 @@ export class ManagerModel {
                     minute: 0
                 },
                 meridianInit: true,
-                meridianEnd: true
+                meridianEnd: true,
+                valid: true
             },
             {
                 day: "Jueves", 
@@ -134,7 +137,8 @@ export class ManagerModel {
                     minute: 0
                 },
                 meridianInit: true,
-                meridianEnd: true
+                meridianEnd: true,
+                valid: true
             },
             {
                 day:"Viernes", 
@@ -151,7 +155,8 @@ export class ManagerModel {
                     minute: 0
                 },
                 meridianInit: true,
-                meridianEnd: true
+                meridianEnd: true,
+                valid: true
             },
             {
                 day:"Sábado",
@@ -168,7 +173,8 @@ export class ManagerModel {
                     minute: 0
                 },
                 meridianInit: true,
-                meridianEnd: true
+                meridianEnd: true,
+                valid: true
             },
             {
                 day: "Domingo",
@@ -185,7 +191,8 @@ export class ManagerModel {
                     minute: 0
                 },
                 meridianInit: true,
-                meridianEnd: true
+                meridianEnd: true,
+                valid: true
             }
         ]
     }

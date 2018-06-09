@@ -2,6 +2,7 @@ import { Restaurante } from './../../models/manager';
 import { Component, OnInit } from '@angular/core';
 import { ManagerModel } from '../../models/manager.model';
 import { AgmMap } from '@agm/core';
+import { ManagerService } from '../../services/manager/manager.service';
 declare var jquery:any;
 declare var $ :any;
 
@@ -16,7 +17,7 @@ export class AccountComponent implements OnInit {
   private restName:string
   private restCompany:string
   private restDescription:string
-  private restLocation:Array<any> = [0,0]
+  private restLocation:Array<any> = [10.362167730785652,-84.51030575767209]
   private week:Array<any>
   private restSchedule:any
   private restImage:any
@@ -31,7 +32,7 @@ export class AccountComponent implements OnInit {
   private totalPages:number = 0 
   private page:number = 1
 
-  constructor() {
+  constructor(private _managerService: ManagerService) {
     this.manage = new ManagerModel()
     this.headers = this.manage.getRestaurantsTableHeaders()
     this.week = this.manage.getWeek()
@@ -58,12 +59,11 @@ export class AccountComponent implements OnInit {
   }
   /* modal add restaurant */
   addRestaurantModal(){
-    this.restName = ""
-    this.restDescription = ""
-    this.restCompany = ""
-    this.restLocation[0] = 0
-    this.restLocation[1] = 0
-    this.restSchedule = null
+    this.restName = undefined
+    this.restDescription = undefined
+    this.restCompany = undefined
+    this.restLocation = [10.362167730785652,-84.51030575767209]
+    this.restSchedule = {l:[],k:[],m:[],j:[],v:[],s:[],d:[]}
     $("#modalAddRest").modal({
       backdrop: 'static',
       keyboard: false,
@@ -95,6 +95,31 @@ export class AccountComponent implements OnInit {
       keyboard: false,
       show: true
     })
+  }
+  verifyHours(day:any){
+    if(day.checked){
+      ((day.timeInit.hour * 60) + day.timeInit.minute) >= ((day.timeEnd.hour * 60) +  day.timeEnd.minute) 
+      ? day.valid = false : day.valid = true
+    }
+  }
+  saveSchedule(){
+    for(let day of this.week){
+      if(day.checked){
+        this.restSchedule[day.id].push({
+          init: (day.timeInit.hour * 60) + day.timeInit.minute,
+          end: (day.timeEnd.hour * 60) +  day.timeEnd.minute
+        })
+      }
+    }
+  }
+  addRestaurant(){
+    this._managerService.addRestaurant(this.restName, this.restCompany, this.restDescription, 
+    this.restLocation, this.restSchedule, "alberthsalascalero@gmail.com")
+    .subscribe(
+      success => {
+        success.status ? this.successMessageModal(success.data) : this.failedMessageModal(success.data)
+      }
+    )
   }
   /* open map modal */
   openMapModal(){
