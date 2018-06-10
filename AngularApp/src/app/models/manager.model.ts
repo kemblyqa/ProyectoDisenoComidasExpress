@@ -237,4 +237,20 @@ export class ManagerModel {
         }
         return this.weekDays
     }
+
+    updateWeek(schedule: any){
+        for(var x = 0; x < this.weekDays.length; x++){
+            for(let day in schedule){
+                if(this.weekDays[x]["id"] == day && schedule[day].length > 0){
+                    this.weekDays[x].checked = true
+                    this.weekDays[x].timeInit.hour = Math.trunc(schedule[day][0]["init"]/60)
+                    this.weekDays[x].timeInit.minute = schedule[day][0]["init"]%60
+                    this.weekDays[x].timeEnd.hour = Math.trunc(schedule[day][0]["end"]/60)
+                    this.weekDays[x].timeEnd.minute = schedule[day][0]["end"]%60
+                    this.weekDays[x].valid = true
+                }
+            }
+        }
+        return this.weekDays
+    }
 }

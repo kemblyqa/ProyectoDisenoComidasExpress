@@ -19,7 +19,7 @@ export class AccountComponent implements OnInit {
   private restCompany:string
   private restDescription:string
   private restLocation:Array<any> = [10.362167730785652,-84.51030575767209]
-  private week:Array<any>
+  private week:Array<any> = []
   private restSchedule:any
   private restImage:any
   private restaurants:Restaurante[]
@@ -46,7 +46,7 @@ export class AccountComponent implements OnInit {
   constructor(private _managerService: ManagerService) {
     this.manage = new ManagerModel()
     this.restTableHeaders = this.manage.getRestaurantsTableHeaders()
-    this.week = this.manage.getWeek()
+    this.week = this.manage.cleanWeek()
     this.user = JSON.parse(sessionStorage.getItem('user'))
     this.getRestaurants()
   }
@@ -86,12 +86,15 @@ export class AccountComponent implements OnInit {
   }
   /* modal edit restaurant */
   editRestaurantModal(rest: Restaurante){
+    this.week = this.manage.cleanWeek()
     this.restName = rest.nombre
     this.restDescription = rest.descripcion
     this.restCompany = rest.empresa
-    this.restLocation[0] = rest.ubicacion._latitude
-    this.restLocation[1] = rest.ubicacion._longitude
+    this.restLocation = [rest.ubicacion._latitude,rest.ubicacion._longitude]
     this.restSchedule = rest.horario
+    console.log(this.restSchedule)
+    this.week = this.manage.updateWeek(this.restSchedule)
+    //image
     $("#modalModRest").modal({
       backdrop: 'static',
       keyboard: false,
@@ -207,5 +210,4 @@ export class AccountComponent implements OnInit {
     this.restLocation[0]= e.coords.lat;
     this.restLocation[1]= e.coords.lng;
   }
-  savePosition(){}
 }

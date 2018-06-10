@@ -474,51 +474,98 @@ const delCarro = functions.https.onRequest((req, res) => {
 })
 
 const caja = functions.https.onRequest((req, res) => {
+
     if(req.method==='POST'){
+
         const email = req.body.email
+
         if(email===undefined)
+
             res.send({status:false,data:"Se requiere el campo email"})
+
         else{
+
             usuarios.doc(email).get().then(usuario =>{
+
                 if(usuario.exists){
+
                     const carrito = usuario.data().carrito
+
                     const save = (e,c)=>{usuarios.doc(e).set({carrito:c},{merge:true})}
+
                     const keys = Object.keys(carrito)
+
                     if(keys.length===0)
+
                       res.send({status:true,data:"Tu carrito ya estaba vacío"})
+
                     else
+
                       keys.forEach(item=>{
+
                           platillos.doc(item).get().then(platillo=>{
+
                               if(platillo.exists){
+
                                   pedidos.add({email:email,
+platillo:item,
+
                                       restaurante:platillo.data().restaurante,
+
                                       ubicacion:carrito[item].ubicacion,
+
                                       categoria:platillo.data().categoria,
+
                                       descripcion:platillo.data().descripcion,
+
                                       nombre:platillo.data().nombre,
+
                                       precio:platillo.data().precio,
+
                                       fecha:carrito[item].fecha,
+
                                       cantidad:carrito[item].cantidad
+
                                       ,estado:{proceso:"pendiente"}}).then(ref=>{
+
                                       delete carrito[item]
+
                                       if(Object.keys(carrito).length===0){
+
                                           save(email,carrito)
+
                                           res.send({status:true,data:"Carrito procesado"})
+
                                           return
+
                                       }
+
                                   }).catch(err => {save(email,carrito);res.send({status:false,data:"Error procesando un pedido"});return})
+
                               }
+
                               else {save(email,carrito);res.send({status:false,data:"Uno de los platillos del carrito no existe"})}
+
                           }).catch(err => {save(email,carrito);res.send({status:false,data:"Error procesando un pedido"})})
+
                       })
+
                 }
+
                 else
+
                     res.send({status:false,data:"El usuario solicitado no existe"})
+
             })
+
         }
+
     }
+
     else
+
         res.send({status:false,data:'Metodo invalido'})
+
 })
 
 const filtroPedidos = functions.https.onRequest((req, res) => {
@@ -990,48 +1037,93 @@ const getUser = functions.https.onRequest((req,res) => {
 })
 
 const getRests = functions.https.onRequest((req,res) => {
+
   if (req.method === "GET"){
+
     const email = req.query.email
+
     if(email === "" || isUndefined(email))
+
       res.send({status:false,data:'Email invalido'});
+
     else
+
       usuarios.doc(email)
+
       .get()
+
       .then(user =>{
+
         if(user.exists){
+
           const rests = user.data().restaurantes;
+
           const restsRich = [];
+
           let c = 0;
+
           let d = 0;
+
           for(let x = 0; rests[x]!==undefined;x++) {
+
             c++;
+
             restaurantes.doc(rests[x]).get()
+
             .then(restInfo => {
+
               console.log(restInfo.data())
+
               if (restInfo.exists){
+
                 restsRich[x] = restInfo.data();
+
                 restsRich[x].id = rests[x];
+
               } else {
+
                 restsRich[x] = {};
+
                 restsRich[x].id = rests[x];
+
               }
+if (restsRich[x].imagen===undefined)
+restsRich[x].imagen="https://cdn3.iconfinder.com/data/icons/food-drink/512/Dining-512.png"
+
               d++;
+
               if(c===d){
+
                 res.send({status:true,data:restsRich})
+
               }
+
             })
+
             .catch(err => {
-              console.log(err);res.send({status:false,data:`Error procesando restaurante ${rests[x]}`});return;
+
+              console.log(err);res.send({status:false,data:Error procesando restaurante ${rests[x]}});return;
+
             })
+
           }
+
         }
+
         else
+
           res.send({status:true,data:{}});
+
       })
+
       .catch(error =>{
+
         console.log(error)
+
         res.send({status:false,data:"Error de consulta"})
+
       })
+
   }
   else
     res.send({status:false,data:"Este endPoint solo acepta GET"})

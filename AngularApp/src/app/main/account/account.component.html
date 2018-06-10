@@ -37,7 +37,7 @@
           <td>
             <ng-template #popContent let-schedule="schedule">
               <div *ngFor="let dayS of showSchedule(restaurants[restKey].horario)">
-                {{dayS.day}} -> {{dayS.begin.hour}}:{{dayS.begin.min}}{{dayS.begin.meridian}} - {{dayS.finish.hour}}:{{dayS.finish.min}}{{dayS.finish.meridian}}
+                {{dayS.day}} de {{dayS.begin.hour}}:{{dayS.begin.min}}{{dayS.begin.meridian}} a {{dayS.finish.hour}}:{{dayS.finish.min}}{{dayS.finish.meridian}}
               </div>
             </ng-template>
             <button class="center-icon-btn btn-schedule" [ngbPopover]="popContent" triggers="mouseenter:mouseleave" popoverTitle="Horario">
@@ -46,7 +46,20 @@
               </i>
             </button>
           </td>
-          <td>acciones</td>          
+          <td>
+            <button (click)="editRestaurantModal(restaurants[restKey])"
+              class="center-icon-btn btn-warning" ngbTooltip="Editar restaurante">
+              <i class="material-icons icon">  
+                edit
+              </i>
+            </button>
+            <button (click)="predetermineRest(restaurants[restKey])"
+              class="center-icon-btn btn-set-restaurant" ngbTooltip="Escoger como restaurante actual">
+              <i class="material-icons icon">  
+                settings
+              </i>
+            </button>
+          </td>          
         </tr>
       </tbody>
     </table>
@@ -98,7 +111,7 @@
                   <div class="form-group">
                     <ul class="list-group" *ngFor="let day of week">
                       <li class="list-group-item">
-                        <input class="form-check-input" [(ngModel)]="day.checked" (change)="$event.target.checked ? day.checked = true : day.checked = false" type="checkbox" [value]="day.checked">
+                        <input class="form-check-input" [checked]="day.checked" (change)="$event.target.checked ? day.checked = true : day.checked = false" type="checkbox" [value]="day.checked">
                         <label class="form-check-label" for="dayIdLbl">{{day.day}}</label>
                         <div class="form-group row">
                           <div class="col-sm-5 offset-md-1">
@@ -132,7 +145,7 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <img class="card-img-top" src="{{restImage}}" width="100px" data-holder-rendered="true">
+          <!-- <img class="card-img-top" src="{{restImage}}" width="100px" data-holder-rendered="true"> -->
         </div>
         <div class="modal-body">
           <div class="form-group offset-md-1">
@@ -174,7 +187,7 @@
                   <div class="form-group">
                     <ul class="list-group" *ngFor="let day of week">
                       <li class="list-group-item">
-                        <input class="form-check-input" (change)="$event.target.checked ? day.checked = true : day.checked = false" type="checkbox" [value]="day.checked">
+                        <input class="form-check-input" [checked]="day.checked" (change)="$event.target.checked ? day.checked = true : day.checked = false" type="checkbox" [value]="day.checked">
                         <label class="form-check-label" for="dayIdLbl">{{day.day}}</label>
                         <div class="form-group row">
                           <div class="col-sm-5 offset-md-1">
