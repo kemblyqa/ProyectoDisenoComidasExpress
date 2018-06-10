@@ -11,7 +11,7 @@ const app = express();
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
 
-//const gcs = require('@google-cloud/storage')
+const gcs = require('@google-cloud/storage')
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 const bucket = admin.storage().bucket();
@@ -691,9 +691,17 @@ const subirImagenPlat = functions.https.onRequest((req, res) => {
                             if (error)
                                 res.send({status:false,data:'No se pudo subir la imagen.'});
                             else{
+                              file.acl.add({
+                              entity: 'allUsers',
+                              role: gcs.acl.READER_ROLE //gcs ->'@google-cloud/storage'
+                              },
+                              (err, aclObject) => {
+                                if(err)
+                                  res.send({status:false,data:"No se pudieron establecer los servicios: " + err});
                                 const URL = file.metadata.mediaLink
                                 platillos.doc(keyPlat).set({imagen:URL},{merge:true})
                                 res.send({status:true,data:`La URL del platillo ${keyPlat} ahora es ${URL}`});
+                              });
                             }
                         }
                     );
@@ -892,9 +900,17 @@ const subirImagenRest = functions.https.onRequest((req, res) => {
                             if (error)
                                 res.send({status:false,data:'No se pudo subir la imagen.'});
                             else{
+                              file.acl.add({
+                              entity: 'allUsers',
+                              role: gcs.acl.READER_ROLE //gcs ->'@google-cloud/storage'
+                              },
+                              (err, aclObject) => {
+                                if(err)
+                                  res.send({status:false,data:"No se pudieron establecer los servicios: " + err});
                                 const URL = file.metadata.mediaLink
                                 restaurantes.doc(keyRest).set({imagen:URL},{merge:true})
                                 res.send({status:true,data:`La URL del restaurante ${keyRest} ahora es ${URL}`});
+                              });
                             }
                         }
                     );
