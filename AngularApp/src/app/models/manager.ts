@@ -32,7 +32,7 @@ export interface Restaurante {
         _longitude?: number
     }
     horario?:any
-    popover:Array<any>
+    imagen:string
 }
 
 export interface Pedido {

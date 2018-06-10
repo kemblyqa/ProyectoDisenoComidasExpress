@@ -225,7 +225,7 @@ export class MenuRestaurantComponent implements OnInit {
   updateImage(){
     if(!this.isCollapsed){
       if(this.imgOpt){//if upload image
-        this._managerService.uploadBase64Image(this.currentPlate.id,this.imagePlate)
+        this._managerService.uploadBase64ImagePlatillo(this.currentPlate.id,this.imagePlate)
         .subscribe(
           success=>{
             success.status ? this.successMessageModal("Se ha actualizado el platillo correctamente.") : this.failedMessageModal(success.data)
@@ -233,7 +233,7 @@ export class MenuRestaurantComponent implements OnInit {
           }
         )
       } else {//image url
-        this._managerService.uploadUrlImage(this.currentPlate.id,this.imagePlate)
+        this._managerService.uploadUrlImagePlatillo(this.currentPlate.id,this.imagePlate)
         .subscribe(
           success=>{
             success.status ? this.successMessageModal("Se ha actualizado el platillo correctamente.") : this.failedMessageModal(success.data)

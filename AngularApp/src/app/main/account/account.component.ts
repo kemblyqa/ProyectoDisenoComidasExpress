@@ -26,6 +26,7 @@ export class AccountComponent implements OnInit {
   private restaurantsKeys:Array<any>
   private listScheduleShow:Array<any> = []
   /* model */
+  private currentRest:Restaurante
   private restTableHeaders:Array<any>
   private manage:ManagerModel
   private weekDays:Array<any> = [{id:"l",day:"Lunes"},{id:"k",day:"Martes"},{id:"m",day:"Miércoles"},{id:"j",day:"Jueves"},{id:"v",day:"Viernes"},{id:"s",day:"Sábado"},{id:"d",day:"Domingo"}]
@@ -36,7 +37,6 @@ export class AccountComponent implements OnInit {
   private totalPages:number = 0
   private page:number = 1
   /* image */
-  imgOpt:boolean = true
   isImgOptsCollapsed:boolean = false
   private user: {email, photoURL, displayName, restaurantes, nombre, telefono} =
     { email: '',
@@ -80,7 +80,7 @@ export class AccountComponent implements OnInit {
     this.restDescription = undefined
     this.restCompany = undefined
     this.restLocation = [10.362167730785652,-84.51030575767209]
-    this.restSchedule = {"l":[],"k":[],"m":[],"j":[],"v":[],"s":[],"d":[]}
+    // this.restSchedule = {"l":[],"k":[],"m":[],"j":[],"v":[],"s":[],"d":[]}
     $("#modalAddRest").modal({
       backdrop: 'static',
       keyboard: false,
@@ -97,8 +97,9 @@ export class AccountComponent implements OnInit {
     this.restCompany = rest.empresa
     this.restLocation = [rest.ubicacion._latitude,rest.ubicacion._longitude]
     this.restSchedule = rest.horario
+    this.restImage = rest.imagen
     this.week = this.manage.updateWeek(this.restSchedule)
-    //image
+    this.currentRest = this.getIdPlatillo(rest)
     $("#modalModRest").modal({
       backdrop: 'static',
       keyboard: false,
@@ -164,6 +165,7 @@ export class AccountComponent implements OnInit {
     }
   }
   saveSchedule(){
+    this.restSchedule = {"l":[],"k":[],"m":[],"j":[],"v":[],"s":[],"d":[]}
     for(let day of this.week){
       if(day.checked){
         this.restSchedule[day.id].push({
@@ -186,7 +188,28 @@ export class AccountComponent implements OnInit {
   }
   /* modify restaurant */
   modifyRestaurant(){
-
+    this.saveSchedule()
+    this._managerService.modRestaurant(this.restName, this.restCompany, this.restDescription, this.restLocation, this.restSchedule, this.user.email, this.currentRest.keyRest)
+    .subscribe(
+      success=>{
+        success.status ? this.updateRestaurantImage() : this.failedMessageModal(success.data)
+        this.getRestaurants()
+      }
+    )
+  }
+    /* updates restaurant image*/
+  updateRestaurantImage(){
+    if(!this.isImgOptsCollapsed){
+      this._managerService.uploadBase64ImageRestaurant(this.currentRest.keyRest,this.restImage)
+      .subscribe(
+        success=>{
+          success.status ? this.successMessageModal("Se ha actualizado el restaurante correctamente.") : this.failedMessageModal(success.data)
+          this.getRestaurants()
+        }
+      )
+    } else {
+      this.successMessageModal("Se ha actualizado el restaurante correctamente.")
+    }
   }
   /* open setUser modal */
   openSetUserModal() {
@@ -230,5 +253,13 @@ export class AccountComponent implements OnInit {
   }
   switchImg(){
     this.restImage = null
+  }
+   /* get restaurant object from list by id */
+   getIdPlatillo(obj:Restaurante):Restaurante {
+    return this.restaurants.find(plate => plate.keyRest == obj.keyRest)
+  }
+  /* set restaurant as predetermined */
+  predetermineRest(restId:any){
+    sessionStorage.setItem('currentRestaurant', JSON.stringify(restId));
   }
 }
