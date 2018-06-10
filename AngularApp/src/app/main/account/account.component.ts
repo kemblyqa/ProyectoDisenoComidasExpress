@@ -21,10 +21,12 @@ export class AccountComponent implements OnInit {
   private week:Array<any>
   private restSchedule:any
   private restImage:any
-  private restaurants:Array<any> = []
+  private restaurants:Restaurante[]
+  private restaurantsKeys:Array<any>
   /* model */
-  private headers:Array<any>
+  private restTableHeaders:Array<any>
   private manage:ManagerModel
+  private user:any
   /* modal messages */
   private successMessage:any
   private failedMessage:any
@@ -34,8 +36,11 @@ export class AccountComponent implements OnInit {
 
   constructor(private _managerService: ManagerService) {
     this.manage = new ManagerModel()
-    this.headers = this.manage.getRestaurantsTableHeaders()
+    this.restTableHeaders = this.manage.getRestaurantsTableHeaders()
+    console.log(this.restTableHeaders)
     this.week = this.manage.getWeek()
+    this.user = JSON.parse(sessionStorage.getItem('user'))
+    this.getRestaurants()
   }
   ngOnInit() {}
 
@@ -59,11 +64,12 @@ export class AccountComponent implements OnInit {
   }
   /* modal add restaurant */
   addRestaurantModal(){
+    this.week = this.manage.cleanWeek()
     this.restName = undefined
     this.restDescription = undefined
     this.restCompany = undefined
     this.restLocation = [10.362167730785652,-84.51030575767209]
-    this.restSchedule = {l:[],k:[],m:[],j:[],v:[],s:[],d:[]}
+    this.restSchedule = {"l":[],"k":[],"m":[],"j":[],"v":[],"s":[],"d":[]}
     $("#modalAddRest").modal({
       backdrop: 'static',
       keyboard: false,
@@ -85,8 +91,24 @@ export class AccountComponent implements OnInit {
     })
   }
 
+  /* see the restaurant schedule */
+  openScheduleModal(schedule:any){
+    $("#modalModRest").modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
+  }
   getRestaurants(){
-
+    this._managerService.getUserRestaurants(this.user.email)
+    .subscribe(
+      success =>{
+        if(success.status){
+          this.restaurantsKeys = Object.keys(success.data)
+          this.restaurants = success.data
+        }
+      }
+    )
   }
   /* check start hour be less than finish hour */
   verifyHours(day:any){
@@ -99,8 +121,8 @@ export class AccountComponent implements OnInit {
     for(let day of this.week){
       if(day.checked){
         this.restSchedule[day.id].push({
-          init: (day.timeInit.hour * 60) + day.timeInit.minute,
-          end: (day.timeEnd.hour * 60) +  day.timeEnd.minute
+          "init": (day.timeInit.hour * 60) + day.timeInit.minute,
+          "end": (day.timeEnd.hour * 60) +  day.timeEnd.minute
         })
       }
     }
@@ -109,7 +131,7 @@ export class AccountComponent implements OnInit {
   addRestaurant(){
     this.saveSchedule()
     this._managerService.addRestaurant(this.restName, this.restCompany, this.restDescription, 
-    this.restLocation, this.restSchedule, "alberthsalascalero@gmail.com")
+    this.restLocation, this.restSchedule, this.user.email)
     .subscribe(
       success => {
         success.status ? this.successMessageModal(success.data) : this.failedMessageModal(success.data)
@@ -117,8 +139,9 @@ export class AccountComponent implements OnInit {
     )
   }
   /* open map modal */
-  openMapModal(){
-    $("#modalRestMap").modal({
+  openMapModal(location:any){
+    this.restLocation = [location._latitude, location._longitude]
+    $("#modalRestLocMap").modal({
       backdrop: 'static',
       keyboard: false,
       show: true

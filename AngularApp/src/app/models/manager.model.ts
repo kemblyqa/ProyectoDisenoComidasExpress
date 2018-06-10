@@ -226,4 +226,15 @@ export class ManagerModel {
     getWeek(){
         return this.weekDays
     }
+    cleanWeek(){
+        for(var x = 0; x < this.weekDays.length; x++){
+            this.weekDays[x].checked = false
+            this.weekDays[x].timeInit.hour = 7
+            this.weekDays[x].timeInit.minute = 0
+            this.weekDays[x].timeEnd.hour = 19
+            this.weekDays[x].timeEnd.minute = 0
+            this.weekDays[x].valid = true
+        }
+        return this.weekDays
+    }
 }

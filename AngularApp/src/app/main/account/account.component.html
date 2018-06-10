@@ -18,13 +18,31 @@
     <table class="table table-hover">
       <thead>
         <tr>
-          <th *ngFor="let head of headers" scope="col">{{head}}</th>
+          <th *ngFor="let h of restTableHeaders" scope="col">{{h}}</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let rest of restaurants" scope="row">
-
-
+        <tr *ngFor="let restKey of restaurantsKeys" scope="row">
+          <td>{{restaurants[restKey].nombre}}</td>
+          <td>{{restaurants[restKey].empresa}}</td>
+          <td>{{restaurants[restKey].descripcion}}</td>
+          <td>
+            <button (click)="openMapModal(restaurants[restKey].ubicacion)"
+              class="btn-open-map" ngbTooltip="Abrir en mapa">
+                <i class="material-icons">
+                open_in_new
+                </i>
+            </button>
+          </td>
+          <td>
+            <button (click)="openScheduleModal(restaurants[restKey].horario)"
+              class="btn-open-map" ngbTooltip="Abrir en mapa">
+                <i class="material-icons">
+                open_in_new
+                </i>
+            </button>
+          </td>
+          <td>acciones</td>          
         </tr>
       </tbody>
     </table>
@@ -34,7 +52,7 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <!-- <img class="card-img-top" src="{{currentRest?.nombre}}" width="100px" data-holder-rendered="true">  -->
+          <h5 class="modal-title">Nuevo restaurante</h5>
         </div>
         <div class="modal-body">
           <div class="form-group offset-md-1">
@@ -76,7 +94,7 @@
                   <div class="form-group">
                     <ul class="list-group" *ngFor="let day of week">
                       <li class="list-group-item">
-                        <input class="form-check-input" (change)="$event.target.checked ? day.checked = true : day.checked = false" type="checkbox" [value]="day.checked">
+                        <input class="form-check-input" [(ngModel)]="day.checked" (change)="$event.target.checked ? day.checked = true : day.checked = false" type="checkbox" [value]="day.checked">
                         <label class="form-check-label" for="dayIdLbl">{{day.day}}</label>
                         <div class="form-group row">
                           <div class="col-sm-5 offset-md-1">
@@ -214,6 +232,25 @@
       </div>
     </div>
   </div>  
+  <!-- open map modal -->
+  <div class="modal" id="modalRestLocMap" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Ubicación del restaurante</h5>
+        </div>
+        <div class="modal-body">
+          <agm-map class="map" [latitude]="restLocation[0]"
+            [longitude]="restLocation[1]" [zoom]="15">
+              <agm-marker [latitude]="restLocation[0]" [longitude]="restLocation[1]"></agm-marker>
+          </agm-map>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Volver</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- add restaurant -->
   <div style="text-align: right;">
     <button type="button" (click)="addRestaurantModal()" class="btn btn-info btn-add float">

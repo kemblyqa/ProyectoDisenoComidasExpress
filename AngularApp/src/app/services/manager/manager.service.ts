@@ -17,6 +17,7 @@ const ENDPOINT_DELETE_EXPIRED = "limpiarPedidos"
 const ENDPOINT_GET_USER = "getUser"
 const ENDPOINT_ADDRESTAURANT = "addRestaurante"
 const ENDPOINT_SET_USER = "setUsuario"
+const ENDPOINT_GETRESTS = "getRests"
 
 @Injectable()
 export class ManagerService {
@@ -135,7 +136,7 @@ export class ManagerService {
             empresa: company,
             descripcion: description,
             ubicacion: location,
-            horario: schedule,
+            horario: JSON.stringify(schedule),
             email: email
         })
     }
@@ -148,5 +149,13 @@ export class ManagerService {
           telefono: telefono,
           ubicacion: ubicacion
         });
+    }
+    /* get all restaurants by user id */
+    public getUserRestaurants(email:string){
+        return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_GETRESTS}`,{
+            params:{
+                email: email
+            }  
+        })
     }
 }
