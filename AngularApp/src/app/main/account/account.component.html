@@ -23,6 +23,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let restKey of restaurantsKeys" scope="row">
+          <td><img class="card-img-top" src="{{restaurants[restKey].imagen}}" width="50px" data-holder-rendered="true"></td>
           <td>{{restaurants[restKey].nombre}}</td>
           <td>{{restaurants[restKey].empresa}}</td>
           <td>{{restaurants[restKey].descripcion}}</td>
@@ -47,7 +48,7 @@
             </button>
           </td>
           <td>
-            <button (click)="editRestaurantModal(restaurants[restKey])"
+            <button (click)="editRestaurantModal(restaurants[restKey], restKey)"
               class="center-icon-btn btn-warning" ngbTooltip="Editar restaurante">
               <i class="material-icons icon">  
                 edit

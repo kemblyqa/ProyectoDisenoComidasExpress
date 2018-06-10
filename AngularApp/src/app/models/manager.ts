@@ -23,7 +23,7 @@ export interface Platillo{
 }
 
 export interface Restaurante {
-    keyRest?: string
+    id?: string
     descripcion?: string
     nombre?: string
     empresa?:string

@@ -26,7 +26,7 @@ export class AccountComponent implements OnInit {
   private restaurantsKeys:Array<any>
   private listScheduleShow:Array<any> = []
   /* model */
-  private currentRest:Restaurante
+  private currentRest:string
   private restTableHeaders:Array<any>
   private manage:ManagerModel
   private weekDays:Array<any> = [{id:"l",day:"Lunes"},{id:"k",day:"Martes"},{id:"m",day:"Miércoles"},{id:"j",day:"Jueves"},{id:"v",day:"Viernes"},{id:"s",day:"Sábado"},{id:"d",day:"Domingo"}]
@@ -99,7 +99,7 @@ export class AccountComponent implements OnInit {
     this.restSchedule = rest.horario
     this.restImage = rest.imagen
     this.week = this.manage.updateWeek(this.restSchedule)
-    this.currentRest = this.getIdPlatillo(rest)
+    this.currentRest = rest.id
     $("#modalModRest").modal({
       backdrop: 'static',
       keyboard: false,
@@ -175,6 +175,7 @@ export class AccountComponent implements OnInit {
       }
     }
   }
+
   /* add restaurant to server */
   addRestaurant(){
     this.saveSchedule()
@@ -189,7 +190,8 @@ export class AccountComponent implements OnInit {
   /* modify restaurant */
   modifyRestaurant(){
     this.saveSchedule()
-    this._managerService.modRestaurant(this.restName, this.restCompany, this.restDescription, this.restLocation, this.restSchedule, this.user.email, this.currentRest.keyRest)
+    console.log(this.currentRest)
+    this._managerService.modRestaurant(this.restName, this.restCompany, this.restDescription, this.restLocation, this.restSchedule, this.user.email, this.currentRest)
     .subscribe(
       success=>{
         success.status ? this.updateRestaurantImage() : this.failedMessageModal(success.data)
@@ -200,7 +202,7 @@ export class AccountComponent implements OnInit {
     /* updates restaurant image*/
   updateRestaurantImage(){
     if(!this.isImgOptsCollapsed){
-      this._managerService.uploadBase64ImageRestaurant(this.currentRest.keyRest,this.restImage)
+      this._managerService.uploadBase64ImageRestaurant(this.currentRest,this.restImage)
       .subscribe(
         success=>{
           success.status ? this.successMessageModal("Se ha actualizado el restaurante correctamente.") : this.failedMessageModal(success.data)
@@ -256,10 +258,10 @@ export class AccountComponent implements OnInit {
   }
    /* get restaurant object from list by id */
    getIdPlatillo(obj:Restaurante):Restaurante {
-    return this.restaurants.find(plate => plate.keyRest == obj.keyRest)
+    return this.restaurants.find(plate => plate.id == obj.id)
   }
   /* set restaurant as predetermined */
-  predetermineRest(restId:any){
-    sessionStorage.setItem('currentRestaurant', JSON.stringify(restId));
+  predetermineRest(restId:string){
+    sessionStorage.setItem('currentRestaurant', restId);
   }
 }
