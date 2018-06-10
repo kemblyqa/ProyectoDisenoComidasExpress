@@ -141,7 +141,7 @@
     </div>
   </div>
   <!-- modify restaurant -->
-  <div class="modal fade bd-example-modal-lg" id="modalModRest" tabindex="-1" role="dialog">
+  <div class="modal fade" id="modalModRest" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -168,8 +168,40 @@
               </div>
             </div>
           </div>
+          <div style="margin-top: 3%" class="form-group justify-content-center">
+            <button type="button" class="btn btn-outline-info" (click)="isImgOptsCollapsed = !isImgOptsCollapsed"
+              [attr.aria-expanded]="isImgOptsCollapsed" aria-controls="collapseBtn">
+              Agregar imagen al restaurante
+            </button>
+          </div>
+          <div id="collapseBtn" [ngbCollapse]="isImgOptsCollapsed">
+            <div class="form-group justify-content-center">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" (change)="switchImg()" [(ngModel)]="imgOpt" name="imageOpts" id="upImg" [value]="true">
+                <label class="form-check-label" for="upImg">Subir imagen</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" (change)="switchImg()" [(ngModel)]="imgOpt" name="imageOpts" id="lnkImg" [value]="false">
+                <label class="form-check-label" for="lnkImg">Link a imagen</label>
+              </div>
+            </div>
+            <div *ngIf="!imgOpt" class="form-group row"> 
+              <div class="input-group col-sm-11">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Link </span>
+                </div>
+                <input type="text" [(ngModel)]="restImage" class="form-control" id="imageP" placeholder="Link nueva imagen..." required> 
+              </div>
+            </div> 
+            <div *ngIf="imgOpt" class="form-group row">
+              <div class="input-group col-sm-11">
+                <label for="imagenC">Elija una imagen de la computadora</label>
+                <input (change)="onFileChange($event)" type="file" accept=".jpg, .jpeg" class="form-control-file" id="imagenC" required>
+              </div>
+            </div>
+          </div> 
           <div class="form-group">
-            <ngb-accordion #acc="ngbAccordion">
+            <ngb-accordion #acc="ngbAccordion" [closeOthers]="true">
               <ngb-panel title="Ubicación">
                 <ng-template ngbPanelContent>
                   <label>Escoja la ubicación de su restaurante</label>
