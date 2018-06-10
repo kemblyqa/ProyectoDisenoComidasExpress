@@ -700,36 +700,39 @@ const subirImagenPlat = functions.https.onRequest((req, res) => {
 
 const setUsuario = functions.https.onRequest((req, res) => {
     if (req.method === 'POST')
-        if(isUndefined(req.body.nombre) || isUndefined(req.body.email) || isUndefined(req.body.telefono))
+        if(isUndefined(req.body.email) || (req.body.override && (isUndefined(req.body.nombre) || isUndefined(req.body.telefono))))
             res.send({status:false,data:"Faltan datos"})
         else{
             let ubicacion
-            try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),false)}
-            catch(e){
-              try{
-                ubicacion = genGeopoint(JSON.parse(JSON.stringify(req.body.ubicacion)),false);
-              } catch(err){
-                console.log(err);
-                res.send({status:false,data:"Error interpretando la ubicación"});return}
-            }
+            if(req.body.ubicacion!==undefined || !req.body.override)
+              try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),false)}
+              catch(e){
+                try{
+                  ubicacion = genGeopoint(JSON.parse(JSON.stringify(req.body.ubicacion)),false);
+                } catch(err){
+                  console.log(err);
+                  res.send({status:false,data:"Error interpretando la ubicación"});return}
+              }
             const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if(!re.test(String(req.body.email).toLowerCase()))
               res.send({status:false,data:"Correo no valido"})
-            else if(ubicacion===undefined)
+            else if(ubicacion===undefined && !req.body.override)
               res.send({status:false,data:"ubicación invalida"})
             else{
                 usuarios.doc(req.body.email).get().then(snapshot => {
-                    if(snapshot.exists && !(req.body.override === 'true'))
+                    if(snapshot.exists && !(req.body.override))
                         res.send({status:false,data:"Este correo electronico ya está registrado"})
                     else{
                         try{
-                            usuarios.doc(req.body.email).set({
-                                nombre:req.body.nombre,
-                                telefono:req.body.telefono,
-                                ubicacion:ubicacion,
-                                carrito:{},
-                                restaurantes:[]})
-                            res.send({status:true,data:`Bienvenido, ${req.body.nombre}` })
+                          let usuario: any;
+                          if(req.body.nombre!==undefined)
+                            usuario= {nombre:req.body.nombre};
+                          if(req.body.telefono!==undefined)
+                            usuario.telefono = req.body.telefono;
+                          if(ubicacion!==undefined)
+                            usuario.ubicacion = ubicacion;
+                          usuarios.doc(req.body.email).set(usuario,{merge:true})
+                          res.send({status:true,data:`Bienvenido${req.body.override?' de vuelta':''}, ${req.body.nombre}` })
                         }catch(e){res.send({status:false,data:`Error insertando usuario: ${JSON.stringify(e)}`})}
                     }
                 }).catch(err => {res.send({status:false,data:"Error obteniendo datos de servidor"})})
@@ -768,7 +771,7 @@ const addRestaurante = functions.https.onRequest((req, res) => {
         let ubicacion = req.body.ubicacion
         const horario = getHorario(req.body.horario)
         const email = req.body.email
-        if(!allDefined([nombre,empresa,descripcion,ubicacion[0],ubicacion[1],horario])){
+        if(!allDefined([nombre,email,empresa,descripcion,ubicacion[0],ubicacion[1],horario])){
             res.send({status:false,data:"Faltan Datos"})
             return
         }
@@ -997,18 +1000,23 @@ const getRests = functions.https.onRequest((req,res) => {
       .then(user =>{
         if(user.exists){
           const rests = user.data().restaurantes;
-          const restsRich = {};
+          const restsRich = [];
           let c = 0;
+          let d = 0;
           for(let x = 0; rests[x]!==undefined;x++) {
             c++;
             restaurantes.doc(rests[x]).get()
             .then(restInfo => {
+              console.log(restInfo.data())
               if (restInfo.exists){
-                restsRich[rests[x]] = restInfo.data();
+                restsRich[x] = restInfo.data();
+                restsRich[x].id = rests[x];
               } else {
-                restsRich[rests[x]] = {}
+                restsRich[x] = {};
+                restsRich[x].id = rests[x];
               }
-              if(c===Object.keys(restsRich).length){
+              d++;
+              if(c===d){
                 res.send({status:true,data:restsRich})
               }
             })
