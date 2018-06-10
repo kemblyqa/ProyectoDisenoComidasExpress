@@ -21,9 +21,4 @@ ngb-pagination /deep/ .page-item.disabled .page-link {
 .btn-finish {
     background-color: blue;
     color: white;
-    width:28px;
-	height:28px;
-    border-radius: 50%;
-    border: 0px;
-    text-align: center;
 }

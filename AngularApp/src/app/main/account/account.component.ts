@@ -12,6 +12,7 @@ declare var $ :any;
   styleUrls: ['./account.component.css']
 })
 export class AccountComponent implements OnInit {
+  objectKeys = Object.keys;
   /* restaurant properties */
   private restId:string
   private restName:string
@@ -23,10 +24,11 @@ export class AccountComponent implements OnInit {
   private restImage:any
   private restaurants:Restaurante[]
   private restaurantsKeys:Array<any>
+  private listScheduleShow:Array<any> = []
   /* model */
   private restTableHeaders:Array<any>
   private manage:ManagerModel
-  private user:any
+  private weekDays:Array<any> = [{id:"l",day:"Lunes"},{id:"k",day:"Martes"},{id:"m",day:"Miércoles"},{id:"j",day:"Jueves"},{id:"v",day:"Viernes"},{id:"s",day:"Sábado"},{id:"d",day:"Domingo"}]
   /* modal messages */
   private successMessage:any
   private failedMessage:any
@@ -44,7 +46,6 @@ export class AccountComponent implements OnInit {
   constructor(private _managerService: ManagerService) {
     this.manage = new ManagerModel()
     this.restTableHeaders = this.manage.getRestaurantsTableHeaders()
-    console.log(this.restTableHeaders)
     this.week = this.manage.getWeek()
     this.user = JSON.parse(sessionStorage.getItem('user'))
     this.getRestaurants()
@@ -99,12 +100,42 @@ export class AccountComponent implements OnInit {
   }
 
   /* see the restaurant schedule */
-  openScheduleModal(schedule:any){
-    $("#modalModRest").modal({
-      backdrop: 'static',
-      keyboard: false,
-      show: true
-    })
+  showSchedule(schedule:any){
+    this.listScheduleShow = []
+    for(var x = 0; x < this.weekDays.length; x++){
+      for(let day in schedule){
+        if(this.weekDays[x]["id"] == day && schedule[day].length > 0){
+          let initHour = this.meridian(schedule[day][0].init)
+          let endHour = this.meridian(schedule[day][0].end)
+          this.listScheduleShow.push({
+            day: this.weekDays[x]["day"],
+            begin: {
+              hour: initHour[0],
+              min: initHour[1],
+              meridian: initHour[2]
+            },
+            finish: {
+              hour: endHour[0],
+              min: endHour[1],
+              meridian: endHour[2]
+            }
+          })
+        }
+      }
+    }
+    return this.listScheduleShow
+  }
+  meridian(minutes:number){
+    let hour = Math.trunc(minutes/60)
+    let minute = ((minutes%60) >= 0 && (minutes%60) < 10) ? "0"+(minutes%60) : minutes%60
+    let meridian = ""
+    if(hour > 12){
+      hour -= 12
+      meridian = "PM"
+    } else {
+      meridian = "AM"
+    }
+    return [hour,minute,meridian]
   }
   getRestaurants(){
     this._managerService.getUserRestaurants(this.user.email)

@@ -20,3 +20,8 @@
     justify-content: left;
     border: 0;
 }
+
+.btn-schedule{
+    background-color: blueviolet;
+    color: white;
+}
