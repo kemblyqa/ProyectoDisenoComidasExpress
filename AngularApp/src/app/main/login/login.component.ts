@@ -103,7 +103,7 @@ export class LoginComponent implements OnInit {
     );
   }
   registerUser() {
-    this._managerService.setUser(this.user.email, this.user.nombre, this.user.telefono, this.restLocation)
+    this._managerService.setUser(this.user.email, this.user.nombre, this.user.telefono, this.restLocation, undefined)
     .subscribe(res => {
       if (res.status) {
         this.enter();

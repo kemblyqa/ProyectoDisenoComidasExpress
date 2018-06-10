@@ -47,7 +47,7 @@ export class ManagerService {
             }
         })
     }
-    
+
     /* add a new plate */
     public addPlatillo(name:any, description:any, price:number, category: any, rest:string){
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_ADDPLATILLO}`,{
@@ -140,13 +140,22 @@ export class ManagerService {
         })
     }
     /* set an user by id */
-    public setUser(email: any, nombre: any, telefono: any, ubicacion: any) {
+    public setUser(email: any, nombre: any, telefono: any, ubicacion: any, override: boolean) {
+      const usuario: any = {};
+      usuario.email = email;
+      if (nombre !== undefined) {
+        usuario.nombre = nombre;
+      }
+      if (telefono !== undefined) {
+        usuario.telefono = telefono;
+      }
+      if (ubicacion !== undefined) {
+        usuario.ubicacion = ubicacion;
+      }
+      if (override !== undefined) {
+        usuario.override = override;
+      }
         return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_SET_USER}`,
-        {
-          email: email,
-          nombre: nombre,
-          telefono: telefono,
-          ubicacion: ubicacion
-        });
+        usuario);
     }
 }
