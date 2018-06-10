@@ -35,6 +35,9 @@ export class AccountComponent implements OnInit {
   /* pagination */
   private totalPages:number = 0
   private page:number = 1
+  /* image */
+  imgOpt:boolean = true
+  isImgOptsCollapsed:boolean = false
   private user: {email, photoURL, displayName, restaurantes, nombre, telefono} =
     { email: '',
       photoURL: '../../assets/icons/profile.png',
@@ -83,16 +86,17 @@ export class AccountComponent implements OnInit {
       keyboard: false,
       show: true
     })
+    $('.collapse').collapse()
   }
   /* modal edit restaurant */
   editRestaurantModal(rest: Restaurante){
+    this.isImgOptsCollapsed = true
     this.week = this.manage.cleanWeek()
     this.restName = rest.nombre
     this.restDescription = rest.descripcion
     this.restCompany = rest.empresa
     this.restLocation = [rest.ubicacion._latitude,rest.ubicacion._longitude]
     this.restSchedule = rest.horario
-    console.log(this.restSchedule)
     this.week = this.manage.updateWeek(this.restSchedule)
     //image
     $("#modalModRest").modal({
@@ -100,6 +104,7 @@ export class AccountComponent implements OnInit {
       keyboard: false,
       show: true
     })
+    $('.collapse').collapse()
   }
 
   /* see the restaurant schedule */
@@ -179,6 +184,10 @@ export class AccountComponent implements OnInit {
       }
     )
   }
+  /* modify restaurant */
+  modifyRestaurant(){
+
+  }
   /* open setUser modal */
   openSetUserModal() {
     $('#setUser').modal({
@@ -209,5 +218,17 @@ export class AccountComponent implements OnInit {
   markPosition(e){
     this.restLocation[0]= e.coords.lat;
     this.restLocation[1]= e.coords.lng;
+  }
+  /* to get the base 64 encoded image*/
+  onFileChange(event) {
+    let reader = new FileReader();
+    if(event.target.files && event.target.files.length > 0) {
+      let file = event.target.files[0]
+      reader.readAsDataURL(file)
+      reader.onload = () => { this.restImage = reader.result }
+    }
+  }
+  switchImg(){
+    this.restImage = null
   }
 }
