@@ -585,6 +585,7 @@ const verCarrito = functions.https.onRequest((req, res) => {
                                   descripcion:platillo.data().descripcion,
                                   cantidad:carrito[key].cantidad,
                                   precio:platillo.data().precio,
+                                  imagen: platillo.data().imagen,
                                   fecha:carrito[key].fecha,
                                   ubicacion:carrito[key].ubicacion,
                                   restaurante:[platillo.data().restaurante,rest.data().nombre]})
@@ -773,7 +774,13 @@ const addRestaurante = functions.https.onRequest((req, res) => {
         }
         else{
             try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),false)}
-            catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
+            catch(e){
+              try{
+                ubicacion = genGeopoint(JSON.parse(JSON.stringify(req.body.ubicacion)),false);
+              } catch(err){
+                console.log(err);
+                res.send({status:false,data:"Error interpretando la ubicación"});return}
+            }
             if(horario===undefined)
               res.send({status:false,data:"Formato de horario no valido, debe tener este formato {d:[{init:minutos,end:minutos}],l:[{init:minutos,end:minutos}],k:[{init:minutos,end:minutos}],m:[{init:minutos,end:minutos}],j:[{init:minutos,end:minutos}],v:[{init:minutos,end:minutos}],s:[{init:minutos,end:minutos}]}"})
             else if(ubicacion===undefined)
