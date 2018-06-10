@@ -35,3 +35,8 @@
     display: flex !important;
     justify-content: center !important;
 }
+.img-rest{
+    border-radius: 50%;
+    height: 65px;
+    margin: 1%;
+}
