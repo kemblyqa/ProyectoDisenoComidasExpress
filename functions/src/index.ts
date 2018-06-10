@@ -1037,93 +1037,50 @@ const getUser = functions.https.onRequest((req,res) => {
 })
 
 const getRests = functions.https.onRequest((req,res) => {
-
   if (req.method === "GET"){
-
     const email = req.query.email
-
     if(email === "" || isUndefined(email))
-
       res.send({status:false,data:'Email invalido'});
-
     else
-
       usuarios.doc(email)
-
       .get()
-
       .then(user =>{
-
         if(user.exists){
-
           const rests = user.data().restaurantes;
-
           const restsRich = [];
-
           let c = 0;
-
           let d = 0;
-
           for(let x = 0; rests[x]!==undefined;x++) {
-
             c++;
-
             restaurantes.doc(rests[x]).get()
-
             .then(restInfo => {
-
               console.log(restInfo.data())
-
               if (restInfo.exists){
-
                 restsRich[x] = restInfo.data();
-
                 restsRich[x].id = rests[x];
-
               } else {
-
                 restsRich[x] = {};
-
                 restsRich[x].id = rests[x];
-
               }
-if (restsRich[x].imagen===undefined)
-restsRich[x].imagen="https://cdn3.iconfinder.com/data/icons/food-drink/512/Dining-512.png"
-
+              if (restsRich[x].imagen===undefined)
+                restsRich[x].imagen="https://cdn3.iconfinder.com/data/icons/food-drink/512/Dining-512.png"
               d++;
-
               if(c===d){
-
                 res.send({status:true,data:restsRich})
-
               }
-
             })
-
             .catch(err => {
-
-              console.log(err);res.send({status:false,data:Error procesando restaurante ${rests[x]}});return;
-
+              console.log(err);res.send({status:false,data:`Error procesando restaurante ${rests[x]}`});return;
             })
-
           }
-
         }
-
         else
-
           res.send({status:true,data:{}});
-
       })
-
       .catch(error =>{
-
         console.log(error)
-
         res.send({status:false,data:"Error de consulta"})
-
       })
-
   }
   else
     res.send({status:false,data:"Este endPoint solo acepta GET"})
