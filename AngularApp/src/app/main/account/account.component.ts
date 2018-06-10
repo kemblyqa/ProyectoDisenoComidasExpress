@@ -178,7 +178,6 @@ export class AccountComponent implements OnInit {
   }
   /* open setUser modal */
   openSetUserModal() {
-    console.log('Modificando usuario');
     $('#setUser').modal({
       backdrop: 'static',
       keyboard: false,
