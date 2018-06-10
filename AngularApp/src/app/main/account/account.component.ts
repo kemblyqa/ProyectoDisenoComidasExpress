@@ -31,8 +31,15 @@ export class AccountComponent implements OnInit {
   private successMessage:any
   private failedMessage:any
   /* pagination */
-  private totalPages:number = 0 
+  private totalPages:number = 0
   private page:number = 1
+  private user: {email, photoURL, displayName, restaurantes, nombre, telefono} =
+    { email: '',
+      photoURL: '../../assets/icons/profile.png',
+      displayName: '',
+      restaurantes: [],
+      nombre: '',
+      telefono: ''};
 
   constructor(private _managerService: ManagerService) {
     this.manage = new ManagerModel()
@@ -113,7 +120,7 @@ export class AccountComponent implements OnInit {
   /* check start hour be less than finish hour */
   verifyHours(day:any){
     if(day.checked){
-      ((day.timeInit.hour * 60) + day.timeInit.minute) >= ((day.timeEnd.hour * 60) +  day.timeEnd.minute) 
+      ((day.timeInit.hour * 60) + day.timeInit.minute) >= ((day.timeEnd.hour * 60) +  day.timeEnd.minute)
       ? day.valid = false : day.valid = true
     }
   }
@@ -138,6 +145,15 @@ export class AccountComponent implements OnInit {
       }
     )
   }
+  /* open setUser modal */
+  openSetUserModal() {
+    console.log('Modificando usuario');
+    $('#setUser').modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    })
+  }
   /* open map modal */
   openMapModal(location:any){
     this.restLocation = [location._latitude, location._longitude]
@@ -145,6 +161,16 @@ export class AccountComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       show: true
+    })
+  }
+  modifyUser() {
+    this._managerService.setUser(this.user.email, this.user.nombre, this.user.telefono, undefined, true)
+    .subscribe(res => {
+      if (res.status) {
+        this.successMessageModal(res.data);
+      } else {
+        this.failedMessageModal(res.data);
+      }
     })
   }
   markPosition(e){

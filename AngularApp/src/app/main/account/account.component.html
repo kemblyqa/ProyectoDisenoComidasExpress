@@ -1,19 +1,19 @@
 <main role="main">
   <section class="jumbotron menu" style="margin: 0%; padding: 16px 8px 32px">
     <div class="container text-center">
-      <h5 style="margin-bottom: 6%" class="card-title font-subtitle">Restaurantes asociados a mi cuenta</h5> 
+      <h5 style="margin-bottom: 6%" class="card-title font-subtitle">Restaurantes asociados a mi cuenta</h5>
     </div>
     <button [disabled]="true" type="button" class="btn btn-dark">
-      <img class="img-user" src="/../assets/icons/noprofile.jpg" width="60px" alt="foto usuario">  Kembly Quiros
+      <img class="img-user" src={{user.photoURL}} width="60px" alt="foto usuario">  {{user.nombre}}
     </button>
-    <button type="button" class="center-icon-btn btn btn-info">
-      <i class="material-icons icon" ngbTooltip="Actualizar perfil">
+    <button type="button" (click)="openSetUserModal()" class="center-icon-btn btn btn-info">
+      <i class="material-icons icon" ngbTooltip="Modificar perfil">
         edit
       </i>
-    </button> 
+    </button>
   </section>
   <!-- restaurants list -->
-  <h5 *ngIf="restaurants?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5> 
+  <h5 *ngIf="restaurants?.length == 0" style="margin-top:3%; text-align: center" >No hay nada para mostrar</h5>
   <div *ngIf="restaurants?.length > 0" class="table-responsive">
     <table class="table table-hover">
       <thead>
@@ -56,30 +56,30 @@
         </div>
         <div class="modal-body">
           <div class="form-group offset-md-1">
-            <div class="form-group row"> 
-              <label class="col-sm-2 col-form-label">Nombre: </label> 
-              <div class="col-sm-9"> 
-                <input type="text" [(ngModel)]="restName" class="form-control" placeholder="Nombre..."> 
-              </div> 
-            </div> 
-            <div class="form-group row"> 
-              <label class="col-sm-2 col-form-label">Descripción: </label> 
-              <div class="col-sm-9"> 
-                <textarea class="form-control" maxlength="150" [(ngModel)]="restDescription" placeholder="Descripción..." rows="4"></textarea> 
-              </div> 
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Nombre: </label>
+              <div class="col-sm-9">
+                <input type="text" [(ngModel)]="restName" class="form-control" placeholder="Nombre...">
+              </div>
             </div>
-            <div class="form-group row"> 
-              <label class="col-sm-2 col-form-label">Empresa: </label> 
-              <div class="col-sm-9"> 
-                <input type="text" [(ngModel)]="restCompany" class="form-control" placeholder="Empresa..."> 
-              </div> 
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Descripción: </label>
+              <div class="col-sm-9">
+                <textarea class="form-control" maxlength="150" [(ngModel)]="restDescription" placeholder="Descripción..." rows="4"></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Empresa: </label>
+              <div class="col-sm-9">
+                <input type="text" [(ngModel)]="restCompany" class="form-control" placeholder="Empresa...">
+              </div>
             </div>
           </div>
           <div class="form-group">
             <ngb-accordion #acc="ngbAccordion">
               <ngb-panel title="Ubicación">
                 <ng-template ngbPanelContent>
-                  <label>Escoja la ubicación de su restaurante</label> 
+                  <label>Escoja la ubicación de su restaurante</label>
                   <div class="form-group">
                     <agm-map class="map" [latitude]="restLocation[0]"
                       [longitude]="restLocation[1]" (mapClick)="markPosition($event)" [zoom]="15">
@@ -117,8 +117,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
-          <button type="button" (click)="addRestaurant()" data-dismiss="modal" class="btn btn-info">Guardar</button> 
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" (click)="addRestaurant()" data-dismiss="modal" class="btn btn-info">Guardar</button>
         </div>
       </div>
     </div>
@@ -128,34 +128,34 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <img class="card-img-top" src="{{restImage}}" width="100px" data-holder-rendered="true"> 
+          <img class="card-img-top" src="{{restImage}}" width="100px" data-holder-rendered="true">
         </div>
         <div class="modal-body">
           <div class="form-group offset-md-1">
-            <div class="form-group row"> 
-              <label class="col-sm-2 col-form-label">Nombre: </label> 
-              <div class="col-sm-9"> 
-                <input type="text" [(ngModel)]="restName" class="form-control" placeholder="Nombre..."> 
-              </div> 
-            </div> 
-            <div class="form-group row"> 
-              <label class="col-sm-2 col-form-label">Descripción: </label> 
-              <div class="col-sm-9"> 
-                <textarea class="form-control" maxlength="150" [(ngModel)]="restDescription" placeholder="Descripción..." rows="4"></textarea> 
-              </div> 
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Nombre: </label>
+              <div class="col-sm-9">
+                <input type="text" [(ngModel)]="restName" class="form-control" placeholder="Nombre...">
+              </div>
             </div>
-            <div class="form-group row"> 
-              <label class="col-sm-2 col-form-label">Empresa: </label> 
-              <div class="col-sm-9"> 
-                <input type="text" [(ngModel)]="restCompany" class="form-control" placeholder="Empresa..."> 
-              </div> 
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Descripción: </label>
+              <div class="col-sm-9">
+                <textarea class="form-control" maxlength="150" [(ngModel)]="restDescription" placeholder="Descripción..." rows="4"></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Empresa: </label>
+              <div class="col-sm-9">
+                <input type="text" [(ngModel)]="restCompany" class="form-control" placeholder="Empresa...">
+              </div>
             </div>
           </div>
           <div class="form-group">
             <ngb-accordion #acc="ngbAccordion">
               <ngb-panel title="Ubicación">
                 <ng-template ngbPanelContent>
-                  <label>Escoja la ubicación de su restaurante</label> 
+                  <label>Escoja la ubicación de su restaurante</label>
                   <div class="form-group">
                     <agm-map class="map" [latitude]="restLocation[0]"
                       [longitude]="restLocation[1]" (mapClick)="markPosition($event)" [zoom]="15">
@@ -193,8 +193,36 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
-          <button type="button" (click)="addRestaurant()" data-dismiss="modal" class="btn btn-info">Guardar</button> 
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" (click)="addRestaurant()" data-dismiss="modal" class="btn btn-info">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modify user Modal -->
+  <div class="modal fade" id="setUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modificando {{user.email}}</h5>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row">
+            <label for="nSize" class="col-sm-6 col-form-label">Nombre</label>
+            <div class="col-sm-6">
+              <input type="text" [(ngModel)]="user.nombre" class="form-control" id="iNombre" placeholder="Nombre...">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="rSize" class="col-sm-6 col-form-label">Telefono</label>
+            <div class="col-sm-6">
+              <input type="text" [(ngModel)]="user.telefono" class="form-control" id="iTelefono" placeholder="Teléfono...">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="modifyUser()" data-dismiss="modal" class="acceptButton">Modificar</button>
+          <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
         </div>
       </div>
     </div>
