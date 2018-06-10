@@ -158,12 +158,13 @@ const filtroPlat = functions.https.onRequest((req, res) => {
         let ubicacion
         const rating = parseInt(req.query.rating)
         if(req.query.ubicacion!==undefined)
-        try{
-            ubicacion = genGeopoint(JSON.parse(req.query.ubicacion),false)
-        }
+        try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),false)}
         catch(e){
-            res.send({status:false,data:"Error interpretando la ubicacion"})
-            return
+          try{
+            ubicacion = genGeopoint(JSON.parse(JSON.stringify(req.body.ubicacion)),false);
+          } catch(err){
+            console.log(err);
+            res.send({status:false,data:"Error interpretando la ubicación"});return}
         }
         const rango = parseInt(req.query.rango)
         let pagina = parseInt(req.query.pagina)
@@ -364,10 +365,14 @@ const delPlatillo = functions.https.onRequest((req, res) => {
 const itemCarro = functions.https.onRequest((req, res) => {
     if (req.method==='POST'){
         let ubicacion
-        try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),true)}
+        try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),false)}
         catch(e){
-          console.log(e);
-          res.send({status:false,data:"Error interpretando la ubicación"});return}
+          try{
+            ubicacion = genGeopoint(JSON.parse(JSON.stringify(req.body.ubicacion)),false);
+          } catch(err){
+            console.log(err);
+            res.send({status:false,data:"Error interpretando la ubicación"});return}
+        }
         let fecha;
         try{
             fecha = new Date(isNaN(req.body.fecha)?req.body.fecha:parseInt(req.body.fecha))
@@ -424,10 +429,9 @@ const itemCarro = functions.https.onRequest((req, res) => {
                               .then(() => {
                                   res.send({status:true,data:"Añadido"})
                               })
-                              .catch(error =>
+                              .catch(errorr=>
                               {res.send({status:false,data:"Error de conexión en la base de datos"})})
                             }
-
                         }).catch(err=> {
                             console.log(err)
                             res.send({status:false,data:`Error obteniendo restaurante, Codigo de error:${JSON.stringify(err, Object.getOwnPropertyNames(err))}`})})
@@ -474,98 +478,52 @@ const delCarro = functions.https.onRequest((req, res) => {
 })
 
 const caja = functions.https.onRequest((req, res) => {
-
     if(req.method==='POST'){
-
         const email = req.body.email
-
         if(email===undefined)
-
             res.send({status:false,data:"Se requiere el campo email"})
-
         else{
-
             usuarios.doc(email).get().then(usuario =>{
-
                 if(usuario.exists){
-
                     const carrito = usuario.data().carrito
-
                     const save = (e,c)=>{usuarios.doc(e).set({carrito:c},{merge:true})}
-
                     const keys = Object.keys(carrito)
-
                     if(keys.length===0)
-
                       res.send({status:true,data:"Tu carrito ya estaba vacío"})
-
                     else
-
                       keys.forEach(item=>{
-
                           platillos.doc(item).get().then(platillo=>{
-
                               if(platillo.exists){
-
                                   pedidos.add({email:email,
-platillo:item,
-
-                                      restaurante:platillo.data().restaurante,
-
-                                      ubicacion:carrito[item].ubicacion,
-
-                                      categoria:platillo.data().categoria,
-
-                                      descripcion:platillo.data().descripcion,
-
-                                      nombre:platillo.data().nombre,
-
-                                      precio:platillo.data().precio,
-
-                                      fecha:carrito[item].fecha,
-
-                                      cantidad:carrito[item].cantidad
-
-                                      ,estado:{proceso:"pendiente"}}).then(ref=>{
-
-                                      delete carrito[item]
-
-                                      if(Object.keys(carrito).length===0){
-
-                                          save(email,carrito)
-
-                                          res.send({status:true,data:"Carrito procesado"})
-
-                                          return
-
-                                      }
-
+                                    platillo:item,
+                                    restaurante:platillo.data().restaurante,
+                                    ubicacion:carrito[item].ubicacion,
+                                    categoria:platillo.data().categoria,
+                                    descripcion:platillo.data().descripcion,
+                                    nombre:platillo.data().nombre,
+                                    precio:platillo.data().precio,
+                                    fecha:carrito[item].fecha,
+                                    cantidad:carrito[item].cantidad
+                                    ,estado:{proceso:"pendiente"}}).then(ref=>{
+                                    delete carrito[item]
+                                    if(Object.keys(carrito).length===0){
+                                        save(email,carrito)
+                                        res.send({status:true,data:"Carrito procesado"})
+                                        return
+                                    }
                                   }).catch(err => {save(email,carrito);res.send({status:false,data:"Error procesando un pedido"});return})
-
                               }
-
                               else {save(email,carrito);res.send({status:false,data:"Uno de los platillos del carrito no existe"})}
-
                           }).catch(err => {save(email,carrito);res.send({status:false,data:"Error procesando un pedido"})})
-
                       })
-
                 }
-
                 else
-
                     res.send({status:false,data:"El usuario solicitado no existe"})
-
             })
-
         }
-
     }
-
     else
-
         res.send({status:false,data:'Metodo invalido'})
-
 })
 
 const filtroPedidos = functions.https.onRequest((req, res) => {
@@ -877,7 +835,13 @@ const modRestaurante = functions.https.onRequest((req, res) => {
             res.send({status:false,data:"Faltan Datos"})
         else{
             try{ubicacion = genGeopoint(JSON.parse(req.body.ubicacion),false)}
-            catch(e){res.send({status:false,data:"Error interpretando la ubicación"});return}
+            catch(e){
+              try{
+                ubicacion = genGeopoint(JSON.parse(JSON.stringify(req.body.ubicacion)),false);
+              } catch(err){
+                console.log(err);
+                res.send({status:false,data:"Error interpretando la ubicación"});return}
+            }
             if(horario===undefined)
               res.send({status:false,data:"Formato de horario no valido, debe tener este formato {d:[{init:minutos,end:minutos}],l:[{init:minutos,end:minutos}],k:[{init:minutos,end:minutos}],m:[{init:minutos,end:minutos}],j:[{init:minutos,end:minutos}],v:[{init:minutos,end:minutos}],s:[{init:minutos,end:minutos}]}"})
             else if(ubicacion===undefined)
@@ -1088,14 +1052,11 @@ const getRests = functions.https.onRequest((req,res) => {
 
 app.get('/api/filtroPlat', filtroPlat);
 app.get('/api/categoria', categoria);
-app.post('/api/addPlatillo', addPlatillo);
-app.post('/api/modPlatillo', modPlatillo);
-app.post('/api/delPlatillo', delPlatillo);
-app.post('/api/itemCarro', itemCarro);
-app.post('/api/delCarro', delCarro);
-app.post('/api/caja', caja);
 app.get('/api/filtroPedidos', filtroPedidos);
 app.get('/api/verCarrito', verCarrito);
+app.get('/api/getUser', getUser);
+app.get('/api/getRests', getRests);
+app.get('/api/genGeopoint', (req,res) => {res.send({status:true,data:genGeopoint([parseInt(req.query.lat),parseInt(req.query.lng)],true)})});
 app.post('/api/setEstado', setEstado);
 app.post('/api/subirImagenPlat', subirImagenPlat);
 app.post('/api/setUsuario', setUsuario);
@@ -1105,7 +1066,11 @@ app.post('/api/modRestaurante', modRestaurante);
 app.post('/api/subirImagenRest', subirImagenRest);
 app.post('/api/calificar', calificar);
 app.post('/api/limpiarPedidos', limpiarPedidos);
-app.get('/api/getUser', getUser);
-app.get('/api/getRests', getRests);
-app.get('/api/genGeopoint', (req,res) => {res.send({status:true,data:genGeopoint([parseInt(req.query.lat),parseInt(req.query.lng)],true)})});
+app.post('/api/addPlatillo', addPlatillo);
+app.post('/api/modPlatillo', modPlatillo);
+app.post('/api/delPlatillo', delPlatillo);
+app.post('/api/itemCarro', itemCarro);
+app.post('/api/delCarro', delCarro);
+app.post('/api/caja', caja);
+
 export const api = functions.https.onRequest(app);
