@@ -18,6 +18,7 @@ declare var $: any;
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  /* storage */
   private user: {email, photoURL, displayName, restaurantes, nombre, telefono} =
     { email: '',
       photoURL: '../../assets/icons/profile.png',
@@ -25,10 +26,10 @@ export class LoginComponent implements OnInit {
       restaurantes: [],
       nombre: '',
       telefono: ''};
+  private defaultRestaurant: {id, name} = {id: "",name:""}
   private failedMessage: String;
   private restLocation: Array<any> = [10.362167730785652, -84.51030575767209];
-  constructor(private ref: ChangeDetectorRef, private _router: Router, private _managerService: ManagerService) {
-  }
+  constructor(private ref: ChangeDetectorRef, private _router: Router, private _managerService: ManagerService) {}
 
   ngOnInit() {
   }
@@ -86,7 +87,10 @@ export class LoginComponent implements OnInit {
             this.user.nombre = res.data.nombre;
             this.user.restaurantes = res.data.restaurantes;
             this.user.telefono = res.data.telefono;
+            this.defaultRestaurant.id = "null"
+            this.defaultRestaurant.name = "(No se ha escogido el restaurante)"
             sessionStorage.setItem('user', JSON.stringify(this.user));
+            sessionStorage.setItem('currentRestaurant',JSON.stringify(this.defaultRestaurant))
             this._router.navigate(['dashboard']);
           } else {
             this.user.nombre = this.user.displayName;

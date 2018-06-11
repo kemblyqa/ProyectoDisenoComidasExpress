@@ -7,18 +7,18 @@
         </i>
       <div ngbDropdownMenu>
         <div *ngFor="let o of orderOpts">
-          <button (click)="otherOptions(o.opt)" class="dropdown-item">{{o.item}}</button>
+          <button (click)="otherOptions(o.opt)" [disabled]="defaultRestaurant.id == 'null'" class="dropdown-item">{{o.item}}</button>
         </div> 
       </div>
     </div>
     <div class="container text-center">
       <h5 class="card-title font-subtitle">Lista de pedidos</h5>
-      <h6 class="card-title font-title">{{restName}}</h6>
+      <h6 class="card-title font-title">{{defaultRestaurant.name}}</h6>
       <label style="margin-top: 6%" class="col col-form-label font-normal-sub">Tipos de pedidos</label>  
       <div class="centerDiv">
         <ul class="nav justify-content-center" role="tablist">
           <li style="margin: 0% 1%" *ngFor="let item of orderItems">
-            <button class="btn btn-info" data-toggle="pill" (click)="goTo(item.href)" role="tab">{{item.item}}</button>
+            <button class="btn btn-info" [disabled]="defaultRestaurant.id == 'null'" data-toggle="pill" (click)="goTo(item.href)" role="tab">{{item.item}}</button>
           </li>
         </ul>
       </div>

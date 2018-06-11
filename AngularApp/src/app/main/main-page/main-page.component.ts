@@ -12,6 +12,7 @@ export class MainPageComponent implements OnInit {
   /* models and nav items */
   manage: ManagerModel;
   navItems: Array<any>;
+  /* storage */
   private user: {email, photoURL, displayName, restaurantes, nombre, telefono} =
     { email: '',
       photoURL: '../../assets/icons/profile.png',
@@ -21,6 +22,7 @@ export class MainPageComponent implements OnInit {
       telefono: ''};
   ngOnInit() {}
   constructor(private router: Router) {
+    // storage to keep in
     this.user = JSON.parse(sessionStorage.getItem('user'))
     if (this.user === null) {
       this.router.navigate(['login']);

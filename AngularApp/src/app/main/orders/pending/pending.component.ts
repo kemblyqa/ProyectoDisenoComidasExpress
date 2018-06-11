@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ManagerModel } from '../../../models/manager.model';
 import { Pedido } from '../../../models/manager';
@@ -16,9 +17,6 @@ export class PendingComponent {
   private successMessage:string
   private failedMessage:string
   private declineOrderId:any
-  /* restaurante id y nombre */ 
-  private restName:string = "Soda El Mercadito" 
-  private restId:string = "NYJdrAl83G9dNWpF6z4J" 
   /* decline reasons */
   private declineReason:string
   /* headers */
@@ -33,7 +31,21 @@ export class PendingComponent {
   lng: number = -84.51030575767209
   /* interval */
   private ordersInterval:any
-  constructor(private _managerService:ManagerService) {
+  /* storage */
+  private user: {email, photoURL, displayName, restaurantes, nombre, telefono} =
+    { email: '',
+      photoURL: '../../assets/icons/profile.png',
+      displayName: '',
+      restaurantes: [],
+      nombre: '',
+      telefono: ''};
+      private defaultRestaurant: {id, name} = {id: "",name:""}
+  constructor(private _managerService:ManagerService, private _router:Router) {
+    this.user = JSON.parse(sessionStorage.getItem('user'))
+    if (this.user === null) {
+      this._router.navigate(['login']);
+    }
+    this.defaultRestaurant = JSON.parse(sessionStorage.getItem('currentRestaurant'))
     this.manage = new ManagerModel()
     this.headers = this.manage.getPendingTableHeaders()
     this.getOrders()
@@ -90,7 +102,7 @@ export class PendingComponent {
   }
   /* get pending orders */
   getOrders(){
-    this._managerService.getCustomOrders("keyAuto","pendiente")
+    this._managerService.getCustomOrders(this.defaultRestaurant.id,"pendiente")
     .subscribe(
       success => {
         if(success.status){

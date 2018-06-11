@@ -24,10 +24,10 @@
       <tbody>
         <tr *ngFor="let restKey of restaurantsKeys" scope="row">
           <td><img class="img-rest" src="{{restaurants[restKey].imagen}}" width="70px" data-holder-rendered="true"></td>
-          <td>{{restaurants[restKey].nombre}}</td>
-          <td>{{restaurants[restKey].empresa}}</td>
-          <td>{{restaurants[restKey].descripcion}}</td>
-          <td>
+          <td style="vertical-align: middle">{{restaurants[restKey].nombre}}</td>
+          <td style="vertical-align: middle">{{restaurants[restKey].empresa}}</td>
+          <td style="vertical-align: middle">{{restaurants[restKey].descripcion}}</td>
+          <td style="vertical-align: middle">
             <button (click)="openMapModal(restaurants[restKey].ubicacion)"
               class="center-icon-btn btn-success" ngbTooltip="Abrir en mapa">
                 <i class="material-icons icon">
@@ -35,7 +35,7 @@
                 </i>
             </button>
           </td>
-          <td>
+          <td style="vertical-align: middle">
             <ng-template #popContent let-schedule="schedule">
               <div *ngFor="let dayS of showSchedule(restaurants[restKey].horario)">
                 {{dayS.day}} de {{dayS.begin.hour}}:{{dayS.begin.min}}{{dayS.begin.meridian}} a {{dayS.finish.hour}}:{{dayS.finish.min}}{{dayS.finish.meridian}}
@@ -47,15 +47,16 @@
               </i>
             </button>
           </td>
-          <td>
-            <button (click)="editRestaurantModal(restaurants[restKey], restKey)"
+          <td style="vertical-align: middle">
+            <button (click)="editRestaurantModal(restaurants[restKey])"
               class="center-icon-btn btn-warning" ngbTooltip="Editar restaurante">
               <i class="material-icons icon">  
                 edit
               </i>
             </button>
-            <button (click)="predetermineRest(restKey)"
-              class="center-icon-btn btn-set-restaurant" ngbTooltip="Escoger como restaurante actual">
+            <button (click)="predetermineRest(restaurants[restKey])" type="button"
+              class="center-icon-btn" ngbTooltip="Escoger como restaurante actual" 
+              [ngClass]="{'btn-current-restaurant':!isDefault(restaurants[restKey]),'btn-list-restaurant':isDefault(restaurants[restKey])}">
               <i class="material-icons icon">  
                 settings
               </i>

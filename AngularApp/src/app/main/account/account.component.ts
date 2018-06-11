@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Restaurante } from './../../models/manager';
 import { Component, OnInit } from '@angular/core';
 import { ManagerModel } from '../../models/manager.model';
@@ -38,6 +39,7 @@ export class AccountComponent implements OnInit {
   private page:number = 1
   /* image */
   isImgOptsCollapsed:boolean = false
+  /* storage */
   private user: {email, photoURL, displayName, restaurantes, nombre, telefono} =
     { email: '',
       photoURL: '../../assets/icons/profile.png',
@@ -45,12 +47,17 @@ export class AccountComponent implements OnInit {
       restaurantes: [],
       nombre: '',
       telefono: ''};
-
-  constructor(private _managerService: ManagerService) {
+    private defaultRestaurant: {id, name} = {id: "",name:""}
+  constructor(private _managerService: ManagerService, private _router:Router) {
     this.manage = new ManagerModel()
     this.restTableHeaders = this.manage.getRestaurantsTableHeaders()
     this.week = this.manage.cleanWeek()
+    // storage to keep in
     this.user = JSON.parse(sessionStorage.getItem('user'))
+    if (this.user === null) {
+      this._router.navigate(['login']);
+    }
+    this.defaultRestaurant = JSON.parse(sessionStorage.getItem('currentRestaurant'))
     this.getRestaurants()
   }
   ngOnInit() {}
@@ -80,7 +87,6 @@ export class AccountComponent implements OnInit {
     this.restDescription = undefined
     this.restCompany = undefined
     this.restLocation = [10.362167730785652,-84.51030575767209]
-    // this.restSchedule = {"l":[],"k":[],"m":[],"j":[],"v":[],"s":[],"d":[]}
     $("#modalAddRest").modal({
       backdrop: 'static',
       keyboard: false,
@@ -184,6 +190,7 @@ export class AccountComponent implements OnInit {
     .subscribe(
       success => {
         success.status ? this.successMessageModal(success.data) : this.failedMessageModal(success.data)
+        this.getRestaurants()
       }
     )
   }
@@ -256,12 +263,17 @@ export class AccountComponent implements OnInit {
   switchImg(){
     this.restImage = null
   }
-   /* get restaurant object from list by id */
-   getIdPlatillo(obj:Restaurante):Restaurante {
-    return this.restaurants.find(plate => plate.id == obj.id)
-  }
   /* set restaurant as predetermined */
-  predetermineRest(restId:string){
-    sessionStorage.setItem('currentRestaurant', restId);
+  predetermineRest(rest:Restaurante){
+    this.defaultRestaurant = {
+      id: rest.id,
+      name: rest.nombre
+    }
+    sessionStorage.setItem('currentRestaurant', JSON.stringify(this.defaultRestaurant));
+    this.getRestaurants()
+  }
+
+  isDefault(rest:Restaurante){
+    return this.defaultRestaurant.id == rest.id ? true : false
   }
 }
