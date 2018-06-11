@@ -20,6 +20,7 @@ const ENDPOINT_ADDRESTAURANT = "addRestaurante"
 const ENDPOINT_MODRESTAURANT = "modRestaurante"
 const ENDPOINT_SET_USER = "setUsuario"
 const ENDPOINT_GETRESTS = "getRests"
+const ENDPOINT_ANDROID = "android"
 @Injectable()
 export class ManagerService {
     //url develop mode
@@ -185,7 +186,12 @@ export class ManagerService {
         return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_GETRESTS}`,{
             params:{
                 email: email
-            }  
+            }
         })
+    }
+    /* get all restaurants by user id */
+    public android() {
+        return this._service.get<StatusData>(`${this.apiUrl}${ENDPOINT_ANDROID}`, {
+        });
     }
 }

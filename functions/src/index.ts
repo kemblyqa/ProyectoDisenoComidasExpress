@@ -1077,6 +1077,15 @@ app.get('/api/verCarrito', verCarrito);
 app.get('/api/getUser', getUser);
 app.get('/api/getRests', getRests);
 app.get('/api/genGeopoint', (req,res) => {res.send({status:true,data:genGeopoint([parseInt(req.query.lat),parseInt(req.query.lng)],true)})});
+app.get('/api/android',(req,res) => {
+  db.collection('general').doc('android').get()
+  .then(link => {
+    if(link.exists)
+      res.send({status:true,data:link.data().download_link});
+    else{
+      res.send({status:true,data:'https://designexpresstec.firebaseapp.com'})}})
+  .catch(err => {
+    res.send({status:true,data:'https://designexpresstec.firebaseapp.com'})})});
 app.post('/api/setEstado', setEstado);
 app.post('/api/subirImagenPlat', subirImagenPlat);
 app.post('/api/setUsuario', setUsuario);

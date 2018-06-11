@@ -125,6 +125,12 @@ export class LoginComponent implements OnInit {
       show: true
     });
   }
+  downloadAPP() {
+    this._managerService.android()
+    .subscribe(res => {
+      this._router.navigateByUrl(res.data);
+    });
+  }
   /* open map modal */
   openMapModal() {
     $('#modalUserMap').modal({
