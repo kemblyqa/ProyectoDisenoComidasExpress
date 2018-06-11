@@ -10,14 +10,14 @@
             <button type="button" class="btn btn-primary" (click)="login()" id="LoginBtn">Iniciar Sesión</button>
           </div>
           <div class="centerDiv">
-            <button type="button" class="btn btn-success" (click)="enter()" hidden id="EnterBtn"  style="white-space: pre;">Iniciar sesión como
+            <button type="button" class="btn btn-success" hidden (click)="enter()" id="EnterBtn"  style="white-space: pre;">Iniciar sesión como
 {{user.displayName}}</button>
           </div>
           <div class="centerDiv">
-            <button type="button" class="btn btn-link" hidden (click)="logout()" hidden id="LogoutBtn">Cerrar sesión</button>
+            <button type="button" class="btn btn-link" hidden (click)="logout()" id="LogoutBtn">Cerrar sesión</button>
           </div>
           <div class="centerDiv">
-            <button type="button" class="btn btn-info" hidden (click)="downloadAPP()" hidden id="LogoutBtn">Descarga la APP</button>
+            <button type="button" class="btn btn-info" (click)="downloadAPP()" id="LogoutBtn" style="margin-top: 5%">Descarga la APP de cliente</button>
           </div>
         </div>
       </div>

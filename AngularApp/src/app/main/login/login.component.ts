@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
       restaurantes: [],
       nombre: '',
       telefono: ''};
-  private defaultRestaurant: {id, name} = {id: "",name:""}
+  private defaultRestaurant: {id, name} = {id: '', name: ''};
   private failedMessage: String;
   private restLocation: Array<any> = [10.362167730785652, -84.51030575767209];
   constructor(private ref: ChangeDetectorRef, private _router: Router, private _managerService: ManagerService) {}
@@ -87,11 +87,11 @@ export class LoginComponent implements OnInit {
             this.user.nombre = res.data.nombre;
             this.user.restaurantes = res.data.restaurantes;
             this.user.telefono = res.data.telefono;
-            this.defaultRestaurant.id = "null"
-            this.defaultRestaurant.name = "(No se ha escogido el restaurante)"
+            this.defaultRestaurant.id = 'null';
+            this.defaultRestaurant.name = '(No se ha escogido el restaurante)';
             sessionStorage.setItem('user', JSON.stringify(this.user));
-            sessionStorage.setItem('currentRestaurant',JSON.stringify(this.defaultRestaurant))
-            this._router.navigate(['dashboard']);
+            sessionStorage.setItem('currentRestaurant', JSON.stringify(this.defaultRestaurant));
+            this._router.navigate(['dashboard/cuenta']);
           } else {
             this.user.nombre = this.user.displayName;
             $('#register').modal({
@@ -128,7 +128,7 @@ export class LoginComponent implements OnInit {
   downloadAPP() {
     this._managerService.android()
     .subscribe(res => {
-      this._router.navigateByUrl(res.data);
+      window.location.href = res.data;
     });
   }
   /* open map modal */
