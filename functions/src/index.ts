@@ -744,6 +744,10 @@ const setUsuario = functions.https.onRequest((req, res) => {
                             usuario.telefono = req.body.telefono;
                           if(ubicacion!==undefined)
                             usuario.ubicacion = ubicacion;
+						  if(!snapshot.exists){
+							  usuario.carrito = {};
+							  usuario.restaurantes = [];
+						  }
                           usuarios.doc(req.body.email).set(usuario,{merge:true})
                           res.send({status:true,data:`Bienvenido${req.body.override?' de vuelta':''}, ${req.body.nombre}` })
                         }catch(e){res.send({status:false,data:`Error insertando usuario: ${JSON.stringify(e)}`})}

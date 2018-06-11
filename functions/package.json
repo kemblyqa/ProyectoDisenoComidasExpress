@@ -12,6 +12,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "@google-cloud/firestore": "^0.14.1",
+    "@google-cloud/storage": "^1.7.0",
     "async": "^2.6.1",
     "child-process-promise": "^2.2.1",
     "cors": "^2.8.4",
