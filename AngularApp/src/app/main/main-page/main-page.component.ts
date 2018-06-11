@@ -34,4 +34,7 @@ export class MainPageComponent implements OnInit {
   goTo(path: any) {
     this.router.navigate([`dashboard${path}`]);
   }
+  backToLogin(){
+    this.router.navigateByUrl('/login');
+  }
 }
