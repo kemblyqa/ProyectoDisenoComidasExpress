@@ -35,14 +35,24 @@ export class OrdersComponent implements OnInit {
   /* pagination */
   private page:number = 1
   private totalPages:number = 0
-  private restName:string = "Soda el Mercadito"
   /* gmaps api */
   lat: number = 10.362167730785652
   lng: number = -84.51030575767209
-
-  /* subscription to orders */
-
+  /* storage */
+  private user: {email, photoURL, displayName, restaurantes, nombre, telefono} =
+    { email: '',
+      photoURL: '../../assets/icons/profile.png',
+      displayName: '',
+      restaurantes: [],
+      nombre: '',
+      telefono: ''};
+      private defaultRestaurant: {id, name} = {id: "",name:""}
   constructor(private _managerService: ManagerService, private _router: Router, private _pendingOrders: ExpireOrderService) {
+    this.user = JSON.parse(sessionStorage.getItem('user'))
+    if (this.user === null) {
+      this._router.navigate(['login']);
+    }
+    this.defaultRestaurant = JSON.parse(sessionStorage.getItem('currentRestaurant'))
     this.manage = new ManagerModel()
     this.orderItems = this.manage.getOrderItems()
     this.orderOpts = this.manage.getOrderOptions()
@@ -121,7 +131,7 @@ export class OrdersComponent implements OnInit {
   }
   /* get declined orders */
   getDeclinedOrders(){
-    this._managerService.getCustomOrders("keyAuto","rechazado")
+    this._managerService.getCustomOrders(this.defaultRestaurant.id,"rechazado")
     .subscribe(
       success => {
         if(success.status){
@@ -135,7 +145,7 @@ export class OrdersComponent implements OnInit {
   }
   /* get expired orders */
   getFinishedOrders(){
-    this._managerService.getCustomOrders("keyAuto","finalizado")
+    this._managerService.getCustomOrders(this.defaultRestaurant.id,"finalizado")
     .subscribe(
       success => {
         if(success.status){
@@ -154,7 +164,7 @@ export class OrdersComponent implements OnInit {
   }
   /* delete expired orders */
   deleteExpiredOrders(){
-    this._managerService.deleteExpiredOrder("keyAuto")
+    this._managerService.deleteExpiredOrder(this.defaultRestaurant.id)
     .subscribe(
       success => {
         success.status ? this.successMessageModal(success.data) : this.failedMessageModal(success.data)

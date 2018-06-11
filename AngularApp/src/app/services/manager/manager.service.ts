@@ -12,10 +12,12 @@ const ENDPOINT_MODPLATILLO = "modPlatillo"
 const ENDPOINT_DELPLATILLO = "delPlatillo"
 const ENDPOINT_ALLORDERS = "filtroPedidos"
 const ENDPOINT_CHANGESTATUS = "setEstado"
-const ENDPOINT_IMAGE = "subirImagenPlat"
+const ENDPOINT_IMAGE_PLATILLO = "subirImagenPlat"
+const ENDPOINT_IMAGE_RESTAURANT = "subirImagenRest"
 const ENDPOINT_DELETE_EXPIRED = "limpiarPedidos"
 const ENDPOINT_GET_USER = "getUser"
 const ENDPOINT_ADDRESTAURANT = "addRestaurante"
+const ENDPOINT_MODRESTAURANT = "modRestaurante"
 const ENDPOINT_SET_USER = "setUsuario"
 const ENDPOINT_GETRESTS = "getRests"
 
@@ -102,16 +104,23 @@ export class ManagerService {
         })
     }
     /* uploads a image */
-    public uploadBase64Image(id:any, base64Img:any){
-        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_IMAGE}`,{
+    public uploadBase64ImagePlatillo(id:any, base64Img:any){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_IMAGE_PLATILLO}`,{
             keyPlat: id,
             img: base64Img
         })
     }
-    public uploadUrlImage(id:any, urlImg:any){
-        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_IMAGE}`,{
+    public uploadUrlImagePlatillo(id:any, urlImg:any){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_IMAGE_PLATILLO}`,{
             keyPlat: id,
             url:urlImg
+        })
+    }
+    /* uploads a image */
+    public uploadBase64ImageRestaurant(id:any, base64Img:any){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_IMAGE_RESTAURANT}`,{
+            keyRest: id,
+            img: base64Img
         })
     }
     /* deletes a expired order */
@@ -138,6 +147,18 @@ export class ManagerService {
             ubicacion: location,
             horario: JSON.stringify(schedule),
             email: email
+        })
+    }
+    /* add restaurant */
+    public modRestaurant(name:string, company:string, description:string, location:any, schedule:any, email:string, restId:string){
+        return this._service.post<StatusData>(`${this.apiUrl}${ENDPOINT_MODRESTAURANT}`,{
+            nombre: name,
+            empresa: company,
+            descripcion: description,
+            ubicacion: location,
+            horario: JSON.stringify(schedule),
+            email: email,
+            keyRest: restId
         })
     }
     /* set an user by id */

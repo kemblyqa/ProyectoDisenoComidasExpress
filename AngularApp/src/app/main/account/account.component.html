@@ -23,10 +23,11 @@
       </thead>
       <tbody>
         <tr *ngFor="let restKey of restaurantsKeys" scope="row">
-          <td>{{restaurants[restKey].nombre}}</td>
-          <td>{{restaurants[restKey].empresa}}</td>
-          <td>{{restaurants[restKey].descripcion}}</td>
-          <td>
+          <td><img class="img-rest" src="{{restaurants[restKey].imagen}}" width="70px" data-holder-rendered="true"></td>
+          <td style="vertical-align: middle">{{restaurants[restKey].nombre}}</td>
+          <td style="vertical-align: middle">{{restaurants[restKey].empresa}}</td>
+          <td style="vertical-align: middle">{{restaurants[restKey].descripcion}}</td>
+          <td style="vertical-align: middle">
             <button (click)="openMapModal(restaurants[restKey].ubicacion)"
               class="center-icon-btn btn-success" ngbTooltip="Abrir en mapa">
                 <i class="material-icons icon">
@@ -34,7 +35,7 @@
                 </i>
             </button>
           </td>
-          <td>
+          <td style="vertical-align: middle">
             <ng-template #popContent let-schedule="schedule">
               <div *ngFor="let dayS of showSchedule(restaurants[restKey].horario)">
                 {{dayS.day}} de {{dayS.begin.hour}}:{{dayS.begin.min}}{{dayS.begin.meridian}} a {{dayS.finish.hour}}:{{dayS.finish.min}}{{dayS.finish.meridian}}
@@ -46,15 +47,16 @@
               </i>
             </button>
           </td>
-          <td>
+          <td style="vertical-align: middle">
             <button (click)="editRestaurantModal(restaurants[restKey])"
               class="center-icon-btn btn-warning" ngbTooltip="Editar restaurante">
               <i class="material-icons icon">  
                 edit
               </i>
             </button>
-            <button (click)="predetermineRest(restaurants[restKey])"
-              class="center-icon-btn btn-set-restaurant" ngbTooltip="Escoger como restaurante actual">
+            <button (click)="predetermineRest(restaurants[restKey])" type="button"
+              class="center-icon-btn" ngbTooltip="Escoger como restaurante actual" 
+              [ngClass]="{'btn-current-restaurant':!isDefault(restaurants[restKey]),'btn-list-restaurant':isDefault(restaurants[restKey])}">
               <i class="material-icons icon">  
                 settings
               </i>
@@ -145,7 +147,7 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <!-- <img class="card-img-top" src="{{restImage}}" width="100px" data-holder-rendered="true"> -->
+          <img class="card-img-top img-modal" src="{{restImage}}" data-holder-rendered="true">
         </div>
         <div class="modal-body">
           <div class="form-group offset-md-1">
@@ -175,25 +177,7 @@
             </button>
           </div>
           <div id="collapseBtn" [ngbCollapse]="isImgOptsCollapsed">
-            <div class="form-group justify-content-center">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" (change)="switchImg()" [(ngModel)]="imgOpt" name="imageOpts" id="upImg" [value]="true">
-                <label class="form-check-label" for="upImg">Subir imagen</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" (change)="switchImg()" [(ngModel)]="imgOpt" name="imageOpts" id="lnkImg" [value]="false">
-                <label class="form-check-label" for="lnkImg">Link a imagen</label>
-              </div>
-            </div>
-            <div *ngIf="!imgOpt" class="form-group row"> 
-              <div class="input-group col-sm-11">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Link </span>
-                </div>
-                <input type="text" [(ngModel)]="restImage" class="form-control" id="imageP" placeholder="Link nueva imagen..." required> 
-              </div>
-            </div> 
-            <div *ngIf="imgOpt" class="form-group row">
+            <div class="form-group row">
               <div class="input-group col-sm-11">
                 <label for="imagenC">Elija una imagen de la computadora</label>
                 <input (change)="onFileChange($event)" type="file" accept=".jpg, .jpeg" class="form-control-file" id="imagenC" required>
@@ -243,7 +227,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="button" (click)="addRestaurant()" data-dismiss="modal" class="btn btn-info">Guardar</button>
+          <button type="button" (click)="modifyRestaurant()" data-dismiss="modal" class="btn btn-info">Guardar</button>
         </div>
       </div>
     </div>

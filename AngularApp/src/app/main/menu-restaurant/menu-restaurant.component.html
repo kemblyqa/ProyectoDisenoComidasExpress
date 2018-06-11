@@ -3,13 +3,14 @@
   <section class="jumbotron menu" style="margin: 0%; padding: 16px 8px 64px">
     <div class="container text-center">
       <h5 class="card-title font-subtitle">Menú de</h5>
-      <h6 class="card-title font-title">{{restName}}</h6>
+      <h6 class="card-title font-title">{{defaultRestaurant.name}}</h6>
       <label style="margin-top: 6%" class="col col-form-label font-normal-sub">Observar platillos por categoría</label>  
       <div class="form-group row">
         <div class="col-md-4 offset-md-4">
           <select id="selectedCategory" [(ngModel)]="catSelected" (change)="updateMenu()" class="form-control opacity">
             <option *ngFor="let cat of categories"
-              [value]="cat">{{cat}}</option> 
+              [value]="cat">{{cat}}</option>
+            <option *ngIf="categories?.length == 0">Vacío</option>   
           </select>
         </div>
       </div>
@@ -60,7 +61,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <img class="card-img-top" src="{{imagePlate}}" width="100px" data-holder-rendered="true"> 
+          <img class="card-img-top" src="{{imagePlate}}" data-holder-rendered="true"> 
         </div>
         <div class="modal-body offset-md-1">
           <div class="form-group row"> 
@@ -303,7 +304,7 @@
   </div>
   <!-- add plate -->
   <div style="text-align: right;">
-    <button type="button" (click)="addPlatModal()" class="btn btn-danger btn-add float">
+    <button [disabled]="defaultRestaurant.id == 'null'" type="button" (click)="addPlatModal()" class="btn btn-danger btn-add float">
       <i class="material-icons">
       add</i>
     </button>

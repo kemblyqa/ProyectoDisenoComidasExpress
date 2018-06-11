@@ -65,7 +65,7 @@ export class ManagerModel {
             "Cliente", "Comentario", "Estrellas"
         ]
         this.headersRestaurants = [
-            "Nombre", "Empresa", "Descripción", "Ubicación", "Ver horario", "Más acciones"
+            "Imagen","Nombre", "Empresa", "Descripción", "Ubicación", "Ver horario", "Más acciones"
         ]
         this.weekDays = [
             {

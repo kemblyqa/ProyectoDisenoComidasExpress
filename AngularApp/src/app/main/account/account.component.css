@@ -26,7 +26,12 @@
     color: white;
 }
 
-.btn-set-restaurant {
+.btn-current-restaurant {
+    background-color: gray;
+    color: white;
+}
+
+.btn-list-restaurant {
     background-color: blue;
     color: white;
 }
@@ -34,4 +39,9 @@
 .justify-content-center {
     display: flex !important;
     justify-content: center !important;
+}
+.img-rest{
+    border-radius: 50%;
+    height: 65px;
+    margin: 1%;
 }

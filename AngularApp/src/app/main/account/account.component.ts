@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Restaurante } from './../../models/manager';
 import { Component, OnInit } from '@angular/core';
 import { ManagerModel } from '../../models/manager.model';
@@ -26,6 +27,7 @@ export class AccountComponent implements OnInit {
   private restaurantsKeys:Array<any>
   private listScheduleShow:Array<any> = []
   /* model */
+  private currentRest:string
   private restTableHeaders:Array<any>
   private manage:ManagerModel
   private weekDays:Array<any> = [{id:"l",day:"Lunes"},{id:"k",day:"Martes"},{id:"m",day:"Miércoles"},{id:"j",day:"Jueves"},{id:"v",day:"Viernes"},{id:"s",day:"Sábado"},{id:"d",day:"Domingo"}]
@@ -36,8 +38,8 @@ export class AccountComponent implements OnInit {
   private totalPages:number = 0
   private page:number = 1
   /* image */
-  imgOpt:boolean = true
   isImgOptsCollapsed:boolean = false
+  /* storage */
   private user: {email, photoURL, displayName, restaurantes, nombre, telefono} =
     { email: '',
       photoURL: '../../assets/icons/profile.png',
@@ -45,12 +47,17 @@ export class AccountComponent implements OnInit {
       restaurantes: [],
       nombre: '',
       telefono: ''};
-
-  constructor(private _managerService: ManagerService) {
+    private defaultRestaurant: {id, name} = {id: "",name:""}
+  constructor(private _managerService: ManagerService, private _router:Router) {
     this.manage = new ManagerModel()
     this.restTableHeaders = this.manage.getRestaurantsTableHeaders()
     this.week = this.manage.cleanWeek()
+    // storage to keep in
     this.user = JSON.parse(sessionStorage.getItem('user'))
+    if (this.user === null) {
+      this._router.navigate(['login']);
+    }
+    this.defaultRestaurant = JSON.parse(sessionStorage.getItem('currentRestaurant'))
     this.getRestaurants()
   }
   ngOnInit() {}
@@ -80,7 +87,6 @@ export class AccountComponent implements OnInit {
     this.restDescription = undefined
     this.restCompany = undefined
     this.restLocation = [10.362167730785652,-84.51030575767209]
-    this.restSchedule = {"l":[],"k":[],"m":[],"j":[],"v":[],"s":[],"d":[]}
     $("#modalAddRest").modal({
       backdrop: 'static',
       keyboard: false,
@@ -97,8 +103,9 @@ export class AccountComponent implements OnInit {
     this.restCompany = rest.empresa
     this.restLocation = [rest.ubicacion._latitude,rest.ubicacion._longitude]
     this.restSchedule = rest.horario
+    this.restImage = rest.imagen
     this.week = this.manage.updateWeek(this.restSchedule)
-    //image
+    this.currentRest = rest.id
     $("#modalModRest").modal({
       backdrop: 'static',
       keyboard: false,
@@ -164,6 +171,7 @@ export class AccountComponent implements OnInit {
     }
   }
   saveSchedule(){
+    this.restSchedule = {"l":[],"k":[],"m":[],"j":[],"v":[],"s":[],"d":[]}
     for(let day of this.week){
       if(day.checked){
         this.restSchedule[day.id].push({
@@ -173,6 +181,7 @@ export class AccountComponent implements OnInit {
       }
     }
   }
+
   /* add restaurant to server */
   addRestaurant(){
     this.saveSchedule()
@@ -181,12 +190,35 @@ export class AccountComponent implements OnInit {
     .subscribe(
       success => {
         success.status ? this.successMessageModal(success.data) : this.failedMessageModal(success.data)
+        this.getRestaurants()
       }
     )
   }
   /* modify restaurant */
   modifyRestaurant(){
-
+    this.saveSchedule()
+    console.log(this.currentRest)
+    this._managerService.modRestaurant(this.restName, this.restCompany, this.restDescription, this.restLocation, this.restSchedule, this.user.email, this.currentRest)
+    .subscribe(
+      success=>{
+        success.status ? this.updateRestaurantImage() : this.failedMessageModal(success.data)
+        this.getRestaurants()
+      }
+    )
+  }
+    /* updates restaurant image*/
+  updateRestaurantImage(){
+    if(!this.isImgOptsCollapsed){
+      this._managerService.uploadBase64ImageRestaurant(this.currentRest,this.restImage)
+      .subscribe(
+        success=>{
+          success.status ? this.successMessageModal("Se ha actualizado el restaurante correctamente.") : this.failedMessageModal(success.data)
+          this.getRestaurants()
+        }
+      )
+    } else {
+      this.successMessageModal("Se ha actualizado el restaurante correctamente.")
+    }
   }
   /* open setUser modal */
   openSetUserModal() {
@@ -230,5 +262,18 @@ export class AccountComponent implements OnInit {
   }
   switchImg(){
     this.restImage = null
+  }
+  /* set restaurant as predetermined */
+  predetermineRest(rest:Restaurante){
+    this.defaultRestaurant = {
+      id: rest.id,
+      name: rest.nombre
+    }
+    sessionStorage.setItem('currentRestaurant', JSON.stringify(this.defaultRestaurant));
+    this.getRestaurants()
+  }
+
+  isDefault(rest:Restaurante){
+    return this.defaultRestaurant.id == rest.id ? true : false
   }
 }

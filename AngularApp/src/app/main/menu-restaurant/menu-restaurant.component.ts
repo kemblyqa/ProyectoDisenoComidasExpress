@@ -19,7 +19,6 @@ export class MenuRestaurantComponent implements OnInit {
   private failedMessage:any
   /* restaurante id y nombre */
   private restName:string = "Soda El Mercadito"
-  private restId:string = "NYJdrAl83G9dNWpF6z4J"
   /* categories */
   private categories:Array<any>
   private catSelected:any
@@ -51,7 +50,23 @@ export class MenuRestaurantComponent implements OnInit {
   /* image */
   imgOpt:boolean = true
   isCollapsed:boolean = true
+  /* storage */
+  private user: {email, photoURL, displayName, restaurantes, nombre, telefono} =
+    { email: '',
+      photoURL: '../../assets/icons/profile.png',
+      displayName: '',
+      restaurantes: [],
+      nombre: '',
+      telefono: ''};
+  private defaultRestaurant: {id, name} = {id: '',name:''}
   constructor(private _router:Router, private _managerService:ManagerService) {
+    // storage to keep in
+    this.user = JSON.parse(sessionStorage.getItem('user'))
+    if (this.user === null) {
+      this._router.navigate(['login']);
+    }
+    this.defaultRestaurant = JSON.parse(sessionStorage.getItem('currentRestaurant'))
+    // models
     this.manage = new ManagerModel()
     this.headers = this.manage.getRatingTableHeaders()
     this.starsList = [true, true, true, true, true]
@@ -75,7 +90,7 @@ export class MenuRestaurantComponent implements OnInit {
   }
   /* inits categories to show platillos */
   initCustomCategories(){
-    this._managerService.getRestCategories(this.restId)
+    this._managerService.getRestCategories(this.defaultRestaurant.id)
     .subscribe(
       res => {
         res.status ? this.categories = res.data : this.failedMessageModal(res.data)
@@ -93,7 +108,7 @@ export class MenuRestaurantComponent implements OnInit {
   }
   /* updates menu */
   updateMenu(){
-    this._managerService.getPlatillosByCategory(this.catSelected, this.page, this.restId)
+    this._managerService.getPlatillosByCategory(this.catSelected, this.page, this.defaultRestaurant.id)
     .subscribe(
       res => {
         if(res.status){
@@ -181,7 +196,7 @@ export class MenuRestaurantComponent implements OnInit {
       this.descriptionPlate,
       this.pricePlate,
       this.categoryPlate,
-      this.restId
+      this.defaultRestaurant.id
     ).subscribe(
       success=>{
         success.status ? this.successMessageModal("Se ha creado el nuevo platillo correctamente.") : this.failedMessageModal(success.data)
@@ -212,7 +227,7 @@ export class MenuRestaurantComponent implements OnInit {
       this.descriptionPlate,
       this.pricePlate,
       this.categoryPlate,
-      this.restId,
+      this.defaultRestaurant.id,
       this.currentPlate.id
     ).subscribe(
       success=>{
@@ -225,7 +240,7 @@ export class MenuRestaurantComponent implements OnInit {
   updateImage(){
     if(!this.isCollapsed){
       if(this.imgOpt){//if upload image
-        this._managerService.uploadBase64Image(this.currentPlate.id,this.imagePlate)
+        this._managerService.uploadBase64ImagePlatillo(this.currentPlate.id,this.imagePlate)
         .subscribe(
           success=>{
             success.status ? this.successMessageModal("Se ha actualizado el platillo correctamente.") : this.failedMessageModal(success.data)
@@ -233,7 +248,7 @@ export class MenuRestaurantComponent implements OnInit {
           }
         )
       } else {//image url
-        this._managerService.uploadUrlImage(this.currentPlate.id,this.imagePlate)
+        this._managerService.uploadUrlImagePlatillo(this.currentPlate.id,this.imagePlate)
         .subscribe(
           success=>{
             success.status ? this.successMessageModal("Se ha actualizado el platillo correctamente.") : this.failedMessageModal(success.data)
@@ -247,7 +262,7 @@ export class MenuRestaurantComponent implements OnInit {
   }
   /* deletes platiilo */
   deletePlat(){
-    this._managerService.delPlatillo(this.currentPlate.nombre, this.restId)
+    this._managerService.delPlatillo(this.currentPlate.nombre, this.defaultRestaurant.id)
     .subscribe(
       success=>{
         success.status ? this.successMessageModal("Se ha eliminado el platillo correctamente.") : this.failedMessageModal(success.data)

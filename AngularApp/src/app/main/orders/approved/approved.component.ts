@@ -3,6 +3,7 @@ import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { ManagerModel } from '../../../models/manager.model';
 import { Pedido } from '../../../models/manager';
 import { AgmMap } from '@agm/core';
+import { Router } from '@angular/router';
 declare var jquery:any;
 declare var $ :any;
 
@@ -15,9 +16,6 @@ export class ApprovedComponent {
   /* modal messages */
   private successMessage:any
   private failedMessage:any
-  /* restaurante id y nombre */ 
-  private restName:string = "Soda El Mercadito" 
-  private restId:string = "NYJdrAl83G9dNWpF6z4J" 
   /* headers */
   private manage:ManagerModel
   private headers:Array<any>
@@ -28,8 +26,21 @@ export class ApprovedComponent {
   /* gmaps api */
   lat: number = 10.362167730785652
   lng: number = -84.51030575767209
-  
-  constructor(private _managerService:ManagerService) {
+  /* storage */
+  private user: {email, photoURL, displayName, restaurantes, nombre, telefono} =
+  { email: '',
+    photoURL: '../../assets/icons/profile.png',
+    displayName: '',
+    restaurantes: [],
+    nombre: '',
+    telefono: ''};
+    private defaultRestaurant: {id, name} = {id: "",name:""}
+  constructor(private _managerService:ManagerService, private _router:Router) {
+    this.user = JSON.parse(sessionStorage.getItem('user'))
+    if (this.user === null) {
+      this._router.navigate(['login']);
+    }
+    this.defaultRestaurant = JSON.parse(sessionStorage.getItem('currentRestaurant'))
     this.manage = new ManagerModel()
     this.headers = this.manage.getApprovedTableHeaders()
     this.getOrders()
@@ -68,7 +79,7 @@ export class ApprovedComponent {
   }
   /* get approved orders */
   getOrders(){
-    this._managerService.getCustomOrders("keyAuto","aprobado")
+    this._managerService.getCustomOrders(this.defaultRestaurant.id,"aprobado")
     .subscribe(
       success => {
         if(success.status){
