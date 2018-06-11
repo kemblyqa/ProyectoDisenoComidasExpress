@@ -93,6 +93,7 @@ export class ApprovedComponent {
   }
   /* finish orders */
   isFinished(id:any){
+    console.log(id)
     this._managerService.approveStatus(id, "finalizado")
     .subscribe(
       success => {

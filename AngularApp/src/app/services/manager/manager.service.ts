@@ -20,7 +20,6 @@ const ENDPOINT_ADDRESTAURANT = "addRestaurante"
 const ENDPOINT_MODRESTAURANT = "modRestaurante"
 const ENDPOINT_SET_USER = "setUsuario"
 const ENDPOINT_GETRESTS = "getRests"
-
 @Injectable()
 export class ManagerService {
     //url develop mode

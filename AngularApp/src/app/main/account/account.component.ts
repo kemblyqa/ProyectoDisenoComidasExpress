@@ -197,7 +197,6 @@ export class AccountComponent implements OnInit {
   /* modify restaurant */
   modifyRestaurant(){
     this.saveSchedule()
-    console.log(this.currentRest)
     this._managerService.modRestaurant(this.restName, this.restCompany, this.restDescription, this.restLocation, this.restSchedule, this.user.email, this.currentRest)
     .subscribe(
       success=>{
