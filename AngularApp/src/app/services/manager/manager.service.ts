@@ -24,7 +24,7 @@ const ENDPOINT_GETRESTS = "getRests"
 @Injectable()
 export class ManagerService {
     //url develop mode
-    public apiUrl:string = "http://designexpresstec.firebaseapp.com/api/";
+    public apiUrl:string = "https://designexpresstec.firebaseapp.com/api/";
     constructor(private _service: HttpClient){}
 
     /* get rest categories to show in menu */
